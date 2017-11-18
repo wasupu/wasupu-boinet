@@ -22,6 +22,11 @@ public class BankTest {
         assertTrue("The bank must have the expected account", bank.existAccount("0"));
     }
 
+    @Test
+    public void should(){
+        
+    }
+
     @Before
     public void setupBank(){
         bank = new Bank();
