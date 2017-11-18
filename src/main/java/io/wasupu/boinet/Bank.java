@@ -6,12 +6,12 @@ import java.util.Map;
 
 public class Bank {
 
-    public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
-        Account fromAccount = accounts.get(ibanFrom);
-        Account toAccount = accounts.get(ibanTo);
+    public String contractAccount() {
+        String newIban = String.valueOf(iban);
+        accounts.put(newIban, new Account(newIban));
+        iban++;
 
-        fromAccount.withdraw(amount);
-        toAccount.deposit(amount);
+        return newIban;
     }
 
     public void deposit(String iban, BigDecimal amount) {
@@ -19,12 +19,12 @@ public class Bank {
         account.deposit(amount);
     }
 
-    public String contractAccount() {
-        String newIban = String.valueOf(iban);
-        accounts.put(newIban, new Account(newIban));
-        iban++;
+    public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
+        Account fromAccount = accounts.get(ibanFrom);
+        Account toAccount = accounts.get(ibanTo);
 
-        return newIban;
+        fromAccount.withdraw(amount);
+        toAccount.deposit(amount);
     }
 
     public BigDecimal getBalance(String iban) {
