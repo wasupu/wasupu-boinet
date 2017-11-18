@@ -1,7 +1,7 @@
 ![Logo](https://travis-ci.org/rai22474/wasupu-boinet.svg?branch=master)
 # wasupu boinet
 
-![Image of the boinet](https://raw.githubusercontent.com/rai22474/botnet/master/boinet-pic.png)
+![Image of the boinet](https://raw.githubusercontent.com/rai22474/wasupu-boinet/master/boinet-pic.png)
 
 ## How to
 
