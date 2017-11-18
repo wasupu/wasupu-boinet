@@ -16,9 +16,13 @@ ecsCli() {
 }
 
 configureAws() {
+    : ${AWS_ACCESS_KEY:?"AWS_ACCESS_KEY must be set"}
+    : ${AWS_SECRET_KEY:?"AWS_SECRET_KEY must be set"}
+    : ${AWS_DEFAULT_REGION:?"AWS_DEFAULT_REGION must be set"}
+
     $(awsCli) configure set aws_access_key_id ${AWS_ACCESS_KEY}
     $(awsCli) configure set aws_secret_access_key ${AWS_SECRET_KEY}
-    $(awsCli) configure set default.region eu-west-1
+    $(awsCli) configure set default.region ${AWS_DEFAULT_REGION}
 }
 
 configureEcs() {
@@ -34,6 +38,17 @@ configureEcs() {
 createEcsCluster() {
     local clusterName="$1"
 
+    $(ecsCli) up \
+        --verbose \
+        --security-group sg-xxxxxxxx \
+        --keypair zzzz \
+        --instance-type m3.medium \
+        --vpc vpc-yyyyyyyy \
+        --subnets subnet-xxxxxx \
+        --capability-iam \
+        --size 2 \
+        --cluster ${clusterName} \
+        || true
 }
 
 removeEcsCluster() {

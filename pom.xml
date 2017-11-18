@@ -92,7 +92,7 @@
                     <images>
                         <image>
                             <alias>service</alias>
-                            <name>wasupu/boinet:${project.version}</name>
+                            <name>boinet:${project.version}</name>
 
                             <build>
                                 <dockerFile>Dockerfile</dockerFile>
