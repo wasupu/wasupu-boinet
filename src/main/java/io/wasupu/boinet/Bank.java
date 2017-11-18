@@ -65,6 +65,4 @@ public class Bank {
     private int iban = 0;
 
     private int pan = 0;
-
-
 }

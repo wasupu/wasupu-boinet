@@ -20,16 +20,16 @@ public class BankTest {
 
     @Test
     public void shouldContractANewAccount() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(account);
+        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
         String iban = bank.contractAccount();
 
         assertEquals("The iban must be 0", IBAN, iban);
-        assertTrue("The bank must have the expected account", bank.existAccount(IBAN));
+        assertTrue("The bank must have the expected firstAccount", bank.existAccount(IBAN));
     }
 
     @Test
     public void shouldContractDebitCardInTheBank() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(account);
+        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
         bank.contractAccount();
 
         String pan = bank.contractDebitCard(IBAN);
@@ -40,25 +40,50 @@ public class BankTest {
 
     @Test
     public void shouldDepositMoneyInTheBank() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(account);
+        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
         bank.contractAccount();
 
-        bank.deposit(IBAN,new BigDecimal(10));
+        bank.deposit(IBAN, new BigDecimal(10));
 
-        verify(account).deposit(new BigDecimal(10));
+        verify(firstAccount).deposit(new BigDecimal(10));
+    }
+
+    @Test
+    public void shouldTransferMoneyBetweenToAccounts() throws Exception {
+        whenNew(Account.class)
+            .withArguments(IBAN)
+            .thenReturn(firstAccount);
+
+        whenNew(Account.class)
+            .withArguments(SECOND_IBAN)
+            .thenReturn(secondAccount);
+
+        String firstIban = bank.contractAccount();
+        String secondIban = bank.contractAccount();
+
+        BigDecimal amount = new BigDecimal(10);
+        bank.transfer(firstIban, secondIban, amount);
+
+        verify(firstAccount).withdraw(amount);
+        verify(secondAccount).deposit(amount);
     }
 
     private static final String IBAN = "0";
 
+    private static final String SECOND_IBAN = "1";
+
     private static final String PAN = "0";
 
     @Before
-    public void setupBank(){
+    public void setupBank() {
         bank = new Bank();
     }
 
     private Bank bank;
 
     @Mock
-    private Account account;
+    private Account firstAccount;
+
+    @Mock
+    private Account secondAccount;
 }

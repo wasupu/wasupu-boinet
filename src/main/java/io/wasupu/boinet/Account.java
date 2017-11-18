@@ -12,12 +12,12 @@ public class Account {
         return amount;
     }
 
-    public void withdraw(BigDecimal salary) {
-        amount = amount.subtract(salary);
+    public void withdraw(BigDecimal amount) {
+        this.amount = this.amount.subtract(amount);
     }
 
-    public void deposit(BigDecimal salary) {
-        amount = amount.add(salary);
+    public void deposit(BigDecimal amount) {
+        this.amount = this.amount.add(amount);
     }
 
     private BigDecimal amount = new BigDecimal(0);
