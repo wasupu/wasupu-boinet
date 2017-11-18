@@ -1,0 +1,31 @@
+# Eclipse Internal #
+.settings/
+.project
+.classpath
+
+# Maven #
+target/
+
+# IntelliJ #
+.idea/
+*.iml
+
+# AWS ECS
+.cache/
+.ecs/
+
+# sonar
+.sonar/
+sonar-*.jar
+
+libjansi*
+
+*.log
+find-gamusinos.sh
+
+.DS_Store
+.config
+.kube
+
+*.tar.gz
+*.backup
