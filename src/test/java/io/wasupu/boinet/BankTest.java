@@ -9,6 +9,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -19,21 +20,37 @@ public class BankTest {
 
     @Test
     public void shouldContractANewAccount() throws Exception {
-        whenNew(Account.class).withArguments("0").thenReturn(account);
+        whenNew(Account.class).withArguments(IBAN).thenReturn(account);
+        String iban = bank.contractAccount();
+
+        assertEquals("The iban must be 0", IBAN, iban);
+        assertTrue("The bank must have the expected account", bank.existAccount(IBAN));
+    }
+
+    @Test
+    public void shouldContractDebitCardInTheBank() throws Exception {
+        whenNew(Account.class).withArguments(IBAN).thenReturn(account);
         bank.contractAccount();
 
-        assertTrue("The bank must have the expected account", bank.existAccount("0"));
+        String pan = bank.contractDebitCard(IBAN);
+
+        assertEquals("The pan must be 0", PAN, pan);
+        assertEquals("The iban must for pan 0 must be 0", "0", bank.getIbanByPan(PAN));
     }
 
     @Test
     public void shouldDepositMoneyInTheBank() throws Exception {
-        whenNew(Account.class).withArguments("0").thenReturn(account);
+        whenNew(Account.class).withArguments(IBAN).thenReturn(account);
         bank.contractAccount();
 
-        bank.deposit("0",new BigDecimal(10));
+        bank.deposit(IBAN,new BigDecimal(10));
 
         verify(account).deposit(new BigDecimal(10));
     }
+
+    private static final String IBAN = "0";
+
+    private static final String PAN = "0";
 
     @Before
     public void setupBank(){

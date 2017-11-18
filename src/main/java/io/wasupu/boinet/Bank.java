@@ -14,9 +14,32 @@ public class Bank {
         return newIban;
     }
 
+    public String contractDebitCard(String iban) {
+        String panAsString = String.valueOf(pan);
+        cards.put(panAsString, String.valueOf(iban));
+        pan++;
+
+        return panAsString;
+    }
+
     public void deposit(String iban, BigDecimal amount) {
         Account account = accounts.get(iban);
         account.deposit(amount);
+    }
+
+    public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier) {
+        String buyerAccount = cards.get(pan);
+
+        transfer(buyerAccount, sellerAccount, amount);
+        publishMovement(amount, pan, companyIdentifier);
+    }
+
+    public BigDecimal getBalance(String iban) {
+        return accounts.get(iban).getBalance();
+    }
+
+    public boolean existAccount(String iban) {
+        return accounts.containsKey(iban);
     }
 
     public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
@@ -27,27 +50,8 @@ public class Bank {
         toAccount.deposit(amount);
     }
 
-    public BigDecimal getBalance(String iban) {
-        return accounts.get(iban).getBalance();
-    }
-
-    public String contractDebitCard(String iban) {
-        String panAsString = String.valueOf(pan);
-        cards.put(panAsString, String.valueOf(iban));
-        pan++;
-
-        return panAsString;
-    }
-
-    public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier) {
-        String buyerAccount = cards.get(pan);
-
-        transfer(buyerAccount, sellerAccount, amount);
-        publishMovement(amount, pan, companyIdentifier);
-    }
-
-    public boolean existAccount(String iban) {
-        return accounts.containsKey(iban);
+    String getIbanByPan(String pan) {
+        return cards.get(pan);
     }
 
     private void publishMovement(BigDecimal amount, String pan, String fuc) {
@@ -61,4 +65,6 @@ public class Bank {
     private int iban = 0;
 
     private int pan = 0;
+
+
 }
