@@ -78,14 +78,6 @@ public class Person {
         return identifier.hashCode();
     }
 
-    public BigDecimal getMyBalance() {
-        return world.getBank().getBalance(iban);
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
     private String iban;
 
     private String identifier;
