@@ -8,7 +8,6 @@ public class Company {
 
     public Company(String identifier, World world) {
         this.identifier = identifier;
-        this.salary = new BigDecimal(0);
         this.world = world;
 
         world.listenTicks(this::tick);
@@ -16,8 +15,10 @@ public class Company {
 
     public void tick() {
         contractAccount();
-        initialCapital(INITIAL_CAPITAL);
+        initialCapital();
         hireStaff();
+        paySalary();
+
         age++;
     }
 
@@ -63,15 +64,15 @@ public class Company {
             .forEach(this::hire);
     }
 
-    private void hire(Person person) {
+    void hire(Person person) {
         employees.add(person);
         person.youAreHired();
     }
 
-    private void initialCapital(BigDecimal capital) {
+    private void initialCapital() {
         if (age != 0) return;
 
-        world.getBank().deposit(iban, capital);
+        world.getBank().deposit(iban, INITIAL_CAPITAL);
     }
 
     private void contractAccount() {
@@ -81,17 +82,18 @@ public class Company {
     }
 
     private void paySalary() {
+        if (age == 0) return;
+        if (age % 30 != 0) return;
+
         employees.forEach(employee ->
-            world.getBank().transfer(iban,
-                employee.getIban(),
-                salary));
+            world.getBank().transfer(iban, employee.getIban(), SALARY));
     }
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(60000);
 
     private Collection<Person> employees = new ArrayList<>();
 
-    private BigDecimal salary = new BigDecimal(1);
+    static final BigDecimal SALARY = new BigDecimal(1000);
 
     private String iban;
 

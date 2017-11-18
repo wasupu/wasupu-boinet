@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,6 +110,30 @@ public class CompanyTest {
         company.buyProduct(PAN);
 
         verify(bank).processPayment(new BigDecimal(10), PAN, IBAN, COMPANY_IDENTIFIER);
+    }
+
+    @Test
+    public void shouldPayTheEmployeesEvery30Ticks() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.contractAccount()).thenReturn(IBAN);
+        when(person.getIban()).thenReturn(OTHER_IBAN);
+
+        company.hire(person);
+        IntStream.range(0,31).forEach(i -> company.tick());
+
+        verify(bank).transfer(IBAN, OTHER_IBAN,Company.SALARY);
+    }
+
+    @Test
+    public void shouldPayTheEmployeesTwiceAt60Ticks() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.contractAccount()).thenReturn(IBAN);
+        when(person.getIban()).thenReturn(OTHER_IBAN);
+
+        company.hire(person);
+        IntStream.range(0,61).forEach(i -> company.tick());
+
+        verify(bank,times(2)).transfer(IBAN, OTHER_IBAN,Company.SALARY);
     }
 
     @Before
