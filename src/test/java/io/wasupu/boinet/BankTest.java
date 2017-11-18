@@ -68,16 +68,40 @@ public class BankTest {
         verify(secondAccount).deposit(amount);
     }
 
+    @Test
+    public void shouldProcessAPayment() throws Exception {
+        whenNew(Account.class)
+            .withArguments(IBAN)
+            .thenReturn(firstAccount);
+
+        whenNew(Account.class)
+            .withArguments(SECOND_IBAN)
+            .thenReturn(secondAccount);
+
+        String firstIban = bank.contractAccount();
+        String secondIban = bank.contractAccount();
+        String pan = bank.contractDebitCard(firstIban);
+
+        BigDecimal amount = new BigDecimal(10);
+
+        bank.processPayment(amount,pan,secondIban,COMPANY);
+
+        verify(secondAccount).deposit(amount);
+    }
+
     private static final String IBAN = "0";
 
     private static final String SECOND_IBAN = "1";
 
     private static final String PAN = "0";
 
+    private static final String COMPANY = "12";
+
     @Before
     public void setupBank() {
         bank = new Bank();
     }
+
 
     private Bank bank;
 
