@@ -7,7 +7,10 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotEquals;
@@ -81,6 +84,17 @@ public class WorldTest {
         world.start(2);
 
         verify(tickConsumer, times(2)).run();
+    }
+
+    @Test
+    public void shouldReturnADifferentCompanyInEveryCall() {
+        world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
+
+        Collection<Company> companies = new ArrayList<>();
+        IntStream.range(0,10).forEach(i -> companies.add(world.findCompany()));
+
+        assertThat(companies)
+            .contains(firstCompany,secondCompany);
     }
 
     @Before

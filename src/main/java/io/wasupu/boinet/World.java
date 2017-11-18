@@ -3,9 +3,7 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableList;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class World {
@@ -46,7 +44,8 @@ public class World {
     }
 
     public Company findCompany() {
-        return companies.stream().findFirst().get();
+        Random random = new Random();
+        return companies.get(random.nextInt(companies.size()));
     }
 
     public void listenTicks(Runnable tickConsumer) {
@@ -91,7 +90,7 @@ public class World {
         return UUID.randomUUID().toString();
     }
 
-    private Collection<Company> companies = new ArrayList<>();
+    private List<Company> companies = new ArrayList<>();
 
     private Collection<Person> population = new ArrayList<>();
 
