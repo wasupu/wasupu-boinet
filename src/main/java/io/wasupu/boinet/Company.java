@@ -34,10 +34,6 @@ public class Company {
         world.getBank().processPayment(new BigDecimal(10), pan, iban, identifier);
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
     public Collection<Person> getEmployees() {
         return employees;
     }
