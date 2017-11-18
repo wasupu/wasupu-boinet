@@ -102,7 +102,6 @@ public class BankTest {
         bank = new Bank();
     }
 
-
     private Bank bank;
 
     @Mock
