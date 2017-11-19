@@ -6,7 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
@@ -31,10 +35,19 @@ public class World {
         int ticks = numberOfTicks.length == 0 ? 1000 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
+            .peek(x -> wait(200))
             .forEach(tickNumber -> {
                 logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
                 tickConsumers.forEach(Runnable::run);
             });
+    }
+
+    private void wait(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public Company findCompany() {
