@@ -18,6 +18,7 @@ public class Company {
         initialCapital();
         hireStaff();
         paySalary();
+        publishCompanyBalance();
 
         age++;
     }
@@ -83,6 +84,12 @@ public class Company {
 
         employees.forEach(employee ->
             world.getBank().transfer(iban, employee.getIban(), SALARY));
+    }
+
+    private void publishCompanyBalance(){
+        if (age % 90 != 0) return;
+
+        System.out.println("company:" + identifier + ",balance:" + world.getBank().getBalance(iban));
     }
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(60000);

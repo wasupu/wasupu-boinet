@@ -45,7 +45,10 @@ public class World {
 
     public Company findCompany() {
         Random random = new Random();
-        return companies.get(random.nextInt(companies.size()));
+        int randomNumber = random.nextInt(companies.size());
+
+
+        return companies.get(randomNumber);
     }
 
     public void listenTicks(Runnable tickConsumer) {
