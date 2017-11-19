@@ -7,6 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
+import java.util.stream.IntStream;
+
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -120,6 +123,37 @@ public class PersonTest {
         verify(company).buyProduct(PAN);
     }
 
+    @Test
+    public void shouldPublishPersonInfoAt0Ticks() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.contractAccount()).thenReturn(IBAN);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
+
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(out));
+
+        person.tick();
+
+        assertEquals("The balance string is not the expected",
+            "person:personId,balance:12\n", out.toString());
+    }
+
+    @Test
+    public void shouldPublishPersonInfoAt30Ticks() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.contractAccount()).thenReturn(IBAN);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
+        when(world.findCompany()).thenReturn(company);
+
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(out));
+
+        IntStream.range(0,31).forEach(i -> person.tick());
+
+        assertEquals("The balance string is not the expected",
+            "person:personId,balance:12\nperson:personId,balance:12\n", out.toString());
+    }
+
     @Before
     public void setupPerson() {
         person = new Person(IDENTIFIER, world);
@@ -134,7 +168,7 @@ public class PersonTest {
     @Mock
     private Company company;
 
-    private static final String IDENTIFIER = "1";
+    private static final String IDENTIFIER = "personId";
 
     private Person person;
 

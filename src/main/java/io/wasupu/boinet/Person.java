@@ -19,6 +19,7 @@ public class Person {
         initialCapital();
         contractDebitCard();
         eatEveryDay();
+        publishCompanyBalance();
 
         age++;
     }
@@ -61,6 +62,12 @@ public class Person {
         if (age < 2) return;
 
         world.findCompany().buyProduct(pan);
+    }
+
+    private void publishCompanyBalance(){
+        if (age % 30 != 0) return;
+
+        System.out.println("person:" + identifier + ",balance:" + world.getBank().getBalance(iban));
     }
 
     @Override

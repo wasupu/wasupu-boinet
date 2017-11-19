@@ -27,12 +27,8 @@ public class World {
 
         IntStream.range(0, ticks)
             .forEach(i -> {
-                System.out.println("+++++++++++++++++++++++++++++++++++++++");
-                System.out.println("TICK:" + i);
-
+                System.out.println("tick:" + i);
                 tickConsumers.forEach(Runnable::run);
-
-                System.out.println("+++++++++++++++++++++++++++++++++++++++");
             });
 
         System.out.println(companies.stream()
