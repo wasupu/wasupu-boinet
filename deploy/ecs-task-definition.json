@@ -1,0 +1,22 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "boinet",
+            "image": "{{AWS_DOCKER_REGISTRY}}/boinet:latest",
+            "cpu": 100,
+            "memory": 500,
+            "essential": true,
+            "portMappings": [],
+            "environment": [],
+            "links": [],
+            "extraHosts": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "{{AWSLOGS_GROUP}}",
+                    "awslogs-region": "{{AWSLOGS_REGION}}"
+                }
+            }
+        }
+    ]
+}

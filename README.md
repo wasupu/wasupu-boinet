@@ -16,23 +16,16 @@ mvn clean package
 docker run --rm boinet
 ```
 
-* To deploy ECS cluster:
-
-```shell-script
-./create-infrastructure.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY>
-```
-
 * To deploy docker image to a remote registry
     * login to that registry by using docker login method
     * deploy previously built image by:
     
 ```shell-script
-mvn docker:push -Ddocker.registry=<your-registry>
+mvn docker:push -Ddocker.registry=<AWS_DOCKER_REGISTRY>
 ```
-    
 
 * To deploy the service:
 
 ```shell-script
-./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY>
+./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY> <AWS_DEFAULT_REGION> <AWS_DOCKER_REGISTRY>
 ```
