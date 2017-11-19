@@ -115,8 +115,6 @@ public class CompanyTest {
 
     @Test
     public void shouldPayTheEmployeesEvery30Ticks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
         company.hire(person);
@@ -127,8 +125,6 @@ public class CompanyTest {
 
     @Test
     public void shouldPayTheEmployeesTwiceAt60Ticks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
         company.hire(person);
@@ -139,24 +135,17 @@ public class CompanyTest {
 
     @Test
     public void shouldPublishCompanyInfoAt0Ticks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
-
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
 
         company.tick();
 
         assertEquals("The balance string is not the expected",
-            "company:companyId,balance:12\n", out.toString());
+            "{\"company\":\"companyId\",\"balance\":12}\n", out.toString());
     }
 
     @Test
     public void shouldPublishCompanyInfoAt90Ticks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
 
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
@@ -164,13 +153,14 @@ public class CompanyTest {
         IntStream.range(0,91).forEach(i -> company.tick());
 
         assertEquals("The balance string is not the expected",
-            "company:companyId,balance:12\ncompany:companyId,balance:12\n", out.toString());
+            "{\"company\":\"companyId\",\"balance\":12}\n{\"company\":\"companyId\",\"balance\":12}\n", out.toString());
     }
 
     @Before
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
         when(bank.contractAccount()).thenReturn(IBAN);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
 
     @Before

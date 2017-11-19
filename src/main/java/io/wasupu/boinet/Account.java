@@ -23,4 +23,5 @@ public class Account {
     private BigDecimal amount = new BigDecimal(0);
 
     private String iban;
+
 }

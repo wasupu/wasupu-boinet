@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.stream.IntStream;
 
@@ -29,9 +30,6 @@ public class PersonTest {
 
     @Test
     public void shouldContractAnAccountInFirstTick() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-
         person.tick();
 
         assertNotNull("After first tick must have an account", person.getIban());
@@ -40,8 +38,6 @@ public class PersonTest {
 
     @Test
     public void shouldContractADebitCardInFirstTick() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
 
         person.tick();
@@ -52,7 +48,6 @@ public class PersonTest {
 
     @Test
     public void shouldNotContractAgainAnAccountIfHasOneInOtherTick() {
-        when(world.getBank()).thenReturn(bank);
         when(bank.contractAccount()).thenReturn(IBAN)
             .thenReturn(OTHER_IBAN);
 
@@ -66,8 +61,6 @@ public class PersonTest {
 
     @Test
     public void shouldNotContractAgainDebitCardIfHasOne() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.contractDebitCard(IBAN))
             .thenReturn(PAN,OTHER_PAN);
 
@@ -89,9 +82,6 @@ public class PersonTest {
 
     @Test
     public void shouldDepositASocialSalaryInTheFirstTick() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-
         person.tick();
 
         verify(bank).deposit(IBAN, Person.INITIAL_CAPITAL);
@@ -99,9 +89,6 @@ public class PersonTest {
 
     @Test
     public void shouldNotDepositAnySalaryInOtherTick() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-
         person.tick();
         person.tick();
 
@@ -110,8 +97,6 @@ public class PersonTest {
 
     @Test
     public void shouldBuyAProductEveryTickAfterTwoTicks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
 
         when(world.findCompany()).thenReturn(company);
@@ -125,17 +110,13 @@ public class PersonTest {
 
     @Test
     public void shouldPublishPersonInfoAt0Ticks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
-
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
 
         person.tick();
 
         assertEquals("The balance string is not the expected",
-            "person:personId,balance:12\n", out.toString());
+            "{\"person\":\"personId\",\"balance\":12}\n", out.toString());
     }
 
     @Test
@@ -151,13 +132,20 @@ public class PersonTest {
         IntStream.range(0,31).forEach(i -> person.tick());
 
         assertEquals("The balance string is not the expected",
-            "person:personId,balance:12\nperson:personId,balance:12\n", out.toString());
+            "{\"person\":\"personId\",\"balance\":12}\n{\"person\":\"personId\",\"balance\":12}\n", out.toString());
     }
 
     @Before
     public void setupPerson() {
         person = new Person(IDENTIFIER, world);
     }
+
+    @Before
+    public void setupAccount(){
+        when(world.getBank()).thenReturn(bank);
+        when(bank.contractAccount()).thenReturn(IBAN);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
+  }
 
     @Mock
     private World world;

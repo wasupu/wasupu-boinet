@@ -1,8 +1,14 @@
 package io.wasupu.boinet;
 
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Company {
 
@@ -89,7 +95,9 @@ public class Company {
     private void publishCompanyBalance(){
         if (age % 90 != 0) return;
 
-        System.out.println("company:" + identifier + ",balance:" + world.getBank().getBalance(iban));
+        logger.info(appendEntries(ImmutableMap
+                .of("company", identifier, "balance", world.getBank().getBalance(iban))),
+            "Company balance");
     }
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(60000);
@@ -105,4 +113,6 @@ public class Company {
     private World world;
 
     private Long age = 0L;
+
+    private static Logger logger = LoggerFactory.getLogger(Person.class);
 }

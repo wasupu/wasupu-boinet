@@ -1,8 +1,14 @@
 package io.wasupu.boinet;
 
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Bank {
 
@@ -54,8 +60,10 @@ public class Bank {
         return cards.get(pan);
     }
 
-    private void publishMovement(BigDecimal amount, String pan, String fuc) {
-        System.out.println("pan:" + pan + "->" + "amount:" + amount + "->" + "fuc:" + fuc);
+    private void publishMovement(BigDecimal amount, String pan, String companyIndentifier) {
+        logger.info(appendEntries(ImmutableMap
+                .of("pan", pan, "amount", amount,"company",companyIndentifier)),
+            "Movement");
     }
 
     private Map<String, Account> accounts = new HashMap<>();
@@ -65,4 +73,6 @@ public class Bank {
     private int iban = 0;
 
     private int pan = 0;
+
+    private static Logger logger = LoggerFactory.getLogger(Bank.class);
 }

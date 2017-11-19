@@ -1,9 +1,14 @@
 package io.wasupu.boinet;
 
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Person {
 
@@ -19,7 +24,7 @@ public class Person {
         initialCapital();
         contractDebitCard();
         eatEveryDay();
-        publishCompanyBalance();
+        publishPersonBalance();
 
         age++;
     }
@@ -58,16 +63,18 @@ public class Person {
         world.getBank().deposit(iban, INITIAL_CAPITAL);
     }
 
-    private void eatEveryDay(){
+    private void eatEveryDay() {
         if (age < 2) return;
 
         world.findCompany().buyProduct(pan);
     }
 
-    private void publishCompanyBalance(){
+    private void publishPersonBalance() {
         if (age % 30 != 0) return;
 
-        System.out.println("person:" + identifier + ",balance:" + world.getBank().getBalance(iban));
+        logger.info(appendEntries(ImmutableMap
+            .of("person", identifier, "balance", world.getBank().getBalance(iban))),
+            "Person balance");
     }
 
     @Override
@@ -98,4 +105,6 @@ public class Person {
     private Boolean employed = FALSE;
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
+
+    private static Logger logger = LoggerFactory.getLogger(Person.class);
 }

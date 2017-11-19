@@ -1,16 +1,21 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
+import static net.logstash.logback.marker.Markers.appendEntries;
+
 public class World {
 
     public static void main(String[] args) {
         World world = new World();
-        world.init(12, 5);
+        world.init(120, 10);
         world.start();
     }
 
@@ -26,24 +31,16 @@ public class World {
         int ticks = numberOfTicks.length == 0 ? 1000 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
-            .forEach(i -> {
-                System.out.println("tick:" + i);
+            .forEach(tickNumber -> {
+                logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
                 tickConsumers.forEach(Runnable::run);
             });
-
-        System.out.println(companies.stream()
-            .map(company -> {
-                System.out.println(new BigDecimal(company.getEmployees().size()));
-                return new BigDecimal(company.getEmployees().size());
-            })
-            .reduce(new BigDecimal(0), BigDecimal::add));
     }
 
     public Company findCompany() {
         Random random = new Random();
+
         int randomNumber = random.nextInt(companies.size());
-
-
         return companies.get(randomNumber);
     }
 
@@ -98,6 +95,7 @@ public class World {
     private Bank bank = new Bank();
 
     private EmploymentOffice employmentOffice = new EmploymentOffice(this);
+    private static Logger logger = LoggerFactory.getLogger(World.class);
 }
 
 
