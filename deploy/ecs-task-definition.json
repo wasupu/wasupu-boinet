@@ -14,7 +14,8 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-group": "{{AWSLOGS_GROUP}}",
-                    "awslogs-region": "{{AWSLOGS_REGION}}"
+                    "awslogs-region": "{{AWSLOGS_REGION}}",
+                    "awslogs-stream-prefix": "boinet"
                 }
             }
         }
