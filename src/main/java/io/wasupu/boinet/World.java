@@ -42,7 +42,16 @@ public class World {
             .forEach(tickNumber -> {
                 logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
                 tickConsumers.forEach(Runnable::run);
+
+                addDayToCurrentDate();
             });
+    }
+
+    private void addDayToCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DATE, 1);
+        currentDate = calendar.getTime();
     }
 
     private void wait(int millis) {

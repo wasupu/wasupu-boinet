@@ -105,6 +105,17 @@ public class WorldTest {
         assertEquals("The date is not the expected", gregorianCalendar.getTime(),world.getCurrentDate());
     }
 
+    @Test
+    public void shouldHaveTwoDaysLaterBeforeTwoTicks() {
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 7);
+        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        world.start(2);
+
+        assertNotNull("The current date must be not null", world.getCurrentDate());
+        assertEquals("The date is not the expected", gregorianCalendar.getTime(),world.getCurrentDate());
+    }
+
     @Before
     public void setupPeople() throws Exception {
         whenNew(Person.class)
