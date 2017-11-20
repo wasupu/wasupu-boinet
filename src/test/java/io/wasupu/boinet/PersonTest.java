@@ -116,7 +116,7 @@ public class PersonTest {
         person.tick();
 
         assertEquals("The balance string is not the expected",
-            "{\"person\":\"personId\",\"balance\":12}\n", out.toString());
+            BALANCE_JSON  + "\n", out.toString());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class PersonTest {
         IntStream.range(0,31).forEach(i -> person.tick());
 
         assertEquals("The balance string is not the expected",
-            "{\"person\":\"personId\",\"balance\":12}\n{\"person\":\"personId\",\"balance\":12}\n", out.toString());
+             BALANCE_JSON + "\n" + BALANCE_JSON + "\n", out.toString());
     }
 
     @Before
@@ -167,5 +167,12 @@ public class PersonTest {
     private static final String OTHER_PAN = "212312316";
 
     private static final String PAN = "12312312312";
+
+    private static final String BALANCE_JSON =
+        "{" +
+            "\"person\":\"personId\"," +
+            "\"balance\":12," +
+            "\"currency\":\"EUR\"" +
+            "}";
 
 }

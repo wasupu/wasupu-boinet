@@ -96,7 +96,9 @@ public class Company {
         if (age % 90 != 0) return;
 
         logger.info(appendEntries(ImmutableMap
-                .of("company", identifier, "balance", world.getBank().getBalance(iban))),
+                .of("company", identifier,
+                    "balance", world.getBank().getBalance(iban),
+                    "currency", "EUR")),
             "Company balance");
     }
 

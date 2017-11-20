@@ -62,7 +62,12 @@ public class Bank {
 
     private void publishMovement(BigDecimal amount, String pan, String companyIndentifier) {
         logger.info(appendEntries(ImmutableMap
-                .of("pan", pan, "amount", amount,"company",companyIndentifier)),
+                .builder()
+                .put("pan", pan)
+                .put("amount", amount)
+                .put("currency", "EUR")
+                .put("company",companyIndentifier)
+                .build()),
             "Movement");
     }
 

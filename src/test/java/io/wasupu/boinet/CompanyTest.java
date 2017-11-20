@@ -118,9 +118,9 @@ public class CompanyTest {
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
         company.hire(person);
-        IntStream.range(0,31).forEach(i -> company.tick());
+        IntStream.range(0, 31).forEach(i -> company.tick());
 
-        verify(bank).transfer(IBAN, OTHER_IBAN,Company.SALARY);
+        verify(bank).transfer(IBAN, OTHER_IBAN, Company.SALARY);
     }
 
     @Test
@@ -128,9 +128,9 @@ public class CompanyTest {
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
         company.hire(person);
-        IntStream.range(0,61).forEach(i -> company.tick());
+        IntStream.range(0, 61).forEach(i -> company.tick());
 
-        verify(bank,times(2)).transfer(IBAN, OTHER_IBAN,Company.SALARY);
+        verify(bank, times(2)).transfer(IBAN, OTHER_IBAN, Company.SALARY);
     }
 
     @Test
@@ -141,7 +141,7 @@ public class CompanyTest {
         company.tick();
 
         assertEquals("The balance string is not the expected",
-            "{\"company\":\"companyId\",\"balance\":12}\n", out.toString());
+            BALANCE_JSON + "\n", out.toString());
     }
 
     @Test
@@ -150,10 +150,10 @@ public class CompanyTest {
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
 
-        IntStream.range(0,91).forEach(i -> company.tick());
+        IntStream.range(0, 91).forEach(i -> company.tick());
 
         assertEquals("The balance string is not the expected",
-            "{\"company\":\"companyId\",\"balance\":12}\n{\"company\":\"companyId\",\"balance\":12}\n", out.toString());
+            BALANCE_JSON + "\n" + BALANCE_JSON + "\n", out.toString());
     }
 
     @Before
@@ -167,6 +167,7 @@ public class CompanyTest {
     public void setupCompany() {
         company = new Company(COMPANY_IDENTIFIER, world);
     }
+
 
     private Company company;
 
@@ -187,4 +188,10 @@ public class CompanyTest {
 
     private static final String PAN = "12312312312";
 
+    private static final String BALANCE_JSON =
+        "{" +
+            "\"company\":\"companyId\"," +
+            "\"balance\":12," +
+            "\"currency\":\"EUR\"" +
+            "}";
 }
