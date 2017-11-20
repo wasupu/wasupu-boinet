@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
@@ -159,7 +161,10 @@ public class CompanyTest {
     @Before
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
-        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
+        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        when(world.getCurrentDate()).thenReturn(gregorianCalendar.getTime());
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
@@ -189,7 +194,7 @@ public class CompanyTest {
 
     private static final String PAN = "12312312312";
 
-    private static final String CURRENT_DATE = "2017-10-05T14:48:00.000Z";
+    private static final String CURRENT_DATE = "2017-10-05T00:00:00Z";
 
     private static final String BALANCE_JSON =
         "{" +

@@ -3,6 +3,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- Log message format -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <jsonFactoryDecorator class="io.wasupu.boinet.encoder.ISO8601DateDecorator"/>
             <fieldNames>
                 <timestamp>[ignore]</timestamp>
                 <logger>[ignore]</logger>

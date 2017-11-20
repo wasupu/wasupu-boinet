@@ -6,11 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
@@ -21,6 +17,13 @@ public class World {
         World world = new World();
         world.init(120, 10);
         world.start();
+    }
+
+    public World() {
+        GregorianCalendar calendar = new GregorianCalendar(2017, 9, 5);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        currentDate = calendar.getTime();
+        System.out.println(currentDate);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -83,8 +86,8 @@ public class World {
         return newPerson;
     }
 
-    public String getCurrentDate() {
-        return "2017-10-05T14:48:00.000Z";
+    public Date getCurrentDate() {
+        return currentDate;
     }
 
     public Collection<Person> getCandidates(BigDecimal initialCapital) {
@@ -113,6 +116,8 @@ public class World {
     private EmploymentOffice employmentOffice = new EmploymentOffice(this);
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
+
+    private Date currentDate;
 }
 
 

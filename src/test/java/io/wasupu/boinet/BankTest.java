@@ -8,6 +8,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
+import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -101,7 +102,7 @@ public class BankTest {
     @Before
     public void setupBank() {
         bank = new Bank(world);
-        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
+        when(world.getCurrentDate()).thenReturn(new GregorianCalendar(2017, 10, 10).getTime());
     }
 
     private Bank bank;

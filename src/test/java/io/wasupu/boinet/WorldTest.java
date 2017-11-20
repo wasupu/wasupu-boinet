@@ -7,12 +7,11 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -91,10 +90,19 @@ public class WorldTest {
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
 
         Collection<Company> companies = new ArrayList<>();
-        IntStream.range(0,15).forEach(i -> companies.add(world.findCompany()));
+        IntStream.range(0, 15).forEach(i -> companies.add(world.findCompany()));
 
         assertThat(companies)
-            .contains(firstCompany,secondCompany);
+            .contains(firstCompany, secondCompany);
+    }
+
+    @Test
+    public void shouldTheHaveAnInitCurrentDate() {
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
+        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        assertNotNull("The current date must be not null", world.getCurrentDate());
+        assertEquals("The date is not the expected", gregorianCalendar.getTime(),world.getCurrentDate());
     }
 
     @Before
