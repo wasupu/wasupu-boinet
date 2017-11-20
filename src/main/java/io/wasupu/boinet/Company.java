@@ -92,13 +92,15 @@ public class Company {
             world.getBank().transfer(iban, employee.getIban(), SALARY));
     }
 
-    private void publishCompanyBalance(){
+    private void publishCompanyBalance() {
         if (age % 90 != 0) return;
 
         logger.info(appendEntries(ImmutableMap
-                .of("company", identifier,
-                    "balance", world.getBank().getBalance(iban),
-                    "currency", "EUR")),
+                .builder()
+                .put("company", identifier)
+                .put("balance", world.getBank().getBalance(iban))
+                .put("currency", "EUR")
+                .build()),
             "Company balance");
     }
 

@@ -73,9 +73,11 @@ public class Person {
         if (age % 30 != 0) return;
 
         logger.info(appendEntries(ImmutableMap
-            .of("person", identifier,
-                "balance", world.getBank().getBalance(iban),
-                "currency", "EUR")),
+            .builder()
+                .put("person", identifier)
+                .put("balance", world.getBank().getBalance(iban))
+                .put("currency", "EUR")
+                .build()),
             "Person balance");
     }
 
