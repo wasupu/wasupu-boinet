@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
@@ -99,7 +100,8 @@ public class BankTest {
 
     @Before
     public void setupBank() {
-        bank = new Bank();
+        bank = new Bank(world);
+        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
     }
 
     private Bank bank;
@@ -109,4 +111,9 @@ public class BankTest {
 
     @Mock
     private Account secondAccount;
+
+    @Mock
+    private World world;
+
+    private static final String CURRENT_DATE = "2017-10-05T14:48:00.000Z";
 }

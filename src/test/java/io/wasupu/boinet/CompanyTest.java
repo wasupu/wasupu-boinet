@@ -159,6 +159,7 @@ public class CompanyTest {
     @Before
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
+        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
@@ -188,10 +189,13 @@ public class CompanyTest {
 
     private static final String PAN = "12312312312";
 
+    private static final String CURRENT_DATE = "2017-10-05T14:48:00.000Z";
+
     private static final String BALANCE_JSON =
         "{" +
             "\"company\":\"companyId\"," +
             "\"balance\":12," +
-            "\"currency\":\"EUR\"" +
+            "\"currency\":\"EUR\"," +
+            "\"date\":\""+ CURRENT_DATE + "\"" +
             "}";
 }

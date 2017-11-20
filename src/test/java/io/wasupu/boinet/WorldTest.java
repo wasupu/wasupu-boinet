@@ -91,7 +91,7 @@ public class WorldTest {
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
 
         Collection<Company> companies = new ArrayList<>();
-        IntStream.range(0,10).forEach(i -> companies.add(world.findCompany()));
+        IntStream.range(0,15).forEach(i -> companies.add(world.findCompany()));
 
         assertThat(companies)
             .contains(firstCompany,secondCompany);

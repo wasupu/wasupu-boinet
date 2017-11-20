@@ -126,7 +126,7 @@ public class PersonTest {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
         when(world.findCompany()).thenReturn(company);
 
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
 
         IntStream.range(0,31).forEach(i -> person.tick());
@@ -143,6 +143,7 @@ public class PersonTest {
     @Before
     public void setupAccount(){
         when(world.getBank()).thenReturn(bank);
+        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
   }
@@ -168,11 +169,14 @@ public class PersonTest {
 
     private static final String PAN = "12312312312";
 
+    private static final String CURRENT_DATE = "2017-10-05T14:48:00.000Z";
+
     private static final String BALANCE_JSON =
         "{" +
             "\"person\":\"personId\"," +
             "\"balance\":12," +
-            "\"currency\":\"EUR\"" +
+            "\"currency\":\"EUR\"," +
+            "\"date\":\""+ CURRENT_DATE + "\"" +
             "}";
 
 }

@@ -12,6 +12,10 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Bank {
 
+    public Bank(World world){
+        this.world = world;
+    }
+
     public String contractAccount() {
         String newIban = String.valueOf(iban);
         accounts.put(newIban, new Account(newIban));
@@ -67,6 +71,7 @@ public class Bank {
                 .put("amount", amount)
                 .put("currency", "EUR")
                 .put("company",companyIndentifier)
+                .put("date", world.getCurrentDate())
                 .build()),
             "Movement");
     }
@@ -78,6 +83,8 @@ public class Bank {
     private int iban = 0;
 
     private int pan = 0;
+
+    private World world;
 
     private static Logger logger = LoggerFactory.getLogger(Bank.class);
 }

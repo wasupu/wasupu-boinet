@@ -4,7 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.text.DateFormatter;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.util.Date;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -73,10 +76,11 @@ public class Person {
         if (age % 30 != 0) return;
 
         logger.info(appendEntries(ImmutableMap
-            .builder()
+                .builder()
                 .put("person", identifier)
                 .put("balance", world.getBank().getBalance(iban))
                 .put("currency", "EUR")
+                .put("date", world.getCurrentDate())
                 .build()),
             "Person balance");
     }

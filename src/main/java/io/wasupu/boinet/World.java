@@ -83,6 +83,10 @@ public class World {
         return newPerson;
     }
 
+    public String getCurrentDate() {
+        return "2017-10-05T14:48:00.000Z";
+    }
+
     public Collection<Person> getCandidates(BigDecimal initialCapital) {
         return employmentOffice.getCandidates(initialCapital);
     }
@@ -105,9 +109,9 @@ public class World {
 
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
-    private Bank bank = new Bank();
-
+    private Bank bank = new Bank(this);
     private EmploymentOffice employmentOffice = new EmploymentOffice(this);
+
     private static Logger logger = LoggerFactory.getLogger(World.class);
 }
 
