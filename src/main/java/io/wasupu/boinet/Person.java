@@ -30,6 +30,7 @@ public class Person {
         initialCapital();
         contractDebitCard();
         eatEveryDay();
+        payElectricity();
         publishPersonBalance();
 
         age++;
@@ -72,10 +73,16 @@ public class Person {
     private void eatEveryDay() {
         if (age < 2) return;
 
-        world.findCompany().buyProduct(pan, generateRandomPrice(10,20));
+        world.findCompany().buyProduct(pan, generateRandomPrice(10, 20));
     }
 
-    private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice){
+    private void payElectricity() {
+        if (age % 30 != 25) return;
+
+        world.findCompany().buyProduct(pan, generateRandomPrice(50, 250));
+    }
+
+    private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
         Random random = new Random();
         double randomValue = startPrice + (endPrice - startPrice) * random.nextDouble();
         return new BigDecimal(randomValue)

@@ -147,7 +147,6 @@ public class CompanyTest {
 
     @Test
     public void shouldPublishCompanyInfoAt90Ticks() {
-
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
 

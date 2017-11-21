@@ -18,12 +18,9 @@ import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonTest {
@@ -122,7 +119,37 @@ public class PersonTest {
     }
 
     @Test
-    public void shouldBuyAProductEveryTickAfterTwoTicks() {
+    public void shouldPayElectricityAtDay25() {
+        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+
+        when(world.findCompany()).thenReturn(company);
+
+        IntStream.range(0, 26).forEach(i -> person.tick());
+
+        verify(company, atLeastOnce()).buyProduct(eq(PAN), pricesCaptor.capture());
+        BigDecimal price = pricesCaptor.getAllValues().get(pricesCaptor.getAllValues().size() - 1);
+
+        assertTrue("The 25 tick must pay electricity",
+            priceBetween(price, new BigDecimal(50), new BigDecimal(250)));
+    }
+
+    @Test
+    public void shouldPayElectricityEveryMonthAtDay25() {
+        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+
+        when(world.findCompany()).thenReturn(company);
+
+        IntStream.range(0, 56).forEach(i -> person.tick());
+
+        verify(company, atLeastOnce()).buyProduct(eq(PAN), pricesCaptor.capture());
+        BigDecimal price = pricesCaptor.getAllValues().get(pricesCaptor.getAllValues().size() - 1);
+
+        assertTrue("Every month at tick 25 must pay electricity",
+            priceBetween(price, new BigDecimal(50), new BigDecimal(250)));
+    }
+
+    @Test
+    public void shouldEatEveryTickAfterTwoTicks() {
         when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
 
         when(world.findCompany()).thenReturn(company);
@@ -139,8 +166,13 @@ public class PersonTest {
             .as("There must be 3 random values between 10 and 20 euros")
             .isNotEmpty()
             .hasSize(3)
-            .are(new Condition<>(bigDecimal -> bigDecimal.compareTo(new BigDecimal(10)) >= 0 &&
-                bigDecimal.compareTo(new BigDecimal(20)) <= 0, "More than ten, less than twenty"));
+            .are(new Condition<>(bigDecimal -> priceBetween(bigDecimal,
+                new BigDecimal(10),
+                new BigDecimal(20)), "More than ten, less than twenty"));
+    }
+
+    private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
+        return bigDecimal.compareTo(begin) >= 0 && bigDecimal.compareTo(end) <= 0;
     }
 
     @Test
