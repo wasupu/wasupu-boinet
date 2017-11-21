@@ -28,14 +28,29 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PersonTest {
 
+    public static final String FULL_NAME = "fullName";
+    public static final String CELL_PHONE = "686338292";
+
     @Test
     public void testEquals() {
         new EqualsTester().
-            addEqualityGroup(new Person("person1", "fullName1", world),
-                new Person("person1", "fullName1", world)).
+            addEqualityGroup(new Person("person1",
+                    "fullName1",
+                    CELL_PHONE,
+                    world),
+                new Person("person1",
+                    "fullName1",
+                    CELL_PHONE,
+                    world)).
 
-            addEqualityGroup(new Person("person2", "fullName1", world),
-                new Person("person2", "fullName1", world)).
+            addEqualityGroup(new Person("person2",
+                    "fullName1",
+                    CELL_PHONE,
+                    world),
+                new Person("person2",
+                    "fullName1",
+                    CELL_PHONE,
+                    world)).
             testEquals();
     }
 
@@ -157,7 +172,7 @@ public class PersonTest {
 
     @Before
     public void setupPerson() {
-        person = new Person(IDENTIFIER, "fullName", world);
+        person = new Person(IDENTIFIER, FULL_NAME, CELL_PHONE, world);
     }
 
     @Before
@@ -198,13 +213,12 @@ public class PersonTest {
     private static final String BALANCE_JSON =
         "{" +
             "\"person\":\"personId\"," +
-            "\"name\":\"fullName\"," +
+            "\"name\":\"" + FULL_NAME + "\"," +
+            "\"cellPhone\":\"" + CELL_PHONE + "\"," +
             "\"balance\":12," +
             "\"currency\":\"EUR\"," +
             "\"date\":\"" + CURRENT_DATE + "\"" +
             "}";
-
-    private static final BigDecimal PRICE = new BigDecimal(10);
 
     @Captor
     private ArgumentCaptor<BigDecimal> pricesCaptor;

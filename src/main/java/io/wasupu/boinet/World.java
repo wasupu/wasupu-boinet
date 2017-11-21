@@ -94,6 +94,7 @@ public class World {
         Person newPerson = new Person(
             createPersonUniqueIdentifier(),
             faker.name().fullName(),
+            faker.phoneNumber().cellPhone(),
             this);
 
         population.add(newPerson);
@@ -133,7 +134,7 @@ public class World {
 
     private Date currentDate;
 
-    Faker faker = new Faker();
+    Faker faker = new Faker(new Locale("es"));
 }
 
 

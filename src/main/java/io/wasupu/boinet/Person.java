@@ -13,14 +13,14 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Person {
 
-
-
     public Person(String identifier,
                   String name,
+                  String cellPhone,
                   World world) {
         this.identifier = identifier;
         this.name = name;
         this.world = world;
+        this.cellPhone = cellPhone;
 
         world.listenTicks(this::tick);
     }
@@ -89,6 +89,7 @@ public class Person {
                 .builder()
                 .put("person", identifier)
                 .put("name", name)
+                .put("cellPhone", cellPhone)
                 .put("balance", world.getBank().getBalance(iban))
                 .put("currency", "EUR")
                 .put("date", world.getCurrentDate())
@@ -127,6 +128,8 @@ public class Person {
 
     private static Logger logger = LoggerFactory.getLogger(Person.class);
 
-
     private String name;
+
+    private final String cellPhone;
+
 }
