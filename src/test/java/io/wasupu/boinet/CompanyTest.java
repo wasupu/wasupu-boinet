@@ -3,7 +3,6 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.EqualsTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -110,9 +109,9 @@ public class CompanyTest {
     @Test
     public void shouldCanBuyAProductToTheCompany() {
         company.tick();
-        company.buyProduct(PAN);
+        company.buyProduct(PAN, PRICE);
 
-        verify(bank).processPayment(new BigDecimal(10), PAN, IBAN, COMPANY_IDENTIFIER);
+        verify(bank).processPayment(PRICE, PAN, IBAN, COMPANY_IDENTIFIER);
     }
 
     @Test
@@ -175,6 +174,7 @@ public class CompanyTest {
     }
 
 
+
     private Company company;
 
     @Mock
@@ -203,4 +203,6 @@ public class CompanyTest {
             "\"currency\":\"EUR\"," +
             "\"date\":\""+ CURRENT_DATE + "\"" +
             "}";
+
+    private static final BigDecimal PRICE = new BigDecimal(10);
 }

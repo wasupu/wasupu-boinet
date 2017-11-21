@@ -1,9 +1,12 @@
 package io.wasupu.boinet;
 
 import com.google.common.testing.EqualsTester;
+import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -14,8 +17,11 @@ import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +70,7 @@ public class PersonTest {
     @Test
     public void shouldNotContractAgainDebitCardIfHasOne() {
         when(bank.contractDebitCard(IBAN))
-            .thenReturn(PAN,OTHER_PAN);
+            .thenReturn(PAN, OTHER_PAN);
 
         person.tick();
         person.tick();
@@ -106,8 +112,17 @@ public class PersonTest {
         person.tick();
         person.tick();
         person.tick();
+        person.tick();
+        person.tick();
 
-        verify(company).buyProduct(PAN);
+        verify(company, times(3)).buyProduct(eq(PAN), pricesCaptor.capture());
+
+        assertThat(pricesCaptor.getAllValues())
+            .as("There must be 3 random values between 10 and 20 euros")
+            .isNotEmpty()
+            .hasSize(3)
+            .are(new Condition<>(bigDecimal -> bigDecimal.compareTo(new BigDecimal(10)) >=  0 &&
+                bigDecimal.compareTo(new BigDecimal(20)) <=  0, ""));
     }
 
     @Test
@@ -118,7 +133,7 @@ public class PersonTest {
         person.tick();
 
         assertEquals("The balance string is not the expected",
-            BALANCE_JSON  + "\n", out.toString());
+            BALANCE_JSON + "\n", out.toString());
     }
 
     @Test
@@ -131,10 +146,10 @@ public class PersonTest {
         ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
 
-        IntStream.range(0,31).forEach(i -> person.tick());
+        IntStream.range(0, 31).forEach(i -> person.tick());
 
         assertEquals("The balance string is not the expected",
-             BALANCE_JSON + "\n" + BALANCE_JSON + "\n", out.toString());
+            BALANCE_JSON + "\n" + BALANCE_JSON + "\n", out.toString());
     }
 
     @Before
@@ -143,7 +158,7 @@ public class PersonTest {
     }
 
     @Before
-    public void setupAccount(){
+    public void setupAccount() {
         when(world.getBank()).thenReturn(bank);
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
@@ -152,7 +167,7 @@ public class PersonTest {
         when(world.getCurrentDate()).thenReturn(gregorianCalendar.getTime());
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
-  }
+    }
 
     @Mock
     private World world;
@@ -182,7 +197,11 @@ public class PersonTest {
             "\"person\":\"personId\"," +
             "\"balance\":12," +
             "\"currency\":\"EUR\"," +
-            "\"date\":\""+ CURRENT_DATE + "\"" +
+            "\"date\":\"" + CURRENT_DATE + "\"" +
             "}";
 
+    private static final BigDecimal PRICE = new BigDecimal(10);
+
+    @Captor
+    private ArgumentCaptor<BigDecimal> pricesCaptor;
 }

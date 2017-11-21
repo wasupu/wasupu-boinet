@@ -37,8 +37,8 @@ public class Company {
         return world.getBank().getBalance(iban);
     }
 
-    public void buyProduct(String pan) {
-        world.getBank().processPayment(new BigDecimal(10), pan, iban, identifier);
+    public void buyProduct(String pan, BigDecimal price) {
+        world.getBank().processPayment(price, pan, iban, identifier);
     }
 
     public Collection<Person> getEmployees() {

@@ -4,10 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.text.DateFormatter;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.Random;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -69,7 +67,13 @@ public class Person {
     private void eatEveryDay() {
         if (age < 2) return;
 
-        world.findCompany().buyProduct(pan);
+        world.findCompany().buyProduct(pan, generateRandomPrice(10,20));
+    }
+
+    private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice){
+        Random random = new Random();
+        int randomPrice = random.nextInt(endPrice - startPrice + 1) + startPrice;
+        return new BigDecimal(randomPrice);
     }
 
     private void publishPersonBalance() {
