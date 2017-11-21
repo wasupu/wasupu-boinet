@@ -13,8 +13,13 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Person {
 
-    public Person(String identifier, World world) {
+
+
+    public Person(String identifier,
+                  String name,
+                  World world) {
         this.identifier = identifier;
+        this.name = name;
         this.world = world;
 
         world.listenTicks(this::tick);
@@ -83,6 +88,7 @@ public class Person {
         logger.info(appendEntries(ImmutableMap
                 .builder()
                 .put("person", identifier)
+                .put("name", name)
                 .put("balance", world.getBank().getBalance(iban))
                 .put("currency", "EUR")
                 .put("date", world.getCurrentDate())
@@ -120,4 +126,7 @@ public class Person {
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
 
     private static Logger logger = LoggerFactory.getLogger(Person.class);
+
+
+    private String name;
 }

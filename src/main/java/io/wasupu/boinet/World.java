@@ -1,5 +1,7 @@
 package io.wasupu.boinet;
 
+import com.github.javafaker.Commerce;
+import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -15,7 +17,7 @@ public class World {
 
     public static void main(String[] args) {
         World world = new World();
-        world.init(12, 3);
+        world.init(42, 3);
         world.start();
     }
 
@@ -23,7 +25,6 @@ public class World {
         GregorianCalendar calendar = new GregorianCalendar(2017, 9, 5);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         currentDate = calendar.getTime();
-        System.out.println(currentDate);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -90,7 +91,11 @@ public class World {
     }
 
     Person newSettler(Integer number) {
-        Person newPerson = new Person(createPersonUniqueIdentifier(), this);
+        Person newPerson = new Person(
+            createPersonUniqueIdentifier(),
+            faker.name().fullName(),
+            this);
+
         population.add(newPerson);
         return newPerson;
     }
@@ -127,6 +132,8 @@ public class World {
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
     private Date currentDate;
+
+    Faker faker = new Faker();
 }
 
 

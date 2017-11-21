@@ -31,8 +31,11 @@ public class PersonTest {
     @Test
     public void testEquals() {
         new EqualsTester().
-            addEqualityGroup(new Person("person1", world), new Person("person1", world)).
-            addEqualityGroup(new Person("person2", world), new Person("person2", world)).
+            addEqualityGroup(new Person("person1", "fullName1", world),
+                new Person("person1", "fullName1", world)).
+
+            addEqualityGroup(new Person("person2", "fullName1", world),
+                new Person("person2", "fullName1", world)).
             testEquals();
     }
 
@@ -121,8 +124,8 @@ public class PersonTest {
             .as("There must be 3 random values between 10 and 20 euros")
             .isNotEmpty()
             .hasSize(3)
-            .are(new Condition<>(bigDecimal -> bigDecimal.compareTo(new BigDecimal(10)) >=  0 &&
-                bigDecimal.compareTo(new BigDecimal(20)) <=  0, "More than ten, less than twenty"));
+            .are(new Condition<>(bigDecimal -> bigDecimal.compareTo(new BigDecimal(10)) >= 0 &&
+                bigDecimal.compareTo(new BigDecimal(20)) <= 0, "More than ten, less than twenty"));
     }
 
     @Test
@@ -154,7 +157,7 @@ public class PersonTest {
 
     @Before
     public void setupPerson() {
-        person = new Person(IDENTIFIER, world);
+        person = new Person(IDENTIFIER, "fullName", world);
     }
 
     @Before
@@ -195,6 +198,7 @@ public class PersonTest {
     private static final String BALANCE_JSON =
         "{" +
             "\"person\":\"personId\"," +
+            "\"name\":\"fullName\"," +
             "\"balance\":12," +
             "\"currency\":\"EUR\"," +
             "\"date\":\"" + CURRENT_DATE + "\"" +
