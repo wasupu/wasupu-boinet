@@ -72,8 +72,9 @@ public class Person {
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice){
         Random random = new Random();
-        int randomPrice = random.nextInt(endPrice - startPrice + 1) + startPrice;
-        return new BigDecimal(randomPrice);
+        double randomValue = startPrice + (endPrice - startPrice) * random.nextDouble();
+        return new BigDecimal(randomValue)
+            .setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     private void publishPersonBalance() {

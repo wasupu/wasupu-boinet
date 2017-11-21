@@ -122,7 +122,7 @@ public class PersonTest {
             .isNotEmpty()
             .hasSize(3)
             .are(new Condition<>(bigDecimal -> bigDecimal.compareTo(new BigDecimal(10)) >=  0 &&
-                bigDecimal.compareTo(new BigDecimal(20)) <=  0, ""));
+                bigDecimal.compareTo(new BigDecimal(20)) <=  0, "More than ten, less than twenty"));
     }
 
     @Test

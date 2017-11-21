@@ -15,7 +15,7 @@ public class World {
 
     public static void main(String[] args) {
         World world = new World();
-        world.init(120, 10);
+        world.init(12, 3);
         world.start();
     }
 
@@ -35,7 +35,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 1000 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 100 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .peek(x -> wait(200))
