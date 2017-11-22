@@ -3,6 +3,7 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.persons.behaviours.ContractAccountBehaviour;
 import io.wasupu.boinet.persons.behaviours.GoToCountrysideBehaviour;
 import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPaymentBehaviour;
 
@@ -24,6 +25,7 @@ public class Person {
         this.world = world;
         this.cellPhone = cellPhone;
 
+        this.contractAccount = new ContractAccountBehaviour(world,this);
         this.goToCountryside = new GoToCountrysideBehaviour(world,this);
         this.payElectricity = new MonthlyRecurrentPaymentBehaviour(world,
             this,
@@ -36,7 +38,7 @@ public class Person {
     }
 
     public void tick() {
-        contractAccount();
+        contractAccount.tick();
         initialCapital();
         contractDebitCard();
         eatEveryDay();
@@ -63,16 +65,18 @@ public class Person {
         return pan;
     }
 
+    public Long getAge() {
+        return age;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
     private void contractDebitCard() {
         if (age != 0) return;
 
         pan = world.getBank().contractDebitCard(iban);
-    }
-
-    private void contractAccount() {
-        if (age != 0) return;
-
-        iban = world.getBank().contractAccount();
     }
 
     private void initialCapital() {
@@ -124,6 +128,7 @@ public class Person {
         return identifier.hashCode();
     }
 
+
     private String iban;
 
     private String identifier;
@@ -147,4 +152,5 @@ public class Person {
     private final MonthlyRecurrentPaymentBehaviour payElectricity;
 
     private final GoToCountrysideBehaviour goToCountryside;
+    private final ContractAccountBehaviour contractAccount;
 }
