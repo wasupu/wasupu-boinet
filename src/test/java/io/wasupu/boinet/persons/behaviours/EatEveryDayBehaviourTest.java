@@ -1,7 +1,6 @@
 package io.wasupu.boinet.persons.behaviours;
 
 
-import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
@@ -19,9 +18,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EatEveryDayBehaviourTest {
@@ -51,7 +48,7 @@ public class EatEveryDayBehaviourTest {
     }
 
     @Before
-    public void setupContractAccount() {
+    public void setupEatEveryDay() {
         eatEveryDay = new EatEveryDay(world, person);
     }
 

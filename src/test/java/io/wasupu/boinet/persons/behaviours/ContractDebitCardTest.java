@@ -36,7 +36,7 @@ public class ContractDebitCardTest {
     }
 
     @Before
-    public void setupContractAccount() {
+    public void setupContractDebitCard() {
         contractDebitCard = new ContractDebitCard(world, person);
     }
 

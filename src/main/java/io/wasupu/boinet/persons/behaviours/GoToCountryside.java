@@ -21,10 +21,19 @@ public class GoToCountryside {
             iWasGoingToCountryside.set(false);
             return;
         }
+
         if (!iWasGoingToCountryside.get() && !iHaveMoreThan(new BigDecimal("6000"))) return;
 
-        world.findCompany().buyProduct(person.getPan(), ProductType.ENTERTAINMENT, generateRandomPrice(100, 500));
         iWasGoingToCountryside.set(true);
+
+        if (!isWeekend()) return;
+
+        world.findCompany().buyProduct(person.getPan(), ProductType.ENTERTAINMENT, generateRandomPrice(100, 500));
+
+    }
+
+    private boolean isWeekend() {
+        return world.getCurrentDateTime().getDayOfWeek() > 5;
     }
 
     private boolean iHaveLessThan(BigDecimal expectedThreshold) {
