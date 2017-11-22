@@ -3,6 +3,7 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.persons.behaviours.MonthyRecurrentPaymentBehaviour;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -13,6 +14,7 @@ import static java.lang.Boolean.TRUE;
 
 public class Person {
 
+
     public Person(String identifier,
                   String name,
                   String cellPhone,
@@ -22,15 +24,23 @@ public class Person {
         this.world = world;
         this.cellPhone = cellPhone;
 
+        this.payElectricity = new MonthyRecurrentPaymentBehaviour(world,
+            this,
+            25,
+            ProductType.ELECTRICITY,
+            60,
+            120);
+
         world.listenTicks(this::tick);
     }
+
 
     public void tick() {
         contractAccount();
         initialCapital();
         contractDebitCard();
         eatEveryDay();
-        payElectricity();
+        this.payElectricity.tick();
         goToCountryside();
         publishPersonBalance();
 
@@ -49,7 +59,7 @@ public class Person {
         return iban;
     }
 
-    String getPan() {
+    public String getPan() {
         return pan;
     }
 
@@ -77,12 +87,6 @@ public class Person {
         world.findCompany().buyProduct(pan, ProductType.MEAL, generateRandomPrice(10, 20));
     }
 
-    private void payElectricity() {
-        if (!isDayOfMonth(25)) return;
-
-        world.findCompany().buyProduct(pan, ProductType.ELECTRICITY, generateRandomPrice(60, 120));
-    }
-
     private void goToCountryside() {
         if (iHaveLessThan(new BigDecimal("1000"))) {
             iWasGoingToCountryside.set(false);
@@ -100,10 +104,6 @@ public class Person {
 
     private boolean iHaveMoreThan(BigDecimal expectedThreshold) {
         return expectedThreshold.compareTo(world.getBank().getBalance(iban)) < 0;
-    }
-
-    private boolean isDayOfMonth(Integer dayOfMonth) {
-        return dayOfMonth.equals(world.getCurrentDateTime().getDayOfMonth());
     }
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
@@ -142,7 +142,6 @@ public class Person {
         return identifier.hashCode();
     }
 
-
     private String iban;
 
     private String identifier;
@@ -165,4 +164,5 @@ public class Person {
 
     private static final String STREAM_ID = "personEventStream";
 
+    private final MonthyRecurrentPaymentBehaviour payElectricity;
 }
