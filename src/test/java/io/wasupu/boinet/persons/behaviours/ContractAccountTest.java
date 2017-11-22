@@ -39,7 +39,6 @@ public class ContractAccountTest {
         verify(person, never()).setIban(any());
     }
 
-
     @Before
     public void setupContractAccount() {
         contractAccount = new ContractAccount(world, person);

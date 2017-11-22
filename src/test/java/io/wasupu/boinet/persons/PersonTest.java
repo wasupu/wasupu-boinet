@@ -52,30 +52,6 @@ public class PersonTest {
             testEquals();
     }
 
-
-    @Test
-    public void shouldContractADebitCardInFirstTick() {
-        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
-
-        person.tick();
-
-        assertNotNull("After first tick must have a debit card", person.getIban());
-        assertEquals("After first tick must have the expected debit card", PAN, person.getPan());
-    }
-
-    @Test
-    public void shouldNotContractAgainDebitCardIfHasOne() {
-        when(bank.contractDebitCard(IBAN))
-            .thenReturn(PAN, OTHER_PAN);
-
-        person.tick();
-        person.tick();
-
-        assertNotNull("After second tick must have a debit card", person.getIban());
-        assertEquals("After second tick must have the same debit card that have in first tick",
-            PAN, person.getPan());
-    }
-
     @Test
     public void shouldNotBeUnemployedAfterYouAreHired() {
         person.youAreHired();
@@ -272,10 +248,6 @@ public class PersonTest {
     private Person person;
 
     private static final String IBAN = "2";
-
-    private static final String OTHER_IBAN = "6";
-
-    private static final String OTHER_PAN = "212312316";
 
     private static final String PAN = "12312312312";
 
