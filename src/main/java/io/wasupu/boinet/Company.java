@@ -1,6 +1,7 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.persons.Person;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

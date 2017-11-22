@@ -1,7 +1,9 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.persons;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
+import io.wasupu.boinet.*;
+import io.wasupu.boinet.persons.Person;
 import org.assertj.core.api.Condition;
 import org.joda.time.DateTime;
 import org.junit.Before;

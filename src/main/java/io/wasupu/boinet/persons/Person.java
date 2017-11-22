@@ -1,6 +1,8 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.persons;
 
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.ProductType;
+import io.wasupu.boinet.World;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -43,7 +45,7 @@ public class Person {
         employed = TRUE;
     }
 
-    String getIban() {
+    public String getIban() {
         return iban;
     }
 

@@ -3,6 +3,7 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
+import io.wasupu.boinet.persons.Person;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
