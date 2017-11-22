@@ -6,7 +6,6 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.behaviours.*;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -32,13 +31,14 @@ public class Person {
             60,
             120);
         this.eatEveryDay = new EatEveryDay(world,this);
+        this.initialCapital = new InitialCapital(world,this);
 
         world.listenTicks(this::tick);
     }
 
     public void tick() {
-        contractAccount.tick();
-        initialCapital();
+        this.contractAccount.tick();
+        this.initialCapital.tick();
         this.contractDebitCard.tick();
         this.eatEveryDay.tick();
         this.payElectricity.tick();
@@ -76,12 +76,6 @@ public class Person {
 
     public void setPan(String pan) {
         this.pan = pan;
-    }
-
-    private void initialCapital() {
-        if (age != 0) return;
-
-        world.getBank().deposit(iban, INITIAL_CAPITAL);
     }
 
     private void publishPersonBalance() {
@@ -125,8 +119,6 @@ public class Person {
 
     private Boolean employed = FALSE;
 
-    static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
-
     private String name;
 
     private final String cellPhone;
@@ -138,4 +130,7 @@ public class Person {
     private final ContractAccount contractAccount;
     private final ContractDebitCard contractDebitCard;
     private final EatEveryDay eatEveryDay;
+    private final InitialCapital initialCapital;
+
+    final static BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
 }
