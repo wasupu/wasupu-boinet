@@ -24,18 +24,18 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 public class World {
 
     public static void main(String[] args) {
-        String semaasApiKey = args[0];
-        String semaasNamespace = args[1];
-        World world = new World(semaasApiKey, semaasNamespace);
+        String streamServiceApiKey = args[0];
+        String streamServiceNamespace = args[1];
+        World world = new World(streamServiceApiKey, streamServiceNamespace);
         world.init(10, 2);
         world.start();
     }
 
-    public World(String semaasApiKey, String semaasNamespace) {
+    public World(String streamServiceApiKey, String streamServiceNamespace) {
         GregorianCalendar calendar = new GregorianCalendar(2017, 9, 5);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         currentDate = calendar.getTime();
-        eventPublisher = new EventPublisher(semaasApiKey, semaasNamespace);
+        eventPublisher = new EventPublisher(streamServiceApiKey, streamServiceNamespace);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {

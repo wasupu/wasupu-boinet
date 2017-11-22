@@ -9,7 +9,7 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class EventPublisher {
 
-    public EventPublisher(String semaasApiKey, String semaasNamespace) {
+    public EventPublisher(String streamServiceApiKey, String streamServiceNamespace) {
 
     }
 

@@ -9,12 +9,12 @@
             "portMappings": [],
             "environment": [
                 {
-                    "name": "SEMAAS_API_KEY",
-                    "value": "{{SEMAAS_API_KEY}}"
+                    "name": "STREAM_SERVICE_API_KEY",
+                    "value": "{{STREAM_SERVICE_API_KEY}}"
                 },
                 {
-                    "name": "SEMAAS_NAMESPACE",
-                    "value": "{{SEMAAS_NAMESPACE}}"
+                    "name": "STREAM_SERVICE_NAMESPACE",
+                    "value": "{{STREAM_SERVICE_NAMESPACE}}"
                 }
             ],
             "links": [],
