@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -28,6 +29,7 @@ public class Person {
         contractDebitCard();
         eatEveryDay();
         payElectricity();
+        goToCountryside();
         publishPersonBalance();
 
         age++;
@@ -79,6 +81,25 @@ public class Person {
         world.findCompany().buyProduct(pan, ProductType.ELECTRICITY, generateRandomPrice(60, 120));
     }
 
+    private void goToCountryside() {
+        if (iHaveLessThan(new BigDecimal("1000"))) {
+            iWasGoingToCountryside.set(false);
+            return;
+        }
+        if (!iWasGoingToCountryside.get() && !iHaveMoreThan(new BigDecimal("6000"))) return;
+
+        world.findCompany().buyProduct(pan, ProductType.ENTERTAINMENT, generateRandomPrice(100, 500));
+        iWasGoingToCountryside.set(true);
+    }
+
+    private boolean iHaveLessThan(BigDecimal expectedThreshold) {
+        return expectedThreshold.compareTo(world.getBank().getBalance(iban)) >= 0;
+    }
+
+    private boolean iHaveMoreThan(BigDecimal expectedThreshold) {
+        return expectedThreshold.compareTo(world.getBank().getBalance(iban)) < 0;
+    }
+
     private boolean isDayOfMonth(Integer dayOfMonth) {
         return dayOfMonth.equals(world.getCurrentDateTime().getDayOfMonth());
     }
@@ -119,6 +140,7 @@ public class Person {
         return identifier.hashCode();
     }
 
+
     private String iban;
 
     private String identifier;
@@ -130,6 +152,8 @@ public class Person {
     private Long age = 0L;
 
     private Boolean employed = FALSE;
+
+    private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
 

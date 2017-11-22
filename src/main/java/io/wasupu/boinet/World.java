@@ -51,7 +51,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 100 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 1000 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .forEach(tickNumber -> {

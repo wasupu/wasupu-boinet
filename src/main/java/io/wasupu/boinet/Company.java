@@ -99,7 +99,7 @@ public class Company {
             .put("company", identifier)
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
-            .put("date", world.getCurrentDate())
+            .put("date", world.getCurrentDateTime().toDate())
             .build());
     }
 

@@ -166,7 +166,6 @@ public class CompanyTest {
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
 
-        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
         when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));

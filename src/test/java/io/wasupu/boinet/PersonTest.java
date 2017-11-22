@@ -195,6 +195,62 @@ public class PersonTest {
         verify(eventPublisher, times(2)).publish("personEventStream", PERSON_INFO);
     }
 
+    @Test
+    public void shouldStartGoingToTheCountrysideOnWeekendsWhenIHaveMoreThan6000Euro() {
+        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+        when(world.findCompany()).thenReturn(company);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
+
+        person.tick();
+
+        verify(company, atLeastOnce()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
+        assertTrue("Go to countryside must cost between 100 and 500 euro",
+            priceBetween(getLastRecordedPrice(pricesCaptor.getAllValues()), new BigDecimal(100), new BigDecimal(500)));
+    }
+
+    @Test
+    public void shouldNotGoToTheCountrysideOnWeekendsWhenIHave3000Euro() {
+        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+        when(world.findCompany()).thenReturn(company);
+        when(bank.getBalance(IBAN))
+            .thenReturn(new BigDecimal("3000"));
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
+
+        person.tick();
+
+        verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
+    }
+
+    @Test
+    public void shouldKeepGoingToTheCountrysideOnWeekendsWhenIHave3000Euro() {
+        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+        when(world.findCompany()).thenReturn(company);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
+
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
+
+        person.tick();
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
+
+        person.tick();
+
+        verify(company, times(2)).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
+    }
+
+    @Test
+    public void shouldStopGoingToTheCountrysideOnWeekendsWhenIHaveLessOf1000Euro() {
+        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+        when(world.findCompany()).thenReturn(company);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("999.99"));
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
+
+        person.tick();
+
+        verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
+    }
+
     @Before
     public void setupEventPublisher() {
         when(world.getEventPublisher()).thenReturn(eventPublisher);
