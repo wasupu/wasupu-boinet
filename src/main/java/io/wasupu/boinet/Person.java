@@ -79,7 +79,7 @@ public class Person {
     private void payElectricity() {
         if (age % 30 != 25) return;
 
-        world.findCompany().buyProduct(pan, generateRandomPrice(50, 250));
+        world.findCompany().buyProduct(pan, generateRandomPrice(60, 120));
     }
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {

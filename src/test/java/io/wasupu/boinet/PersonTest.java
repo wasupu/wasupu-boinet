@@ -130,7 +130,7 @@ public class PersonTest {
         BigDecimal price = pricesCaptor.getAllValues().get(pricesCaptor.getAllValues().size() - 1);
 
         assertTrue("The 25 tick must pay electricity",
-            priceBetween(price, new BigDecimal(50), new BigDecimal(250)));
+            priceBetween(price, new BigDecimal(60), new BigDecimal(120)));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class PersonTest {
         BigDecimal price = pricesCaptor.getAllValues().get(pricesCaptor.getAllValues().size() - 1);
 
         assertTrue("Every month at tick 25 must pay electricity",
-            priceBetween(price, new BigDecimal(50), new BigDecimal(250)));
+            priceBetween(price, new BigDecimal(60), new BigDecimal(120)));
     }
 
     @Test
