@@ -120,11 +120,11 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldPayTheEmployeesEvery30Ticks() {
+    public void shouldPayTheEmployeesEvery29Ticks() {
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
         company.hire(person);
-        IntStream.range(0, 31).forEach(i -> company.tick());
+        IntStream.range(0, 30).forEach(i -> company.tick());
 
         verify(bank).transfer(IBAN, OTHER_IBAN, Company.SALARY);
     }
@@ -134,7 +134,7 @@ public class CompanyTest {
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
         company.hire(person);
-        IntStream.range(0, 61).forEach(i -> company.tick());
+        IntStream.range(0, 59).forEach(i -> company.tick());
 
         verify(bank, times(2)).transfer(IBAN, OTHER_IBAN, Company.SALARY);
     }

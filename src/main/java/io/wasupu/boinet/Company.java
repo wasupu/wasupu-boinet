@@ -82,7 +82,7 @@ public class Company {
 
     private void paySalary() {
         if (age == 0) return;
-        if (age % 30 != 0) return;
+        if (age % 29 != 0) return;
 
         employees.forEach(employee ->
             world.getBank().transfer(iban, employee.getIban(), SALARY));
