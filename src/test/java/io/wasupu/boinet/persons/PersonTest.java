@@ -57,21 +57,6 @@ public class PersonTest {
     }
 
     @Test
-    public void shouldDepositASocialSalaryInTheFirstTick() {
-        person.tick();
-
-        verify(bank).deposit(IBAN, Person.INITIAL_CAPITAL);
-    }
-
-    @Test
-    public void shouldNotDepositAnySalaryInOtherTick() {
-        person.tick();
-        person.tick();
-
-        verify(bank).deposit(IBAN, Person.INITIAL_CAPITAL);
-    }
-
-    @Test
     public void shouldPublishPersonStatusOnFirstTick() {
         person.tick();
 

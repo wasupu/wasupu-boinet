@@ -1,6 +1,5 @@
 package io.wasupu.boinet.persons.behaviours;
 
-import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
@@ -72,7 +71,7 @@ public class MonthlyRecurrentPaymentTest {
     @Captor
     private ArgumentCaptor<BigDecimal> pricesCaptor;
 
-    private static final String IBAN = "2";
+
 
     private static final String PAN = "12312312312";
 
@@ -81,9 +80,6 @@ public class MonthlyRecurrentPaymentTest {
 
     @Mock
     private World world;
-
-    @Mock
-    private Bank bank;
 
     @Mock
     private Company company;

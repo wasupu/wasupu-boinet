@@ -1,0 +1,56 @@
+package io.wasupu.boinet.persons.behaviours;
+
+import io.wasupu.boinet.Bank;
+import io.wasupu.boinet.World;
+import io.wasupu.boinet.persons.Person;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class InitialCapitalTest {
+
+    @Test
+    public void shouldDepositASocialSalaryInTheFirstTick() {
+        when(person.getAge()).thenReturn(0L);
+        when(world.getBank()).thenReturn(bank);
+        when(person.getIban()).thenReturn(IBAN);
+
+        initialCapital.tick();
+
+        verify(bank).deposit(IBAN, InitialCapital.INITIAL_CAPITAL);
+    }
+
+    @Test
+    public void shouldNotDepositAnySalaryInOtherTick() {
+        when(person.getAge()).thenReturn(1L);
+        initialCapital.tick();
+
+        verify(bank, never()).deposit(any(), any());
+    }
+
+    @Before
+    public void setupInitialCapital() {
+        initialCapital = new InitialCapital(world, person);
+    }
+
+    private InitialCapital initialCapital;
+
+    @Mock
+    private World world;
+
+    @Mock
+    private Person person;
+
+    private static final String IBAN = "2";
+
+    @Mock
+    private Bank bank;
+}
