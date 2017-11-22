@@ -81,5 +81,5 @@ public class Bank {
 
     private World world;
 
-    private static final String STREAM_ID = "companyEventStream";
+    private static final String STREAM_ID = "cardMovementEventStream";
 }

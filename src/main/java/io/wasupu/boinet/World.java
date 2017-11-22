@@ -47,10 +47,9 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 3 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 90 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
-            .peek(x -> wait(200))
             .forEach(tickNumber -> {
                 logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
                 tickConsumers.forEach(Runnable::run);
@@ -64,14 +63,6 @@ public class World {
         calendar.setTime(currentDate);
         calendar.add(Calendar.DATE, 1);
         currentDate = calendar.getTime();
-    }
-
-    private void wait(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public Company findCompany() {
