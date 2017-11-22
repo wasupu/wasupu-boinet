@@ -3,7 +3,6 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.*;
-import org.assertj.core.api.Condition;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -102,29 +99,6 @@ public class PersonTest {
             });
 
         verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ELECTRICITY), any());
-    }
-
-    @Test
-    public void shouldEatEveryTickAfterTwoTicks() {
-        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
-
-        when(world.findCompany()).thenReturn(company);
-
-        person.tick();
-        person.tick();
-        person.tick();
-        person.tick();
-        person.tick();
-
-        verify(company, times(3)).buyProduct(eq(PAN), eq(ProductType.MEAL), pricesCaptor.capture());
-
-        assertThat(pricesCaptor.getAllValues())
-            .as("There must be 3 random values between 10 and 20 euros")
-            .isNotEmpty()
-            .hasSize(3)
-            .are(new Condition<>(bigDecimal -> priceBetween(bigDecimal,
-                new BigDecimal(10),
-                new BigDecimal(20)), "More than ten, less than twenty"));
     }
 
     @Test
