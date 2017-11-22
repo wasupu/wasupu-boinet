@@ -3,10 +3,7 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.behaviours.ContractAccount;
-import io.wasupu.boinet.persons.behaviours.ContractDebitCard;
-import io.wasupu.boinet.persons.behaviours.GoToCountryside;
-import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPayment;
+import io.wasupu.boinet.persons.behaviours.*;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -34,6 +31,7 @@ public class Person {
             ProductType.ELECTRICITY,
             60,
             120);
+        this.eatEveryDay = new EatEveryDay(world,this);
 
         world.listenTicks(this::tick);
     }
@@ -42,7 +40,7 @@ public class Person {
         contractAccount.tick();
         initialCapital();
         this.contractDebitCard.tick();
-        eatEveryDay();
+        this.eatEveryDay.tick();
         this.payElectricity.tick();
         this.goToCountryside.tick();
 
@@ -84,19 +82,6 @@ public class Person {
         if (age != 0) return;
 
         world.getBank().deposit(iban, INITIAL_CAPITAL);
-    }
-
-    private void eatEveryDay() {
-        if (age < 2) return;
-
-        world.findCompany().buyProduct(pan, ProductType.MEAL, generateRandomPrice(10, 20));
-    }
-
-    private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
-        Random random = new Random();
-        double randomValue = startPrice + (endPrice - startPrice) * random.nextDouble();
-        return new BigDecimal(randomValue)
-            .setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     private void publishPersonBalance() {
@@ -152,4 +137,5 @@ public class Person {
     private final GoToCountryside goToCountryside;
     private final ContractAccount contractAccount;
     private final ContractDebitCard contractDebitCard;
+    private final EatEveryDay eatEveryDay;
 }
