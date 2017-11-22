@@ -33,7 +33,7 @@ public class Company {
         return world.getBank().getBalance(iban);
     }
 
-    public void buyProduct(String pan, BigDecimal price) {
+    public void buyProduct(String pan, ProductType productType, BigDecimal price) {
         world.getBank().processPayment(price, pan, iban, identifier);
     }
 
@@ -81,11 +81,14 @@ public class Company {
     }
 
     private void paySalary() {
-        if (age == 0) return;
-        if (age % 29 != 0) return;
+        if (!isDayOfMonth(28)) return;
 
         employees.forEach(employee ->
             world.getBank().transfer(iban, employee.getIban(), SALARY));
+    }
+
+    private boolean isDayOfMonth(Integer dayOfMonth) {
+        return dayOfMonth.equals(world.getCurrentDateTime().getDayOfMonth());
     }
 
     private void publishCompanyBalance() {

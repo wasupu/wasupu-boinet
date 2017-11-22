@@ -7,14 +7,20 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
@@ -102,7 +108,16 @@ public class WorldTest {
         gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         assertNotNull("The current date must be not null", world.getCurrentDate());
-        assertEquals("The date is not the expected", gregorianCalendar.getTime(),world.getCurrentDate());
+        assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDate());
+    }
+
+    @Test
+    public void shouldTheHaveAnInitCurrentDateTime() {
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
+        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        assertNotNull("The current date must be not null", world.getCurrentDateTime());
+        assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDateTime().toDate());
     }
 
     @Test
@@ -113,7 +128,7 @@ public class WorldTest {
         world.start(2);
 
         assertNotNull("The current date must be not null", world.getCurrentDate());
-        assertEquals("The date is not the expected", gregorianCalendar.getTime(),world.getCurrentDate());
+        assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDate());
     }
 
     @Before

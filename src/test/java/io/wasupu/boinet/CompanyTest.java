@@ -3,6 +3,7 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,14 +12,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -114,29 +114,33 @@ public class CompanyTest {
     @Test
     public void shouldCanBuyAProductToTheCompany() {
         company.tick();
-        company.buyProduct(PAN, PRICE);
+        company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
         verify(bank).processPayment(PRICE, PAN, IBAN, COMPANY_IDENTIFIER);
     }
 
     @Test
-    public void shouldPayTheEmployeesEvery29Ticks() {
+    public void shouldPayTheEmployeesOnEvery28th() {
         when(person.getIban()).thenReturn(OTHER_IBAN);
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(28));
 
         company.hire(person);
-        IntStream.range(0, 30).forEach(i -> company.tick());
+        company.tick();
 
         verify(bank).transfer(IBAN, OTHER_IBAN, Company.SALARY);
     }
 
     @Test
-    public void shouldPayTheEmployeesTwiceAt60Ticks() {
-        when(person.getIban()).thenReturn(OTHER_IBAN);
-
+    public void shouldNotPayTheEmployeesOtherThan29th() {
         company.hire(person);
-        IntStream.range(0, 59).forEach(i -> company.tick());
 
-        verify(bank, times(2)).transfer(IBAN, OTHER_IBAN, Company.SALARY);
+        IntStream.range(1, 27)
+            .forEach(day -> {
+                when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(day));
+                company.tick();
+            });
+
+        verify(bank, never()).transfer(IBAN, OTHER_IBAN, Company.SALARY);
     }
 
     @Test
@@ -163,6 +167,7 @@ public class CompanyTest {
         when(world.getBank()).thenReturn(bank);
 
         when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
+        when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }

@@ -3,6 +3,7 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import org.assertj.core.api.Condition;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,12 +12,10 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
@@ -24,8 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -124,33 +125,32 @@ public class PersonTest {
     }
 
     @Test
-    public void shouldPayElectricityAtDay25() {
+    public void shouldPayElectricityOnDay25th() {
         when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
-
         when(world.findCompany()).thenReturn(company);
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(25));
 
-        IntStream.range(0, 26).forEach(i -> person.tick());
+        person.tick();
 
-        verify(company, atLeastOnce()).buyProduct(eq(PAN), pricesCaptor.capture());
-        BigDecimal price = pricesCaptor.getAllValues().get(pricesCaptor.getAllValues().size() - 1);
-
+        verify(company, atLeastOnce()).buyProduct(eq(PAN), eq(ProductType.ELECTRICITY), pricesCaptor.capture());
         assertTrue("The 25 tick must pay electricity",
-            priceBetween(price, new BigDecimal(60), new BigDecimal(120)));
+            priceBetween(getLastRecordedPrice(pricesCaptor.getAllValues()), new BigDecimal(60), new BigDecimal(120)));
     }
 
     @Test
-    public void shouldPayElectricityEveryMonthAtDay25() {
+    public void shouldNotPayElectricityOnDifferentDayThan25th() {
         when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
 
         when(world.findCompany()).thenReturn(company);
 
-        IntStream.range(0, 56).forEach(i -> person.tick());
+        IntStream.range(1, 28)
+            .filter(day -> day != 25)
+            .forEach(dayOfMonth -> {
+                when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(dayOfMonth));
+                person.tick();
+            });
 
-        verify(company, atLeastOnce()).buyProduct(eq(PAN), pricesCaptor.capture());
-        BigDecimal price = pricesCaptor.getAllValues().get(pricesCaptor.getAllValues().size() - 1);
-
-        assertTrue("Every month at tick 25 must pay electricity",
-            priceBetween(price, new BigDecimal(60), new BigDecimal(120)));
+        verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ELECTRICITY), any());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class PersonTest {
         person.tick();
         person.tick();
 
-        verify(company, times(3)).buyProduct(eq(PAN), pricesCaptor.capture());
+        verify(company, times(3)).buyProduct(eq(PAN), eq(ProductType.MEAL), pricesCaptor.capture());
 
         assertThat(pricesCaptor.getAllValues())
             .as("There must be 3 random values between 10 and 20 euros")
@@ -176,19 +176,15 @@ public class PersonTest {
                 new BigDecimal(20)), "More than ten, less than twenty"));
     }
 
-    private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
-        return bigDecimal.compareTo(begin) >= 0 && bigDecimal.compareTo(end) <= 0;
-    }
-
     @Test
-    public void shouldPublishPersonInfoAt0Ticks() {
+    public void shouldPublishPersonStatusOnFirstTick() {
         person.tick();
 
         verify(eventPublisher).publish("personEventStream", PERSON_INFO);
     }
 
     @Test
-    public void shouldPublishPersonInfoAt30Ticks() {
+    public void shouldPublishPersonStatusAt30Ticks() {
         when(world.getBank()).thenReturn(bank);
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
@@ -214,9 +210,17 @@ public class PersonTest {
         when(world.getBank()).thenReturn(bank);
 
 
-        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
+        when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
+    }
+
+    private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
+        return bigDecimal.compareTo(begin) >= 0 && bigDecimal.compareTo(end) <= 0;
+    }
+
+    private BigDecimal getLastRecordedPrice(List<BigDecimal> prices) {
+        return prices.get(pricesCaptor.getAllValues().size() - 1);
     }
 
 

@@ -3,6 +3,8 @@ package io.wasupu.boinet;
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,11 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -24,9 +23,8 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 public class World {
 
     /**
-     * @param args
-     *  arg0 = streamServiceApiKey
-     *  arg1 = streamServiceNamespace
+     * @param args arg0 = streamServiceApiKey
+     *             arg1 = streamServiceNamespace
      */
     public static void main(String[] args) {
         World world = (args.length == 2) ? new World(args[0], args[1]) : new World();
@@ -40,9 +38,7 @@ public class World {
     }
 
     public World() {
-        GregorianCalendar calendar = new GregorianCalendar(2017, 9, 5);
-        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-        currentDate = calendar.getTime();
+        currentDate = new DateTime(2017, 10, 5,0,0,0, DateTimeZone.UTC);
         eventPublisher = new EventPublisher();
     }
 
@@ -55,7 +51,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 90 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 100 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .forEach(tickNumber -> {
@@ -67,10 +63,7 @@ public class World {
     }
 
     private void addDayToCurrentDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.DATE, 1);
-        currentDate = calendar.getTime();
+        currentDate = currentDate.plusDays(1);
     }
 
     public Company findCompany() {
@@ -111,9 +104,15 @@ public class World {
         return newPerson;
     }
 
+    @Deprecated
     public Date getCurrentDate() {
+        return currentDate.toDate();
+    }
+
+    public DateTime getCurrentDateTime() {
         return currentDate;
     }
+
 
     public Collection<Person> getCandidates(BigDecimal initialCapital) {
         return employmentOffice.getCandidates(initialCapital);
@@ -135,7 +134,6 @@ public class World {
         return UUID.randomUUID().toString();
     }
 
-
     private List<Company> companies = new ArrayList<>();
 
     private Collection<Person> population = new ArrayList<>();
@@ -147,9 +145,9 @@ public class World {
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
-    private Date currentDate;
+    private DateTime currentDate;
 
-    private Faker faker = new Faker(new Locale("es"));
+    private Faker faker = new Faker();
 
     private EventPublisher eventPublisher;
 }

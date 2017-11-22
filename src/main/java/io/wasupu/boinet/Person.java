@@ -1,8 +1,6 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -72,13 +70,17 @@ public class Person {
     private void eatEveryDay() {
         if (age < 2) return;
 
-        world.findCompany().buyProduct(pan, generateRandomPrice(10, 20));
+        world.findCompany().buyProduct(pan, ProductType.MEAL, generateRandomPrice(10, 20));
     }
 
     private void payElectricity() {
-        if (age % 30 != 25) return;
+        if (!isDayOfMonth(25)) return;
 
-        world.findCompany().buyProduct(pan, generateRandomPrice(60, 120));
+        world.findCompany().buyProduct(pan, ProductType.ELECTRICITY, generateRandomPrice(60, 120));
+    }
+
+    private boolean isDayOfMonth(Integer dayOfMonth) {
+        return dayOfMonth.equals(world.getCurrentDateTime().getDayOfMonth());
     }
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
@@ -98,7 +100,7 @@ public class Person {
             .put("cellPhone", cellPhone)
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
-            .put("date", world.getCurrentDate())
+            .put("date", world.getCurrentDateTime().toDate())
             .build());
     }
 
