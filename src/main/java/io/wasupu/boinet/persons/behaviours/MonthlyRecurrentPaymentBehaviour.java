@@ -7,14 +7,14 @@ import io.wasupu.boinet.persons.Person;
 import java.math.BigDecimal;
 import java.util.Random;
 
-public class MonthyRecurrentPaymentBehaviour {
+public class MonthlyRecurrentPaymentBehaviour {
 
-    public MonthyRecurrentPaymentBehaviour(World world,
-                                           Person person,
-                                           Integer day,
-                                           ProductType productType,
-                                           Integer startPriceRange,
-                                           Integer endPriceRange) {
+    public MonthlyRecurrentPaymentBehaviour(World world,
+                                            Person person,
+                                            Integer day,
+                                            ProductType productType,
+                                            Integer startPriceRange,
+                                            Integer endPriceRange) {
         this.world = world;
         this.person = person;
         this.day = day;

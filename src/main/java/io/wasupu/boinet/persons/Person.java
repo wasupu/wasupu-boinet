@@ -3,11 +3,11 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.behaviours.MonthyRecurrentPaymentBehaviour;
+import io.wasupu.boinet.persons.behaviours.GoToCountrysideBehaviour;
+import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPaymentBehaviour;
 
 import java.math.BigDecimal;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -24,7 +24,8 @@ public class Person {
         this.world = world;
         this.cellPhone = cellPhone;
 
-        this.payElectricity = new MonthyRecurrentPaymentBehaviour(world,
+        this.goToCountryside = new GoToCountrysideBehaviour(world,this);
+        this.payElectricity = new MonthlyRecurrentPaymentBehaviour(world,
             this,
             25,
             ProductType.ELECTRICITY,
@@ -34,14 +35,13 @@ public class Person {
         world.listenTicks(this::tick);
     }
 
-
     public void tick() {
         contractAccount();
         initialCapital();
         contractDebitCard();
         eatEveryDay();
         this.payElectricity.tick();
-        goToCountryside();
+        this.goToCountryside.tick();
         publishPersonBalance();
 
         age++;
@@ -87,24 +87,6 @@ public class Person {
         world.findCompany().buyProduct(pan, ProductType.MEAL, generateRandomPrice(10, 20));
     }
 
-    private void goToCountryside() {
-        if (iHaveLessThan(new BigDecimal("1000"))) {
-            iWasGoingToCountryside.set(false);
-            return;
-        }
-        if (!iWasGoingToCountryside.get() && !iHaveMoreThan(new BigDecimal("6000"))) return;
-
-        world.findCompany().buyProduct(pan, ProductType.ENTERTAINMENT, generateRandomPrice(100, 500));
-        iWasGoingToCountryside.set(true);
-    }
-
-    private boolean iHaveLessThan(BigDecimal expectedThreshold) {
-        return expectedThreshold.compareTo(world.getBank().getBalance(iban)) >= 0;
-    }
-
-    private boolean iHaveMoreThan(BigDecimal expectedThreshold) {
-        return expectedThreshold.compareTo(world.getBank().getBalance(iban)) < 0;
-    }
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
         Random random = new Random();
@@ -154,8 +136,6 @@ public class Person {
 
     private Boolean employed = FALSE;
 
-    private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
-
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
 
     private String name;
@@ -164,5 +144,7 @@ public class Person {
 
     private static final String STREAM_ID = "personEventStream";
 
-    private final MonthyRecurrentPaymentBehaviour payElectricity;
+    private final MonthlyRecurrentPaymentBehaviour payElectricity;
+
+    private final GoToCountrysideBehaviour goToCountryside;
 }
