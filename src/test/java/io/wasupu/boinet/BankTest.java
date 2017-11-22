@@ -91,6 +91,11 @@ public class BankTest {
         verify(secondAccount).deposit(amount);
     }
 
+    @Before
+    public void setupEventPublisher() {
+        when(world.getEventPublisher()).thenReturn(eventPublisher);
+    }
+
     private static final String IBAN = "0";
 
     private static final String SECOND_IBAN = "1";
@@ -115,6 +120,9 @@ public class BankTest {
 
     @Mock
     private World world;
+
+    @Mock
+    private EventPublisher eventPublisher;
 
     private static final String CURRENT_DATE = "2017-10-05T14:48:00.000Z";
 }

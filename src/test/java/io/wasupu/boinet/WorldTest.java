@@ -142,7 +142,7 @@ public class WorldTest {
     @Mock(name = "secondCompany")
     private Company secondCompany;
 
-    private World world = new World();
+    private World world = new World("unusedApiKey", "unusedNamespace");
 
     private static final Integer NUMBER_OF_PEOPLE = 2;
 

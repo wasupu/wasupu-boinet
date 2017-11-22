@@ -1,18 +1,14 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.logstash.logback.marker.Markers.appendEntries;
-
 public class Bank {
 
-    public Bank(World world){
+    public Bank(World world) {
         this.world = world;
     }
 
@@ -65,15 +61,14 @@ public class Bank {
     }
 
     private void publishMovement(BigDecimal amount, String pan, String companyIndentifier) {
-        logger.info(appendEntries(ImmutableMap
-                .builder()
-                .put("pan", pan)
-                .put("amount", amount)
-                .put("currency", "EUR")
-                .put("company",companyIndentifier)
-                .put("date", world.getCurrentDate())
-                .build()),
-            "Movement");
+        world.getEventPublisher().publish(STREAM_ID, ImmutableMap
+            .<String, Object>builder()
+            .put("pan", pan)
+            .put("amount", amount)
+            .put("currency", "EUR")
+            .put("company", companyIndentifier)
+            .put("date", world.getCurrentDate())
+            .build());
     }
 
     private Map<String, Account> accounts = new HashMap<>();
@@ -86,5 +81,5 @@ public class Bank {
 
     private World world;
 
-    private static Logger logger = LoggerFactory.getLogger(Bank.class);
+    private static final String STREAM_ID = "companyEventStream";
 }

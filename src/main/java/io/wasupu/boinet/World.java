@@ -1,6 +1,5 @@
 package io.wasupu.boinet;
 
-import com.github.javafaker.Commerce;
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -8,7 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
@@ -16,15 +24,18 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 public class World {
 
     public static void main(String[] args) {
-        World world = new World();
-        world.init(42, 3);
+        String semaasApiKey = args[0];
+        String semaasNamespace = args[1];
+        World world = new World(semaasApiKey, semaasNamespace);
+        world.init(10, 2);
         world.start();
     }
 
-    public World() {
+    public World(String semaasApiKey, String semaasNamespace) {
         GregorianCalendar calendar = new GregorianCalendar(2017, 9, 5);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         currentDate = calendar.getTime();
+        eventPublisher = new EventPublisher(semaasApiKey, semaasNamespace);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -36,7 +47,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 100 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 3 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .peek(x -> wait(200))
@@ -109,6 +120,10 @@ public class World {
         return employmentOffice.getCandidates(initialCapital);
     }
 
+    public EventPublisher getEventPublisher() {
+        return eventPublisher;
+    }
+
     private void newSupplier(Integer number) {
         companies.add(new Company(createCompanyUniqueIdentifier(), this));
     }
@@ -121,20 +136,23 @@ public class World {
         return UUID.randomUUID().toString();
     }
 
+
     private List<Company> companies = new ArrayList<>();
 
     private Collection<Person> population = new ArrayList<>();
 
     private Collection<Runnable> tickConsumers = ImmutableList.of();
-
     private Bank bank = new Bank(this);
+
     private EmploymentOffice employmentOffice = new EmploymentOffice(this);
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
     private Date currentDate;
 
-    Faker faker = new Faker(new Locale("es"));
+    private Faker faker = new Faker(new Locale("es"));
+
+    private EventPublisher eventPublisher;
 }
 
 

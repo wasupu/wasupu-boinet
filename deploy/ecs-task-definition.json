@@ -7,7 +7,16 @@
             "memory": 500,
             "essential": true,
             "portMappings": [],
-            "environment": [],
+            "environment": [
+                {
+                    "name": "SEMAAS_API_KEY",
+                    "value": "{{SEMAAS_API_KEY}}"
+                },
+                {
+                    "name": "SEMAAS_NAMESPACE",
+                    "value": "{{SEMAAS_NAMESPACE}}"
+                }
+            ],
             "links": [],
             "extraHosts": [],
             "logConfiguration": {

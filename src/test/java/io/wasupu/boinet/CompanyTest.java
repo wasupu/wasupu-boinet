@@ -1,6 +1,7 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,14 +10,18 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompanyTest {
@@ -136,33 +141,28 @@ public class CompanyTest {
 
     @Test
     public void shouldPublishCompanyInfoAt0Ticks() {
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(out));
-
         company.tick();
 
-        assertEquals("The balance string is not the expected",
-            BALANCE_JSON + "\n", out.toString());
+        verify(eventPublisher).publish("companyEventStream", COMPANY_INFO);
     }
 
     @Test
     public void shouldPublishCompanyInfoAt90Ticks() {
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(out));
-
         IntStream.range(0, 91).forEach(i -> company.tick());
 
-        assertEquals("The balance string is not the expected",
-            BALANCE_JSON + "\n" + BALANCE_JSON + "\n", out.toString());
+        verify(eventPublisher, times(2)).publish("companyEventStream", COMPANY_INFO);
+    }
+
+    @Before
+    public void setupEventPublisher() {
+        when(world.getEventPublisher()).thenReturn(eventPublisher);
     }
 
     @Before
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
 
-        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
-        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-        when(world.getCurrentDate()).thenReturn(gregorianCalendar.getTime());
+        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
@@ -171,7 +171,6 @@ public class CompanyTest {
     public void setupCompany() {
         company = new Company(COMPANY_IDENTIFIER, world);
     }
-
 
 
     private Company company;
@@ -193,15 +192,18 @@ public class CompanyTest {
 
     private static final String PAN = "12312312312";
 
-    private static final String CURRENT_DATE = "2017-10-05T00:00:00Z";
+    private static final Date CURRENT_DATE = new Date();
 
-    private static final String BALANCE_JSON =
-        "{" +
-            "\"company\":\"companyId\"," +
-            "\"balance\":12," +
-            "\"currency\":\"EUR\"," +
-            "\"date\":\""+ CURRENT_DATE + "\"" +
-            "}";
+    private static final Map<String, Object> COMPANY_INFO = ImmutableMap
+        .<String, Object>builder()
+        .put("company", "companyId")
+        .put("balance", new BigDecimal("12"))
+        .put("currency", "EUR")
+        .put("date", CURRENT_DATE)
+        .build();
+
+    @Mock
+    private EventPublisher eventPublisher;
 
     private static final BigDecimal PRICE = new BigDecimal(10);
 }

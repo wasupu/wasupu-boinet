@@ -13,11 +13,11 @@ mvn clean package
 * To run the app:
 
 ```shell-script
-docker run --rm boinet
+docker run -e SEMAAS_API_KEY=<SEMAAS_API_KEY> -e SEMAAS_NAMESPACE=<SEMAAS_NAMESPACE> --rm boinet
 ```
 
 * To deploy the service:
 
 ```shell-script
-./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY> <AWS_DEFAULT_REGION> <AWS_DOCKER_REGISTRY>
+./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY> <AWS_DEFAULT_REGION> <AWS_DOCKER_REGISTRY> <SEMAAS_API_KEY> <SEMAAS_NAMESPACE>
 ```

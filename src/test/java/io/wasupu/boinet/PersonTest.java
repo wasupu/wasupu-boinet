@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
@@ -12,21 +13,25 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonTest {
-
-    public static final String FULL_NAME = "fullName";
-    public static final String CELL_PHONE = "686338292";
 
     @Test
     public void testEquals() {
@@ -177,13 +182,9 @@ public class PersonTest {
 
     @Test
     public void shouldPublishPersonInfoAt0Ticks() {
-        ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(out));
-
         person.tick();
 
-        assertEquals("The balance string is not the expected",
-            BALANCE_JSON + "\n", out.toString());
+        verify(eventPublisher).publish("personEventStream", PERSON_INFO);
     }
 
     @Test
@@ -193,13 +194,14 @@ public class PersonTest {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
         when(world.findCompany()).thenReturn(company);
 
-        ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(out));
-
         IntStream.range(0, 31).forEach(i -> person.tick());
 
-        assertEquals("The balance string is not the expected",
-            BALANCE_JSON + "\n" + BALANCE_JSON + "\n", out.toString());
+        verify(eventPublisher, times(2)).publish("personEventStream", PERSON_INFO);
+    }
+
+    @Before
+    public void setupEventPublisher() {
+        when(world.getEventPublisher()).thenReturn(eventPublisher);
     }
 
     @Before
@@ -211,13 +213,12 @@ public class PersonTest {
     public void setupAccount() {
         when(world.getBank()).thenReturn(bank);
 
-        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
-        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        when(world.getCurrentDate()).thenReturn(gregorianCalendar.getTime());
+        when(world.getCurrentDate()).thenReturn(CURRENT_DATE);
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
+
 
     @Mock
     private World world;
@@ -227,6 +228,9 @@ public class PersonTest {
 
     @Mock
     private Company company;
+
+    @Mock
+    private EventPublisher eventPublisher;
 
     private static final String IDENTIFIER = "personId";
 
@@ -240,18 +244,22 @@ public class PersonTest {
 
     private static final String PAN = "12312312312";
 
-    private static final String CURRENT_DATE = "2017-10-05T00:00:00Z";
+    private static final Date CURRENT_DATE = new Date();
 
-    private static final String BALANCE_JSON =
-        "{" +
-            "\"person\":\"personId\"," +
-            "\"name\":\"" + FULL_NAME + "\"," +
-            "\"cellPhone\":\"" + CELL_PHONE + "\"," +
-            "\"balance\":12," +
-            "\"currency\":\"EUR\"," +
-            "\"date\":\"" + CURRENT_DATE + "\"" +
-            "}";
+    private static final String FULL_NAME = "fullName";
+    private static final String CELL_PHONE = "686338292";
+
+    private static final Map<String, Object> PERSON_INFO = ImmutableMap
+        .<String, Object>builder()
+        .put("person", "personId")
+        .put("name", FULL_NAME)
+        .put("cellPhone", CELL_PHONE)
+        .put("balance", new BigDecimal("12"))
+        .put("currency", "EUR")
+        .put("date", CURRENT_DATE)
+        .build();
 
     @Captor
     private ArgumentCaptor<BigDecimal> pricesCaptor;
+
 }

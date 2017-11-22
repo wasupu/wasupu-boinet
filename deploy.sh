@@ -4,14 +4,16 @@ set -o pipefail
 set -o allexport
 [[ "${DEBUG}" == 'true' ]] && set -o xtrace
 
-if [[ $# -ne 4 ]]; then
-    echo "Usage: ./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY> <AWS_DEFAULT_REGION> <AWS_DOCKER_REGISTRY>"
+if [[ $# -ne 6 ]]; then
+    echo "Usage: ./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY> <AWS_DEFAULT_REGION> <AWS_DOCKER_REGISTRY> <SEMAAS_API_KEY> <SEMAAS_NAMESPACE>"
     exit 1
 fi
 AWS_ACCESS_KEY="$1"
 AWS_SECRET_KEY="$2"
 AWS_DEFAULT_REGION="$3"
 AWS_DOCKER_REGISTRY="$4"
+SEMAAS_API_KEY="$5"
+SEMAAS_NAMESPACE="$6"
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -26,5 +28,5 @@ createCloudwatchLogsGroup ${AWS_LOGS_GROUP}
 CLUSTER_NAME="boinet-test"
 TASK_DEFINITION_NAME="boinet-test-task"
 TASK_DEFINITION_FILE="${CURRENT_DIR}/deploy/ecs-task-definition.json"
-createEcsTaskDefinition ${TASK_DEFINITION_NAME} ${TASK_DEFINITION_FILE} ${AWS_DOCKER_REGISTRY} ${AWS_LOGS_GROUP} ${AWS_DEFAULT_REGION}
+createEcsTaskDefinition ${TASK_DEFINITION_NAME} ${TASK_DEFINITION_FILE} ${AWS_DOCKER_REGISTRY} ${AWS_LOGS_GROUP} ${AWS_DEFAULT_REGION} ${SEMAAS_API_KEY} ${SEMAAS_NAMESPACE}
 runEcsTask ${CLUSTER_NAME} ${TASK_DEFINITION_NAME}

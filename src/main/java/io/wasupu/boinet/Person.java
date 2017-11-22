@@ -9,7 +9,6 @@ import java.util.Random;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class Person {
 
@@ -92,16 +91,15 @@ public class Person {
     private void publishPersonBalance() {
         if (age % 30 != 0) return;
 
-        logger.info(appendEntries(ImmutableMap
-                .builder()
-                .put("person", identifier)
-                .put("name", name)
-                .put("cellPhone", cellPhone)
-                .put("balance", world.getBank().getBalance(iban))
-                .put("currency", "EUR")
-                .put("date", world.getCurrentDate())
-                .build()),
-            "Person balance");
+        world.getEventPublisher().publish(STREAM_ID, ImmutableMap
+            .<String, Object>builder()
+            .put("person", identifier)
+            .put("name", name)
+            .put("cellPhone", cellPhone)
+            .put("balance", world.getBank().getBalance(iban))
+            .put("currency", "EUR")
+            .put("date", world.getCurrentDate())
+            .build());
     }
 
     @Override
@@ -133,10 +131,10 @@ public class Person {
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
 
-    private static Logger logger = LoggerFactory.getLogger(Person.class);
-
     private String name;
 
     private final String cellPhone;
+
+    private static final String STREAM_ID = "personEventStream";
 
 }
