@@ -3,7 +3,6 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.*;
-import io.wasupu.boinet.persons.Person;
 import org.assertj.core.api.Condition;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -22,16 +21,10 @@ import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonTest {
@@ -59,13 +52,6 @@ public class PersonTest {
             testEquals();
     }
 
-    @Test
-    public void shouldContractAnAccountInFirstTick() {
-        person.tick();
-
-        assertNotNull("After first tick must have an account", person.getIban());
-        assertEquals("After first tick must have the expected iban", IBAN, person.getIban());
-    }
 
     @Test
     public void shouldContractADebitCardInFirstTick() {
@@ -75,19 +61,6 @@ public class PersonTest {
 
         assertNotNull("After first tick must have a debit card", person.getIban());
         assertEquals("After first tick must have the expected debit card", PAN, person.getPan());
-    }
-
-    @Test
-    public void shouldNotContractAgainAnAccountIfHasOneInOtherTick() {
-        when(bank.contractAccount()).thenReturn(IBAN)
-            .thenReturn(OTHER_IBAN);
-
-        person.tick();
-        person.tick();
-
-        assertNotNull("After second tick must have an account", person.getIban());
-        assertEquals("After second tick must the same account that have in first tick",
-            IBAN, person.getIban());
     }
 
     @Test
