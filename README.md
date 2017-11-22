@@ -13,7 +13,7 @@ mvn clean package
 * To run the app:
 
 ```shell-script
-docker run -e -e STREAM_SERVICE_API_KEY=<STREAM_SERVICE_API_KEY> -e STREAM_SERVICE_NAMESPACE=<STREAM_SERVICE_NAMESPACE> --rm boinet
+docker run [-e STREAM_SERVICE_API_KEY=<STREAM_SERVICE_API_KEY>] [-e STREAM_SERVICE_NAMESPACE=<STREAM_SERVICE_NAMESPACE>] --rm boinet
 ```
 
 * To deploy the service:

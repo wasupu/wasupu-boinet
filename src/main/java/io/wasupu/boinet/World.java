@@ -23,19 +23,27 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class World {
 
+    /**
+     * @param args
+     *  arg0 = streamServiceApiKey
+     *  arg1 = streamServiceNamespace
+     */
     public static void main(String[] args) {
-        String streamServiceApiKey = args[0];
-        String streamServiceNamespace = args[1];
-        World world = new World(streamServiceApiKey, streamServiceNamespace);
+        World world = (args.length == 2) ? new World(args[0], args[1]) : new World();
         world.init(10, 2);
         world.start();
     }
 
     public World(String streamServiceApiKey, String streamServiceNamespace) {
+        this();
+        eventPublisher = new EventPublisher(streamServiceApiKey, streamServiceNamespace);
+    }
+
+    public World() {
         GregorianCalendar calendar = new GregorianCalendar(2017, 9, 5);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         currentDate = calendar.getTime();
-        eventPublisher = new EventPublisher(streamServiceApiKey, streamServiceNamespace);
+        eventPublisher = new EventPublisher();
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
