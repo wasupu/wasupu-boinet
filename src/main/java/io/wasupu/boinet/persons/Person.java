@@ -1,11 +1,12 @@
 package io.wasupu.boinet.persons;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.behaviours.*;
 
-import java.math.BigDecimal;
+import java.util.Collection;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -21,28 +22,25 @@ public class Person {
         this.world = world;
         this.cellPhone = cellPhone;
 
-        this.contractAccount = new ContractAccount(world,this);
-        this.goToCountryside = new GoToCountryside(world,this);
-        this.contractDebitCard = new ContractDebitCard(world,this);
-        this.payElectricity = new MonthlyRecurrentPayment(world,
-            this,
-            25,
-            ProductType.ELECTRICITY,
-            60,
-            120);
-        this.eatEveryDay = new EatEveryDay(world,this);
-        this.initialCapital = new InitialCapital(world,this);
+        tickConsumers = ImmutableList.of(
+            new ContractAccount(world,this)::tick,
+            new ContractDebitCard(world,this)::tick,
+            new InitialCapital(world,this)::tick,
+            new EatEveryDay(world,this)::tick,
+            new MonthlyRecurrentPayment(world,
+                this,
+                25,
+                ProductType.ELECTRICITY,
+                60,
+                120)::tick,
+            new GoToCountryside(world,this)::tick
+            );
 
         world.listenTicks(this::tick);
     }
 
     public void tick() {
-        this.contractAccount.tick();
-        this.initialCapital.tick();
-        this.contractDebitCard.tick();
-        this.eatEveryDay.tick();
-        this.payElectricity.tick();
-        this.goToCountryside.tick();
+        tickConsumers.forEach(Runnable::run);
 
         publishPersonBalance();
 
@@ -125,12 +123,5 @@ public class Person {
 
     private static final String STREAM_ID = "personEventStream";
 
-    private final MonthlyRecurrentPayment payElectricity;
-    private final GoToCountryside goToCountryside;
-    private final ContractAccount contractAccount;
-    private final ContractDebitCard contractDebitCard;
-    private final EatEveryDay eatEveryDay;
-    private final InitialCapital initialCapital;
-
-    final static BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
+    private Collection<Runnable> tickConsumers;
 }

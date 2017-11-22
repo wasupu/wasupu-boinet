@@ -113,7 +113,6 @@ public class World {
         return currentDate;
     }
 
-
     public Collection<Person> getCandidates(BigDecimal initialCapital) {
         return employmentOffice.getCandidates(initialCapital);
     }
