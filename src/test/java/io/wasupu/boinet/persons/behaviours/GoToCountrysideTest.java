@@ -35,7 +35,6 @@ public class GoToCountrysideTest {
         verify(company, never()).buyProduct(any(),any(),any());
     }
 
-
     @Test
     public void shouldStartGoingToTheCountrysideOnWeekendsWhenIHaveMoreThan6000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
