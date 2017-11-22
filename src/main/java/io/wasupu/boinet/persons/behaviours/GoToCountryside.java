@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GoToCountrysideBehaviour {
+public class GoToCountryside {
 
 
-    public GoToCountrysideBehaviour(World world, Person person) {
+    public GoToCountryside(World world, Person person) {
         this.world = world;
         this.person = person;
     }

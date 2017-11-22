@@ -3,9 +3,9 @@ package io.wasupu.boinet.persons.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
-public class ContractAccountBehaviour {
+public class ContractAccount {
 
-    public ContractAccountBehaviour(World world, Person person) {
+    public ContractAccount(World world, Person person) {
         this.world = world;
         this.person = person;
     }

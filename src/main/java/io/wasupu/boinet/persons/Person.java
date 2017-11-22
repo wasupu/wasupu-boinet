@@ -3,9 +3,10 @@ package io.wasupu.boinet.persons;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.behaviours.ContractAccountBehaviour;
-import io.wasupu.boinet.persons.behaviours.GoToCountrysideBehaviour;
-import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPaymentBehaviour;
+import io.wasupu.boinet.persons.behaviours.ContractAccount;
+import io.wasupu.boinet.persons.behaviours.ContractDebitCard;
+import io.wasupu.boinet.persons.behaviours.GoToCountryside;
+import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPayment;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -14,7 +15,6 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 public class Person {
-
 
     public Person(String identifier,
                   String name,
@@ -25,9 +25,10 @@ public class Person {
         this.world = world;
         this.cellPhone = cellPhone;
 
-        this.contractAccount = new ContractAccountBehaviour(world,this);
-        this.goToCountryside = new GoToCountrysideBehaviour(world,this);
-        this.payElectricity = new MonthlyRecurrentPaymentBehaviour(world,
+        this.contractAccount = new ContractAccount(world,this);
+        this.goToCountryside = new GoToCountryside(world,this);
+        this.contractDebitCard = new ContractDebitCard(world,this);
+        this.payElectricity = new MonthlyRecurrentPayment(world,
             this,
             25,
             ProductType.ELECTRICITY,
@@ -40,10 +41,11 @@ public class Person {
     public void tick() {
         contractAccount.tick();
         initialCapital();
-        contractDebitCard();
+        this.contractDebitCard.tick();
         eatEveryDay();
         this.payElectricity.tick();
         this.goToCountryside.tick();
+
         publishPersonBalance();
 
         age++;
@@ -73,10 +75,9 @@ public class Person {
         this.iban = iban;
     }
 
-    private void contractDebitCard() {
-        if (age != 0) return;
 
-        pan = world.getBank().contractDebitCard(iban);
+    public void setPan(String pan) {
+        this.pan = pan;
     }
 
     private void initialCapital() {
@@ -90,7 +91,6 @@ public class Person {
 
         world.findCompany().buyProduct(pan, ProductType.MEAL, generateRandomPrice(10, 20));
     }
-
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
         Random random = new Random();
@@ -128,7 +128,6 @@ public class Person {
         return identifier.hashCode();
     }
 
-
     private String iban;
 
     private String identifier;
@@ -149,8 +148,8 @@ public class Person {
 
     private static final String STREAM_ID = "personEventStream";
 
-    private final MonthlyRecurrentPaymentBehaviour payElectricity;
-
-    private final GoToCountrysideBehaviour goToCountryside;
-    private final ContractAccountBehaviour contractAccount;
+    private final MonthlyRecurrentPayment payElectricity;
+    private final GoToCountryside goToCountryside;
+    private final ContractAccount contractAccount;
+    private final ContractDebitCard contractDebitCard;
 }
