@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
 
@@ -87,7 +88,7 @@ public class WorldTest {
 
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
         world.listenTicks(tickConsumer);
-        world.start(2);
+        world.start(Optional.of(2));
 
         verify(tickConsumer, times(2)).run();
     }
@@ -126,7 +127,7 @@ public class WorldTest {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 7);
         gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        world.start(2);
+        world.start(Optional.of(2));
 
         assertNotNull("The current date must be not null", world.getCurrentDate());
         assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDate());

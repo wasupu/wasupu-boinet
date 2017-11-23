@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
 
@@ -49,7 +48,7 @@ public class EventPublisher {
 
                 @Override
                 public void failed(Throwable throwable) {
-                    logger.error("post(). error posting to elasticsearch. Cause: " + throwable.getCause());
+                    logger.error(appendEntries(ImmutableMap.of("message", "post(). error posting to stream service. Cause: " + throwable.getCause())), "eventPublisher");
                 }
             });
     }

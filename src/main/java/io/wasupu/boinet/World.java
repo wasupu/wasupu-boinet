@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -27,9 +29,20 @@ public class World {
      *             arg1 = streamServiceNamespace
      */
     public static void main(String[] args) {
-        World world = (args.length == 2) ? new World(args[0], args[1]) : new World();
-        world.init(100, 5);
-        world.start();
+        Optional<String> streamServiceApiKey = findArgument("--stream-service-api-key", args);
+        Optional<String> streamServiceNamespace = findArgument("--stream-service-namespace", args);
+        World world = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ? new World(streamServiceApiKey.get(), streamServiceNamespace.get()) : new World();
+
+        world.init(1, 1);
+        world.start(findArgument("--number-of-ticks", args).map(Integer::new));
+    }
+
+    private static Optional<String> findArgument(String argumentName, String[] args) {
+        return Arrays.stream(args)
+            .filter(argument -> argument.startsWith(argumentName))
+            .map(argument -> argument.replaceFirst(argumentName + "=", ""))
+            .filter(argumentValue -> !argumentValue.isEmpty())
+            .findFirst();
     }
 
     public World(String streamServiceApiKey, String streamServiceNamespace) {
@@ -50,16 +63,17 @@ public class World {
             .forEach(hospital::newSettler);
     }
 
-    public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 500 : numberOfTicks[0];
+    public void start(Optional<Integer> numberOfTicks) {
+        IntStream stream = numberOfTicks
+            .map(integer -> IntStream.range(0, integer))
+            .orElseGet(() -> IntStream.iterate(0, i -> i + 1));
 
-        IntStream.range(0, ticks)
-            .forEach(tickNumber -> {
-                logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
-                tickConsumers.forEach(Runnable::run);
+        stream.forEach(tickNumber -> {
+            logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
+            tickConsumers.forEach(Runnable::run);
 
-                addDayToCurrentDate();
-            });
+            addDayToCurrentDate();
+        });
     }
 
     private void addDayToCurrentDate() {

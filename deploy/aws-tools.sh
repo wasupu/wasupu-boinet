@@ -50,6 +50,7 @@ createEcsTaskDefinition() {
     local awsRegion="$5"
     local streamServiceApiKey="$6"
     local streamServiceNamespace="$7"
+    local numberOfTicks="$8"
 
     sed -i.original "s~{{AWS_DOCKER_REGISTRY}}~${awsDockerRegistry}~" ${taskDefinitionFile}
     sed -i.original "s~{{AWSLOGS_GROUP}}~${awslogsGroupName}~" ${taskDefinitionFile}
