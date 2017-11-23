@@ -13,7 +13,10 @@ import java.util.stream.IntStream;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WeekendRecurrentPaymentTest extends RecurrentPaymentTest {
@@ -34,7 +37,7 @@ public class WeekendRecurrentPaymentTest extends RecurrentPaymentTest {
     @Test
     public void shouldNotPayOnDifferentDayThan6() {
         IntStream.range(1, 7)
-            .filter(day -> day  != 6 && day != 7)
+            .filter(day -> day != 6 && day != 7)
             .forEach(dayOfWeek -> {
                 when(getWorld().getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(dayOfWeek));
 

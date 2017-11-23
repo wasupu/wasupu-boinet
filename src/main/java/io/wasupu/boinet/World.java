@@ -29,7 +29,7 @@ public class World {
      */
     public static void main(String[] args) {
         World world = (args.length == 2) ? new World(args[0], args[1]) : new World();
-        world.init(10, 2);
+        world.init(100, 5);
         world.start();
     }
 
@@ -52,7 +52,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 10 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 1000 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .forEach(tickNumber -> {
@@ -101,19 +101,17 @@ public class World {
             faker.phoneNumber().cellPhone(),
             this);
 
-        new ContractAccount(this, newPerson);
-        new ContractDebitCard(this, newPerson);
-        new InitialCapital(this, newPerson);
-
-        new EveryDayRecurrentPayment(this, newPerson);
-        new MonthlyRecurrentPayment(this,
+        newPerson.listenTicks(new ContractAccount(this, newPerson)::tick);
+        newPerson.listenTicks(new ContractDebitCard(this, newPerson)::tick);
+        newPerson.listenTicks(new InitialCapital(this, newPerson)::tick);
+        newPerson.listenTicks(new EveryDayRecurrentPayment(this, newPerson)::tick);
+        newPerson.listenTicks(new MonthlyRecurrentPayment(this,
             newPerson,
             25,
             ProductType.ELECTRICITY,
             60,
-            120);
-
-        new TriggeredByBalanceThreshold(this,
+            120)::tick);
+        newPerson.listenTicks(new TriggeredByBalanceThreshold(this,
             newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
@@ -121,7 +119,7 @@ public class World {
                 newPerson,
                 ProductType.ENTERTAINMENT,
                 100,
-                500));
+                500))::tick);
 
         population.add(newPerson);
         return newPerson;

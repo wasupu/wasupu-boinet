@@ -21,6 +21,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest(Bank.class)
 public class BankTest {
 
+    public static final String DETAILS = "meal";
+
     @Test
     public void shouldContractANewAccount() throws Exception {
         whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
@@ -87,7 +89,7 @@ public class BankTest {
 
         BigDecimal amount = new BigDecimal(10);
 
-        bank.processPayment(amount,pan,secondIban,COMPANY);
+        bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS);
 
         verify(secondAccount).deposit(amount);
     }

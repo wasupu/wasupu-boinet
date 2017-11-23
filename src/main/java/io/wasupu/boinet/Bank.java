@@ -34,11 +34,11 @@ public class Bank {
         account.deposit(amount);
     }
 
-    public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier) {
+    public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details) {
         String buyerAccount = cards.get(pan);
 
         transfer(buyerAccount, sellerAccount, amount);
-        publishMovement(amount, pan, companyIdentifier);
+        publishMovement(amount, pan, companyIdentifier, details);
     }
 
     public BigDecimal getBalance(String iban) {
@@ -61,13 +61,13 @@ public class Bank {
         return cards.get(pan);
     }
 
-    private void publishMovement(BigDecimal amount, String pan, String companyIndentifier) {
+    private void publishMovement(BigDecimal amount, String pan, String companyIndentifier, String details) {
         world.getEventPublisher().publish(STREAM_ID, ImmutableMap
             .<String, Object>builder()
             .put("pan", pan)
             .put("amount", amount)
             .put("currency", "EUR")
-            .put("details", "anything")
+            .put("details", details)
             .put("geolocation", ImmutableMap.of(
                 "latitude", faker.address().latitude(),
                 "longitude", faker.address().longitude()))

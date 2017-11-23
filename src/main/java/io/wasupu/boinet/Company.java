@@ -39,7 +39,7 @@ public class Company {
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
-        world.getBank().processPayment(price, pan, iban, identifier);
+        world.getBank().processPayment(price, pan, iban, identifier, productType.toString().toLowerCase());
     }
 
     public Collection<Person> getEmployees() {

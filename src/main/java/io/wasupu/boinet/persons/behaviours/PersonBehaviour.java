@@ -8,7 +8,6 @@ public abstract class PersonBehaviour {
     public PersonBehaviour(World world, Person person) {
         this.world = world;
         this.person = person;
-        person.listenTicks(this::tick);
     }
 
     public abstract void tick();

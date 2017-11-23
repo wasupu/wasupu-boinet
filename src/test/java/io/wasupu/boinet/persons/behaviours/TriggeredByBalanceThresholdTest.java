@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class TriggeredByBalanceThresholdTest {
 
     @Test
-    public void shouldNotGoingToTheCountrysideIfNotWeekendsWhenIHaveMoreThan6000Euro() {
+    public void shouldNotGoToTheCountrysideIfNotWeekendsWhenIHaveMoreThan6000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(3));
 
@@ -49,7 +49,7 @@ public class TriggeredByBalanceThresholdTest {
 
     @Test
     public void shouldNotGoToTheCountrysideOnWeekendsWhenIHave3000Euro() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1000"));
 
         triggeredByBalanceThreshold.tick();
 

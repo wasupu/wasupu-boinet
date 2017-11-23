@@ -121,7 +121,7 @@ public class CompanyTest {
         company.tick();
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
-        verify(bank).processPayment(PRICE, PAN, IBAN, COMPANY_IDENTIFIER);
+        verify(bank).processPayment(PRICE, PAN, IBAN, COMPANY_IDENTIFIER, "meal");
     }
 
     @Test
