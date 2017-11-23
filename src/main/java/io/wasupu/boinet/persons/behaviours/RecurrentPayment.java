@@ -6,7 +6,6 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 public abstract class RecurrentPayment extends PersonBehaviour {
 
@@ -21,24 +20,30 @@ public abstract class RecurrentPayment extends PersonBehaviour {
         this.endPriceRange = endPriceRange;
     }
 
+    public RecurrentPayment(World world, Person person, ProductType productType, BigDecimal price) {
+        super(world, person);
+        this.productType = productType;
+        this.fixedPrice = price;
+    }
+
     protected void executePayment() {
-        getCompany().buyProduct(getPerson().getPan(), productType, generateRandomPrice(startPriceRange, endPriceRange));
+        BigDecimal price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.generateRandomPrice(startPriceRange, endPriceRange);
+        getCompany().buyProduct(getPerson().getPan(), productType, price);
     }
 
     protected Company getCompany() {
         return getWorld().findCompany();
     }
 
-    private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
-        Random random = new Random();
-        double randomValue = startPrice + (endPrice - startPrice) * random.nextDouble();
-        return new BigDecimal(randomValue)
-            .setScale(2, BigDecimal.ROUND_HALF_UP);
-    }
 
-    private final ProductType productType;
+    private ProductType productType;
 
-    private final Integer startPriceRange;
-    private final Integer endPriceRange;
+    private BigDecimal fixedPrice;
+
+    private Integer startPriceRange;
+
+    private Integer endPriceRange;
+
+    private GenerateRandomPrice generateRandomPrice = new GenerateRandomPrice();
 
 }

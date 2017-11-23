@@ -5,6 +5,8 @@ import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
+import java.math.BigDecimal;
+
 public class MonthlyRecurrentPayment extends RecurrentPayment {
 
     public MonthlyRecurrentPayment(World world,
@@ -19,6 +21,13 @@ public class MonthlyRecurrentPayment extends RecurrentPayment {
             productType,
             startPriceRange,
             endPriceRange);
+        this.world = world;
+        this.day = day;
+        this.company = company;
+    }
+
+    public MonthlyRecurrentPayment(World world, Person person, Integer day, ProductType productType, BigDecimal price, Company company) {
+        super(world, person, productType, price);
         this.world = world;
         this.day = day;
         this.company = company;

@@ -7,6 +7,7 @@ import io.wasupu.boinet.persons.Person;
 import io.wasupu.boinet.persons.behaviours.ContractAccount;
 import io.wasupu.boinet.persons.behaviours.ContractDebitCard;
 import io.wasupu.boinet.persons.behaviours.EveryDayRecurrentPayment;
+import io.wasupu.boinet.persons.behaviours.GenerateRandomPrice;
 import io.wasupu.boinet.persons.behaviours.InitialCapital;
 import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPayment;
 import io.wasupu.boinet.persons.behaviours.TriggeredByBalanceThreshold;
@@ -58,7 +59,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 1000 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 500 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .forEach(tickNumber -> {
@@ -110,11 +111,36 @@ public class World {
         newPerson.listenTicks(new ContractAccount(this, newPerson)::tick);
         newPerson.listenTicks(new ContractDebitCard(this, newPerson)::tick);
         newPerson.listenTicks(new InitialCapital(this, newPerson)::tick);
+
+        withEating(newPerson);
+        withPowerSupply(newPerson);
+        withCountryside(newPerson);
+        withCableTV(newPerson);
+        withMortgage(newPerson);
+        withInternetConnection(newPerson);
+
+        population.add(newPerson);
+        return newPerson;
+    }
+
+    private void withEating(Person newPerson) {
         newPerson.listenTicks(new EveryDayRecurrentPayment(this,
             newPerson,
             ProductType.MEAL,
             10,
             20)::tick);
+    }
+
+    private void withMortgage(Person newPerson) {
+        newPerson.listenTicks(new MonthlyRecurrentPayment(this,
+            newPerson,
+            3,
+            ProductType.MORTGAGE,
+            generateRandomPrice.generateRandomPrice(300, 500),
+            findCompany())::tick);
+    }
+
+    private void withPowerSupply(Person newPerson) {
         newPerson.listenTicks(new MonthlyRecurrentPayment(this,
             newPerson,
             25,
@@ -122,6 +148,9 @@ public class World {
             60,
             120,
             findCompany())::tick);
+    }
+
+    private void withCountryside(Person newPerson) {
         newPerson.listenTicks(new TriggeredByBalanceThreshold(this,
             newPerson,
             new BigDecimal("1000"),
@@ -131,9 +160,33 @@ public class World {
                 ProductType.ENTERTAINMENT,
                 100,
                 500))::tick);
+    }
 
-        population.add(newPerson);
-        return newPerson;
+    private void withCableTV(Person newPerson) {
+        newPerson.listenTicks(new TriggeredByBalanceThreshold(this,
+            newPerson,
+            new BigDecimal("1000"),
+            new BigDecimal("2000"),
+            new MonthlyRecurrentPayment(this,
+                newPerson,
+                5,
+                ProductType.ENTERTAINMENT,
+                generateRandomPrice.generateRandomPrice(10, 25),
+                findCompany()))::tick);
+    }
+
+    private void withInternetConnection(Person newPerson) {
+        newPerson.listenTicks(
+            new TriggeredByBalanceThreshold(this,
+                newPerson,
+                new BigDecimal("1000"),
+                new BigDecimal("1000"),
+                new MonthlyRecurrentPayment(this,
+                    newPerson,
+                    5,
+                    ProductType.INTERNET,
+                    generateRandomPrice.generateRandomPrice(40, 100),
+                    findCompany()))::tick);
     }
 
     @Deprecated
@@ -181,6 +234,8 @@ public class World {
     private Faker faker = new Faker();
 
     private EventPublisher eventPublisher;
+
+    private GenerateRandomPrice generateRandomPrice = new GenerateRandomPrice();
 }
 
 
