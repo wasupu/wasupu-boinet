@@ -7,24 +7,7 @@
             "memory": 1500,
             "essential": true,
             "portMappings": [],
-            "environment": [
-                {
-                    "name": "STREAM_SERVICE_API_KEY",
-                    "value": "{{STREAM_SERVICE_API_KEY}}"
-                },
-                {
-                    "name": "STREAM_SERVICE_NAMESPACE",
-                    "value": "{{STREAM_SERVICE_NAMESPACE}}"
-                },
-                {
-                    "name": "POPULATION",
-                    "value": "{{POPULATION}}"
-                },
-                {
-                    "name": "COMPANIES",
-                    "value": "{{COMPANIES}}"
-                }
-            ],
+            "environment": [],
             "links": [],
             "extraHosts": [],
             "logConfiguration": {
@@ -34,7 +17,13 @@
                     "awslogs-region": "{{AWSLOGS_REGION}}",
                     "awslogs-stream-prefix": "boinet"
                 }
-            }
+            },
+            "command": [
+                "--population={{POPULATION}}",
+                "--companies={{COMPANIES}}",
+                "--stream-service-api-key={{STREAM_SERVICE_API_KEY}}",
+                "--stream-service-namespace={{STREAM_SERVICE_NAMESPACE}}",
+                "--number-of-ticks={{NUMBER_OF_TICKS}}"]
         }
     ]
 }

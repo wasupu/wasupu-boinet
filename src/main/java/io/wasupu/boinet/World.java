@@ -25,17 +25,25 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 public class World {
 
     /**
-     * @param args arg0 = streamServiceApiKey
-     *             arg1 = streamServiceNamespace
+     * @param args --population = Required. Number of people.
+     *             --companies = Required. Number of companies.
+     *             --number-of-ticks = Optional. If not specified, there will be infinite ticks
+     *             --stream-service-api-key = Optional. Required if --stream-service-namespace is defined
+     *             --stream-service-namespace = Optional. Required if --stream-service-api-key is defined
      */
     public static void main(String[] args) {
+        Integer numberOfPeople = findArgument("--population", args)
+            .map(Integer::new)
+            .orElseThrow(() -> new IllegalArgumentException("--population argument required"));
+        Integer numberOfCompanies = findArgument("--companies", args)
+            .map(Integer::new)
+            .orElseThrow(() -> new IllegalArgumentException("--companies argument required"));
+
         Optional<String> streamServiceApiKey = findArgument("--stream-service-api-key", args);
         Optional<String> streamServiceNamespace = findArgument("--stream-service-namespace", args);
         World world = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ? new World(streamServiceApiKey.get(), streamServiceNamespace.get()) : new World();
 
-        world.init(findArgument("--population", args).map(Integer::new).get(),
-            findArgument("--companies", args).map(Integer::new).get());
-
+        world.init(numberOfPeople, numberOfCompanies);
         world.start(findArgument("--number-of-ticks", args).map(Integer::new));
     }
 

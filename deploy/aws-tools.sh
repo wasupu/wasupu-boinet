@@ -69,10 +69,10 @@ createEcsTaskDefinition() {
     sed -i.original "s~${awsDockerRegistry}~\{\{AWS_DOCKER_REGISTRY\}\}~" ${taskDefinitionFile}
     sed -i.original "s~${awslogsGroupName}~\{\{AWSLOGS_GROUP\}\}~" ${taskDefinitionFile}
     sed -i.original "s~${awsRegion}~\{\{AWSLOGS_REGION\}\}~" ${taskDefinitionFile}
-    sed -i.original "s~${streamServiceApiKey}~\{\{STREAM_SERVICE_API_KEY\}\}~" ${taskDefinitionFile}
-    sed -i.original "s~${streamServiceNamespace}~\{\{STREAM_SERVICE_NAMESPACE\}\}~" ${taskDefinitionFile}
-    sed -i.original "s~${population}~\{\{POPULATION\}\}~" ${taskDefinitionFile}
-    sed -i.original "s~${companies}~\{\{COMPANIES\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~--stream-service-api-key=${streamServiceApiKey}~--stream-service-api-key=\{\{STREAM_SERVICE_API_KEY\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~--stream-service-namespace=${streamServiceNamespace}~--stream-service-namespace=\{\{STREAM_SERVICE_NAMESPACE\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~--population=${population}~--population=\{\{POPULATION\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~--companies=${companies}~--companies=\{\{COMPANIES\}\}~" ${taskDefinitionFile}
     rm  ${taskDefinitionFile}.original
 }
 
