@@ -1,7 +1,7 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableSet;
-import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class EmploymentOffice {
             .limit(estimatedCandidates)
             .collect(Collectors.toSet());
 
-        return (!candidates.isEmpty()) ? candidates : ImmutableSet.of(world.newSettler(1));
+        return (!candidates.isEmpty()) ? candidates : ImmutableSet.of(world.newSettler());
     }
 
     private Integer estimateCandidates(BigDecimal companyCapital) {

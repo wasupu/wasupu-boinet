@@ -3,7 +3,7 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
-import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.population.Person;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;

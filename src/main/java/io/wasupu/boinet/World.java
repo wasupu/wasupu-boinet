@@ -1,17 +1,9 @@
 package io.wasupu.boinet;
 
-import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.wasupu.boinet.persons.Person;
-import io.wasupu.boinet.persons.behaviours.ContractAccount;
-import io.wasupu.boinet.persons.behaviours.ContractDebitCard;
-import io.wasupu.boinet.persons.behaviours.EveryDayRecurrentPayment;
-import io.wasupu.boinet.persons.behaviours.GenerateRandomPrice;
-import io.wasupu.boinet.persons.behaviours.InitialCapital;
-import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPayment;
-import io.wasupu.boinet.persons.behaviours.TriggeredByBalanceThreshold;
-import io.wasupu.boinet.persons.behaviours.WeekendRecurrentPayment;
+import io.wasupu.boinet.population.Hospital;
+import io.wasupu.boinet.population.Person;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -55,7 +47,7 @@ public class World {
             .forEach(this::newSupplier);
 
         IntStream.range(0, numberOfPeople)
-            .forEach(this::newSettler);
+            .forEach(hospital::newSettler);
     }
 
     public void start(Integer... numberOfTicks) {
@@ -101,94 +93,6 @@ public class World {
         return bank;
     }
 
-    Person newSettler(Integer number) {
-        Person newPerson = new Person(
-            createPersonUniqueIdentifier(),
-            faker.name().fullName(),
-            faker.phoneNumber().cellPhone(),
-            this);
-
-        newPerson.listenTicks(new ContractAccount(this, newPerson)::tick);
-        newPerson.listenTicks(new ContractDebitCard(this, newPerson)::tick);
-        newPerson.listenTicks(new InitialCapital(this, newPerson)::tick);
-
-        withEating(newPerson);
-        withPowerSupply(newPerson);
-        withCountryside(newPerson);
-        withCableTV(newPerson);
-        withMortgage(newPerson);
-        withInternetConnection(newPerson);
-
-        population.add(newPerson);
-        return newPerson;
-    }
-
-    private void withEating(Person newPerson) {
-        newPerson.listenTicks(new EveryDayRecurrentPayment(this,
-            newPerson,
-            ProductType.MEAL,
-            10,
-            20)::tick);
-    }
-
-    private void withMortgage(Person newPerson) {
-        newPerson.listenTicks(new MonthlyRecurrentPayment(this,
-            newPerson,
-            3,
-            ProductType.MORTGAGE,
-            generateRandomPrice.generateRandomPrice(300, 500),
-            findCompany())::tick);
-    }
-
-    private void withPowerSupply(Person newPerson) {
-        newPerson.listenTicks(new MonthlyRecurrentPayment(this,
-            newPerson,
-            25,
-            ProductType.ELECTRICITY,
-            60,
-            120,
-            findCompany())::tick);
-    }
-
-    private void withCountryside(Person newPerson) {
-        newPerson.listenTicks(new TriggeredByBalanceThreshold(this,
-            newPerson,
-            new BigDecimal("1000"),
-            new BigDecimal("6000"),
-            new WeekendRecurrentPayment(this,
-                newPerson,
-                ProductType.ENTERTAINMENT,
-                100,
-                500))::tick);
-    }
-
-    private void withCableTV(Person newPerson) {
-        newPerson.listenTicks(new TriggeredByBalanceThreshold(this,
-            newPerson,
-            new BigDecimal("1000"),
-            new BigDecimal("2000"),
-            new MonthlyRecurrentPayment(this,
-                newPerson,
-                5,
-                ProductType.ENTERTAINMENT,
-                generateRandomPrice.generateRandomPrice(10, 25),
-                findCompany()))::tick);
-    }
-
-    private void withInternetConnection(Person newPerson) {
-        newPerson.listenTicks(
-            new TriggeredByBalanceThreshold(this,
-                newPerson,
-                new BigDecimal("1000"),
-                new BigDecimal("1000"),
-                new MonthlyRecurrentPayment(this,
-                    newPerson,
-                    5,
-                    ProductType.INTERNET,
-                    generateRandomPrice.generateRandomPrice(40, 100),
-                    findCompany()))::tick);
-    }
-
     @Deprecated
     public Date getCurrentDate() {
         return currentDate.toDate();
@@ -206,23 +110,24 @@ public class World {
         return eventPublisher;
     }
 
-    private void newSupplier(Integer number) {
-        companies.add(new Company(createCompanyUniqueIdentifier(), this));
+    public Person newSettler() {
+        return hospital.newSettler(3);
     }
 
-    private String createPersonUniqueIdentifier() {
-        return UUID.randomUUID().toString();
+    private void newSupplier(Integer number) {
+        companies.add(new Company(createCompanyUniqueIdentifier(), this));
     }
 
     private String createCompanyUniqueIdentifier() {
         return UUID.randomUUID().toString();
     }
 
+
     private List<Company> companies = new ArrayList<>();
 
     private Collection<Person> population = new ArrayList<>();
-
     private Collection<Runnable> tickConsumers = ImmutableList.of();
+
     private Bank bank = new Bank(this);
 
     private EmploymentOffice employmentOffice = new EmploymentOffice(this);
@@ -230,12 +135,9 @@ public class World {
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
     private DateTime currentDate;
-
-    private Faker faker = new Faker();
-
     private EventPublisher eventPublisher;
 
-    private GenerateRandomPrice generateRandomPrice = new GenerateRandomPrice();
+    private final Hospital hospital = new Hospital(this);
 }
 
 

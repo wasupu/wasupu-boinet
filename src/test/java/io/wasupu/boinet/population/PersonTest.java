@@ -1,4 +1,4 @@
-package io.wasupu.boinet.persons;
+package io.wasupu.boinet.population;
 
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.Bank;

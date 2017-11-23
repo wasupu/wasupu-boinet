@@ -1,4 +1,4 @@
-package io.wasupu.boinet.persons.behaviours;
+package io.wasupu.boinet.population.behaviours;
 
 
 import io.wasupu.boinet.ProductType;

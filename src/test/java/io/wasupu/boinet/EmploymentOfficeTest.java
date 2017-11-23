@@ -1,7 +1,7 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableList;
-import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +53,7 @@ public class EmploymentOfficeTest {
         when(firstPerson.isUnemployed()).thenReturn(Boolean.FALSE);
         when(secondPerson.isUnemployed()).thenReturn(Boolean.FALSE);
 
-        when(world.newSettler(any())).thenReturn(thirdPerson);
+        when(world.newSettler()).thenReturn(thirdPerson);
 
         Collection<Person> returnedCandidates = employmentOffice.getCandidates(secondCompanyCapital);
 
@@ -95,7 +95,7 @@ public class EmploymentOfficeTest {
     public void shouldCreateANewPersonForCandidate() {
         when(world.getCompanies()).thenReturn(ImmutableList.of(firstCompany, secondCompany, thirdCompany));
         when(world.getPopulation()).thenReturn(ImmutableList.of(firstPerson, secondPerson, thirdPerson));
-        when(world.newSettler(any())).thenReturn(fourthPerson);
+        when(world.newSettler()).thenReturn(fourthPerson);
 
         when(firstPerson.isUnemployed()).thenReturn(Boolean.FALSE);
         when(secondPerson.isUnemployed()).thenReturn(Boolean.FALSE);

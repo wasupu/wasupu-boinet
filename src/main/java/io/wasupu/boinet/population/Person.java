@@ -1,14 +1,11 @@
-package io.wasupu.boinet.persons;
+package io.wasupu.boinet.population;
 
 import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.behaviours.*;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 
 import static java.lang.Boolean.FALSE;

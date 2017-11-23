@@ -1,9 +1,7 @@
-package io.wasupu.boinet.persons.behaviours;
+package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.Person;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;

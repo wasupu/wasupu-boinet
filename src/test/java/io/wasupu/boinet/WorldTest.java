@@ -1,6 +1,6 @@
 package io.wasupu.boinet;
 
-import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,9 +1,9 @@
-package io.wasupu.boinet.persons.behaviours;
+package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 

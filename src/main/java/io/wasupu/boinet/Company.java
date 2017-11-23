@@ -3,7 +3,7 @@ package io.wasupu.boinet;
 import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableMap;
-import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
