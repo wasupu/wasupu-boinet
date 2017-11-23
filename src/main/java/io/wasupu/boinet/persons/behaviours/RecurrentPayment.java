@@ -7,7 +7,7 @@ import io.wasupu.boinet.persons.Person;
 import java.math.BigDecimal;
 import java.util.Random;
 
-public class RecurrentPayment {
+public abstract class RecurrentPayment {
 
     public RecurrentPayment(World world,
                             Person person,
@@ -20,6 +20,8 @@ public class RecurrentPayment {
         this.startPriceRange = startPriceRange;
         this.endPriceRange = endPriceRange;
     }
+
+    public abstract void tick();
 
     protected void executePayment() {
         world.findCompany().buyProduct(person.getPan(), productType, generateRandomPrice(startPriceRange, endPriceRange));

@@ -32,7 +32,7 @@ public class TriggeredByBalanceThresholdTest {
 
         triggeredByBalanceThreshold.tick();
 
-        verify(company, never()).buyProduct(any(),any(),any());
+        verify(company, never()).buyProduct(any(), any(), any());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TriggeredByBalanceThresholdTest {
     }
 
     @Before
-    public void setupBank(){
+    public void setupBank() {
         when(person.getIban()).thenReturn(IBAN);
         when(person.getPan()).thenReturn(PAN);
         when(world.getBank()).thenReturn(bank);
@@ -91,7 +91,15 @@ public class TriggeredByBalanceThresholdTest {
 
     @Before
     public void setupGoToCountryside() {
-        triggeredByBalanceThreshold = new TriggeredByBalanceThreshold(world, person);
+        triggeredByBalanceThreshold = new TriggeredByBalanceThreshold(world,
+            person,
+            new BigDecimal("1000"),
+            new BigDecimal("6000"),
+            new WeekendRecurrentPayment(world,
+                person,
+                ProductType.ENTERTAINMENT,
+                100,
+                500));
     }
 
     private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
@@ -122,5 +130,4 @@ public class TriggeredByBalanceThresholdTest {
     private ArgumentCaptor<BigDecimal> pricesCaptor;
 
     private TriggeredByBalanceThreshold triggeredByBalanceThreshold;
-
 }

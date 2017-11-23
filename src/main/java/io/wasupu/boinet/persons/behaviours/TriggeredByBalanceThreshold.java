@@ -1,6 +1,5 @@
 package io.wasupu.boinet.persons.behaviours;
 
-import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
@@ -9,28 +8,31 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TriggeredByBalanceThreshold {
 
-    public TriggeredByBalanceThreshold(World world, Person person) {
+    public TriggeredByBalanceThreshold(World world,
+                                       Person person,
+                                       BigDecimal lowerThreshold,
+                                       BigDecimal upperThreshold,
+                                       RecurrentPayment recurrentPayment) {
         this.world = world;
         this.person = person;
-
-        weekendRecurrentPayment = new WeekendRecurrentPayment(world,
-            person,
-            ProductType.ENTERTAINMENT,
-            100,
-            500);
+        this.recurrentPayment = recurrentPayment;
+        this.lowerThreshold = lowerThreshold;
+        this.upperThreshold = upperThreshold;
     }
 
     public void tick() {
-        if (iHaveLessThan(new BigDecimal("1000"))) {
+
+        if (iHaveLessThan(lowerThreshold)) {
             iWasGoingToCountryside.set(false);
             return;
         }
 
-        if (!iWasGoingToCountryside.get() && !iHaveMoreThan(new BigDecimal("6000"))) return;
+
+        if (!iWasGoingToCountryside.get() && !iHaveMoreThan(upperThreshold)) return;
 
         iWasGoingToCountryside.set(true);
 
-        weekendRecurrentPayment.tick();
+        recurrentPayment.tick();
     }
 
     private boolean iHaveLessThan(BigDecimal expectedThreshold) {
@@ -47,5 +49,9 @@ public class TriggeredByBalanceThreshold {
 
     private Person person;
 
-    private WeekendRecurrentPayment weekendRecurrentPayment;
+    private RecurrentPayment recurrentPayment;
+
+    private BigDecimal lowerThreshold;
+    private BigDecimal upperThreshold;
+
 }
