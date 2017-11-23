@@ -50,13 +50,16 @@ createEcsTaskDefinition() {
     local awsRegion="$5"
     local streamServiceApiKey="$6"
     local streamServiceNamespace="$7"
-    local numberOfTicks="$8"
+    local population="$8"
+    local companies="$9"
 
     sed -i.original "s~{{AWS_DOCKER_REGISTRY}}~${awsDockerRegistry}~" ${taskDefinitionFile}
     sed -i.original "s~{{AWSLOGS_GROUP}}~${awslogsGroupName}~" ${taskDefinitionFile}
     sed -i.original "s~{{AWSLOGS_REGION}}~${awsRegion}~" ${taskDefinitionFile}
     sed -i.original "s~{{STREAM_SERVICE_API_KEY}}~${streamServiceApiKey}~" ${taskDefinitionFile}
     sed -i.original "s~{{STREAM_SERVICE_NAMESPACE}}~${streamServiceNamespace}~" ${taskDefinitionFile}
+    sed -i.original "s~{{POPULATION}}~${population}~" ${taskDefinitionFile}
+    sed -i.original "s~{{COMPANIES}}~${companies}~" ${taskDefinitionFile}
     rm  ${taskDefinitionFile}.original
 
     $(awsCli) ecs register-task-definition \
@@ -68,6 +71,8 @@ createEcsTaskDefinition() {
     sed -i.original "s~${awsRegion}~\{\{AWSLOGS_REGION\}\}~" ${taskDefinitionFile}
     sed -i.original "s~${streamServiceApiKey}~\{\{STREAM_SERVICE_API_KEY\}\}~" ${taskDefinitionFile}
     sed -i.original "s~${streamServiceNamespace}~\{\{STREAM_SERVICE_NAMESPACE\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~${population}~\{\{POPULATION\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~${companies}~\{\{COMPANIES\}\}~" ${taskDefinitionFile}
     rm  ${taskDefinitionFile}.original
 }
 

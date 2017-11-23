@@ -15,6 +15,14 @@
                 {
                     "name": "STREAM_SERVICE_NAMESPACE",
                     "value": "{{STREAM_SERVICE_NAMESPACE}}"
+                },
+                {
+                    "name": "POPULATION",
+                    "value": "{{POPULATION}}"
+                },
+                {
+                    "name": "COMPANIES",
+                    "value": "{{COMPANIES}}"
                 }
             ],
             "links": [],

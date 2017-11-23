@@ -33,7 +33,9 @@ public class World {
         Optional<String> streamServiceNamespace = findArgument("--stream-service-namespace", args);
         World world = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ? new World(streamServiceApiKey.get(), streamServiceNamespace.get()) : new World();
 
-        world.init(1, 1);
+        world.init(findArgument("--population", args).map(Integer::new).get(),
+            findArgument("--companies", args).map(Integer::new).get());
+
         world.start(findArgument("--number-of-ticks", args).map(Integer::new));
     }
 
