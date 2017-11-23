@@ -86,6 +86,7 @@ public class Person {
             .put("person", identifier)
             .put("name", name)
             .put("cellPhone", cellPhone)
+            .put("pan", pan)
             .put("address", ImmutableMap.of(
                 "full", fullAddress,
                 "zipCode", zipCode,

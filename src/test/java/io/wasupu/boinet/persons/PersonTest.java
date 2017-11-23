@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -78,6 +79,15 @@ public class PersonTest {
     }
 
     @Test
+    public void shouldPublishPersonPanOnFirstTick() {
+
+
+        person.tick();
+
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("pan", PAN)));
+    }
+
+    @Test
     public void shouldPublishPersonStatusAt30Ticks() {
         IntStream.range(0, 31).forEach(i -> person.tick());
 
@@ -98,11 +108,11 @@ public class PersonTest {
     public void setupPerson() {
         person = new Person(IDENTIFIER, FULL_NAME, CELL_PHONE, world);
         person.setIban(IBAN);
+        person.setPan(PAN);
     }
 
     @Before
     public void setupAccount() {
-
         when(world.getBank()).thenReturn(bank);
         when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
@@ -130,5 +140,7 @@ public class PersonTest {
 
     private static final String FULL_NAME = "fullName";
     private static final String CELL_PHONE = "686338292";
+
+    private static final String PAN = "mipan";
 
 }
