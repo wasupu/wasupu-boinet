@@ -5,15 +5,19 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
 import java.math.BigDecimal;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GoToCountryside {
+public class TriggeredByBalanceThreshold {
 
-
-    public GoToCountryside(World world, Person person) {
+    public TriggeredByBalanceThreshold(World world, Person person) {
         this.world = world;
         this.person = person;
+
+        weekendRecurrentPayment = new WeekendRecurrentPayment(world,
+            person,
+            ProductType.ENTERTAINMENT,
+            100,
+            500);
     }
 
     public void tick() {
@@ -26,14 +30,7 @@ public class GoToCountryside {
 
         iWasGoingToCountryside.set(true);
 
-        if (!isWeekend()) return;
-
-        world.findCompany().buyProduct(person.getPan(), ProductType.ENTERTAINMENT, generateRandomPrice(100, 500));
-
-    }
-
-    private boolean isWeekend() {
-        return world.getCurrentDateTime().getDayOfWeek() > 5;
+        weekendRecurrentPayment.tick();
     }
 
     private boolean iHaveLessThan(BigDecimal expectedThreshold) {
@@ -44,16 +41,11 @@ public class GoToCountryside {
         return expectedThreshold.compareTo(world.getBank().getBalance(person.getIban())) < 0;
     }
 
-    private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
-        Random random = new Random();
-        double randomValue = startPrice + (endPrice - startPrice) * random.nextDouble();
-        return new BigDecimal(randomValue)
-            .setScale(2, BigDecimal.ROUND_HALF_UP);
-    }
-
     private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
 
     private World world;
 
     private Person person;
+
+    private WeekendRecurrentPayment weekendRecurrentPayment;
 }

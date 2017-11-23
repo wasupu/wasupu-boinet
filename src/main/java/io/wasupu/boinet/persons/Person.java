@@ -26,14 +26,14 @@ public class Person {
             new ContractAccount(world,this)::tick,
             new ContractDebitCard(world,this)::tick,
             new InitialCapital(world,this)::tick,
-            new EatEveryDay(world,this)::tick,
+            new EveryDayRecurrentPayment(world,this)::tick,
             new MonthlyRecurrentPayment(world,
                 this,
                 25,
                 ProductType.ELECTRICITY,
                 60,
                 120)::tick,
-            new GoToCountryside(world,this)::tick
+            new TriggeredByBalanceThreshold(world,this)::tick
             );
 
         world.listenTicks(this::tick);

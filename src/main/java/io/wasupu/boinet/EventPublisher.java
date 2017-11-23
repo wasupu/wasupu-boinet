@@ -35,7 +35,8 @@ public class EventPublisher {
     private void publishInStreamService(String streamId, Map<String, Object> event) {
         Map<String, Object> formattedEvent = formatEvent(event);
 
-        buildRequest(streamId).post(Entity.entity(formattedEvent, MediaType.APPLICATION_JSON_TYPE));
+        buildRequest(streamId)
+            .post(Entity.entity(formattedEvent, MediaType.APPLICATION_JSON_TYPE));
     }
 
     private Map<String, Object> formatEvent(Map<String, Object> event) {
