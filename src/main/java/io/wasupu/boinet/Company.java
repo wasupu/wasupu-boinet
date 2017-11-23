@@ -2,12 +2,15 @@ package io.wasupu.boinet;
 
 import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Company {
 
@@ -43,7 +46,7 @@ public class Company {
     }
 
     public Collection<Person> getEmployees() {
-        return employees;
+        return ImmutableList.copyOf(employees.keySet());
     }
 
     @Override
@@ -61,6 +64,10 @@ public class Company {
         return identifier.hashCode();
     }
 
+    BigDecimal getEmployeeSalary(Person person) {
+        return employees.get(person);
+    }
+
     private void hireStaff() {
         if (age != 1) return;
 
@@ -69,8 +76,12 @@ public class Company {
     }
 
     void hire(Person person) {
-        employees.add(person);
+        employees.put(person, generateSalary());
         person.youAreHired();
+    }
+
+    private BigDecimal generateSalary() {
+        return new GenerateRandomPrice().apply(700, 2000);
     }
 
     private void initialCapital() {
@@ -88,8 +99,8 @@ public class Company {
     private void paySalary() {
         if (!isDayOfMonth(28)) return;
 
-        employees.forEach(employee ->
-            world.getBank().transfer(iban, employee.getIban(), SALARY));
+        employees.forEach((employee, salary) ->
+            world.getBank().transfer(iban, employee.getIban(), salary));
     }
 
     private boolean isDayOfMonth(Integer dayOfMonth) {
@@ -117,7 +128,7 @@ public class Company {
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(60000);
 
-    private Collection<Person> employees = new ArrayList<>();
+    private Map<Person, BigDecimal> employees = new HashMap<>();
 
     static final BigDecimal SALARY = new BigDecimal(1000);
 
@@ -136,5 +147,6 @@ public class Company {
     private static final String STREAM_ID = "companyEventStream";
 
     private static final Faker faker = new Faker();
+
 
 }

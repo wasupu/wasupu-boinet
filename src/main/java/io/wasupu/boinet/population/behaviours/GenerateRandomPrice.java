@@ -2,10 +2,12 @@ package io.wasupu.boinet.population.behaviours;
 
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.function.BiFunction;
 
-public class GenerateRandomPrice {
+public class GenerateRandomPrice implements BiFunction<Integer, Integer, BigDecimal> {
 
-    public BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {
+    @Override
+    public BigDecimal apply(Integer startPrice, Integer endPrice) {
         Random random = new Random();
         double randomValue = startPrice + (endPrice - startPrice) * random.nextDouble();
         return new BigDecimal(randomValue)

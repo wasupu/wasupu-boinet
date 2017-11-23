@@ -56,7 +56,7 @@ public class Hospital {
             newPerson,
             3,
             ProductType.MORTGAGE,
-            generateRandomPrice.generateRandomPrice(300, 500),
+            generateRandomPrice.apply(300, 500),
             world.findCompany())::tick);
     }
 
@@ -91,7 +91,7 @@ public class Hospital {
                 newPerson,
                 5,
                 ProductType.ENTERTAINMENT,
-                generateRandomPrice.generateRandomPrice(10, 25),
+                generateRandomPrice.apply(10, 25),
                 world.findCompany()))::tick);
     }
 
@@ -105,7 +105,7 @@ public class Hospital {
                     newPerson,
                     5,
                     ProductType.INTERNET,
-                    generateRandomPrice.generateRandomPrice(40, 100),
+                    generateRandomPrice.apply(40, 100),
                     world.findCompany()))::tick);
     }
 

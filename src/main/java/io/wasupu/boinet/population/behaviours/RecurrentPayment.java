@@ -27,7 +27,7 @@ public abstract class RecurrentPayment extends PersonBehaviour {
     }
 
     protected void executePayment() {
-        BigDecimal price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.generateRandomPrice(startPriceRange, endPriceRange);
+        BigDecimal price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.apply(startPriceRange, endPriceRange);
         getCompany().buyProduct(getPerson().getPan(), productType, price);
     }
 
