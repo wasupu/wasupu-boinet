@@ -1,17 +1,11 @@
 package io.wasupu.boinet.persons.behaviours;
 
 
-import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
-import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.Person;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;

@@ -30,28 +30,15 @@ public class Person {
         this.latitude = address.latitude();
         this.longitude = address.longitude();
 
-        tickConsumers = ImmutableList.of(
-            new ContractAccount(world, this)::tick,
-            new ContractDebitCard(world, this)::tick,
-            new InitialCapital(world, this)::tick,
-            new EveryDayRecurrentPayment(world, this)::tick,
-            new MonthlyRecurrentPayment(world,
-                this,
-                25,
-                ProductType.ELECTRICITY,
-                60,
-                120)::tick,
-            new TriggeredByBalanceThreshold(world,
-                this,
-                new BigDecimal("1000"),
-                new BigDecimal("6000"),
-                new WeekendRecurrentPayment(world,
-                    this,
-                    ProductType.ENTERTAINMENT,
-                    100,
-                    500))::tick);
+        this.world.listenTicks(this::tick);
+    }
 
-        world.listenTicks(this::tick);
+    public void listenTicks(Runnable tickConsumer) {
+        tickConsumers = ImmutableList
+            .<Runnable>builder()
+            .addAll(tickConsumers)
+            .add(tickConsumer)
+            .build();
     }
 
     public void tick() {
@@ -151,5 +138,5 @@ public class Person {
 
     private static final Faker faker = new Faker();
 
-    private Collection<Runnable> tickConsumers;
+    private Collection<Runnable> tickConsumers = ImmutableList.of();
 }

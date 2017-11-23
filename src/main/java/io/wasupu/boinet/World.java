@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.persons.Person;
+import io.wasupu.boinet.persons.behaviours.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class World {
     }
 
     public World() {
-        currentDate = new DateTime(2017, 10, 5,0,0,0, DateTimeZone.UTC);
+        currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
         eventPublisher = new EventPublisher();
     }
 
@@ -99,6 +100,27 @@ public class World {
             faker.name().fullName(),
             faker.phoneNumber().cellPhone(),
             this);
+
+        new ContractAccount(this, newPerson);
+        new ContractDebitCard(this, newPerson);
+        new InitialCapital(this, newPerson);
+        new EveryDayRecurrentPayment(this, newPerson);
+        new MonthlyRecurrentPayment(this,
+            newPerson,
+            25,
+            ProductType.ELECTRICITY,
+            60,
+            120);
+
+        new TriggeredByBalanceThreshold(this,
+            newPerson,
+            new BigDecimal("1000"),
+            new BigDecimal("6000"),
+            new WeekendRecurrentPayment(this,
+                newPerson,
+                ProductType.ENTERTAINMENT,
+                100,
+                500));
 
         population.add(newPerson);
         return newPerson;

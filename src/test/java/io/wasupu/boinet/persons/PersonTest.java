@@ -21,10 +21,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -82,11 +79,6 @@ public class PersonTest {
 
     @Test
     public void shouldPublishPersonStatusAt30Ticks() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount()).thenReturn(IBAN);
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
-        when(world.findCompany()).thenReturn(company);
-
         IntStream.range(0, 31).forEach(i -> person.tick());
 
         verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
@@ -105,14 +97,14 @@ public class PersonTest {
     @Before
     public void setupPerson() {
         person = new Person(IDENTIFIER, FULL_NAME, CELL_PHONE, world);
+        person.setIban(IBAN);
     }
 
     @Before
     public void setupAccount() {
-        when(world.getBank()).thenReturn(bank);
 
+        when(world.getBank()).thenReturn(bank);
         when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
 
