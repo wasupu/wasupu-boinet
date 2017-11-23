@@ -1,5 +1,7 @@
 package io.wasupu.boinet;
 
+import com.github.javafaker.Address;
+import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.persons.Person;
 
@@ -11,6 +13,8 @@ public class Company {
 
     public Company(String identifier, World world) {
         this.identifier = identifier;
+        this.name = faker.company().name();
+        this.address = faker.address();
         this.world = world;
 
         world.listenTicks(this::tick);
@@ -98,6 +102,13 @@ public class Company {
         world.getEventPublisher().publish(STREAM_ID, ImmutableMap
             .<String, Object>builder()
             .put("company", identifier)
+            .put("name", name)
+            .put("address", ImmutableMap.of(
+                "full", address.fullAddress(),
+                "zipCode", address.zipCode(),
+                "geolocation", ImmutableMap.of(
+                    "latitude", address.latitude(),
+                    "longitude", address.longitude())))
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
             .put("date", world.getCurrentDateTime().toDate())
@@ -114,10 +125,16 @@ public class Company {
 
     private String identifier;
 
+    private String name;
+
+    private Address address;
+
     private World world;
 
     private Long age = 0L;
 
     private static final String STREAM_ID = "companyEventStream";
+
+    private static final Faker faker = new Faker();
 
 }

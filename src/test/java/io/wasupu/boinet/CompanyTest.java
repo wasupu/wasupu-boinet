@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.persons.Person;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,11 +19,14 @@ import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompanyTest {
@@ -148,14 +152,35 @@ public class CompanyTest {
     public void shouldPublishCompanyInfoAt0Ticks() {
         company.tick();
 
-        verify(eventPublisher).publish("companyEventStream", COMPANY_INFO);
+        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
+        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
+    }
+
+    @Test
+    public void shouldPublishCompanyInfoWithAddress() {
+        company.tick();
+
+        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(hasKey("address")));
+        // verify(eventPublisher).publish(eq("companyEventStream"), argThat(hasEntry(eq("address"), MockitoHamcrest.<Map<String, Object>>argThat(hasKey("full")))));
+    }
+
+    @Test
+    public void shouldPublishCompanyInfoWithName() {
+        company.tick();
+
+        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(hasKey("name")));
     }
 
     @Test
     public void shouldPublishCompanyInfoAt90Ticks() {
         IntStream.range(0, 91).forEach(i -> company.tick());
 
-        verify(eventPublisher, times(2)).publish("companyEventStream", COMPANY_INFO);
+        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
+        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
     }
 
     @Before

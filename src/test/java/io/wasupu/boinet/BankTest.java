@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,7 +108,7 @@ public class BankTest {
     @Before
     public void setupBank() {
         bank = new Bank(world);
-        when(world.getCurrentDate()).thenReturn(new GregorianCalendar(2017, 10, 10).getTime());
+        when(world.getCurrentDateTime()).thenReturn(new DateTime(new GregorianCalendar(2017, 10, 10).getTime()));
     }
 
     private Bank bank;
@@ -124,5 +125,4 @@ public class BankTest {
     @Mock
     private EventPublisher eventPublisher;
 
-    private static final String CURRENT_DATE = "2017-10-05T14:48:00.000Z";
 }

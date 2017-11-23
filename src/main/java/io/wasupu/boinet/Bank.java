@@ -67,7 +67,7 @@ public class Bank {
             .put("amount", amount)
             .put("currency", "EUR")
             .put("company", companyIndentifier)
-            .put("date", world.getCurrentDate())
+            .put("date", world.getCurrentDateTime().toDate())
             .build());
     }
 
@@ -82,4 +82,5 @@ public class Bank {
     private World world;
 
     private static final String STREAM_ID = "cardMovementEventStream";
+
 }

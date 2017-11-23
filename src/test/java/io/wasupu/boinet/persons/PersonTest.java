@@ -1,11 +1,11 @@
 package io.wasupu.boinet.persons;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.EventPublisher;
 import io.wasupu.boinet.World;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +18,14 @@ import java.util.Date;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonTest {
@@ -60,7 +65,19 @@ public class PersonTest {
     public void shouldPublishPersonStatusOnFirstTick() {
         person.tick();
 
-        verify(eventPublisher).publish("personEventStream", PERSON_INFO);
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
+    }
+
+    @Test
+    public void shouldPublishPersonAddressOnFirstTick() {
+        person.tick();
+
+        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(hasKey("address")));
     }
 
     @Test
@@ -72,7 +89,12 @@ public class PersonTest {
 
         IntStream.range(0, 31).forEach(i -> person.tick());
 
-        verify(eventPublisher, times(2)).publish("personEventStream", PERSON_INFO);
+        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
+        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
+        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
+        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
     }
 
     @Before
@@ -116,15 +138,5 @@ public class PersonTest {
 
     private static final String FULL_NAME = "fullName";
     private static final String CELL_PHONE = "686338292";
-
-    private static final Map<String, Object> PERSON_INFO = ImmutableMap
-        .<String, Object>builder()
-        .put("person", "personId")
-        .put("name", FULL_NAME)
-        .put("cellPhone", CELL_PHONE)
-        .put("balance", new BigDecimal("12"))
-        .put("currency", "EUR")
-        .put("date", CURRENT_DATE)
-        .build();
 
 }

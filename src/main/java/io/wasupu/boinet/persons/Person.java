@@ -1,10 +1,17 @@
 package io.wasupu.boinet.persons;
 
+import com.github.javafaker.Address;
+import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.persons.behaviours.*;
+import io.wasupu.boinet.persons.behaviours.ContractAccount;
+import io.wasupu.boinet.persons.behaviours.ContractDebitCard;
+import io.wasupu.boinet.persons.behaviours.EveryDayRecurrentPayment;
+import io.wasupu.boinet.persons.behaviours.InitialCapital;
+import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPayment;
+import io.wasupu.boinet.persons.behaviours.TriggeredByBalanceThreshold;
 
 import java.util.Collection;
 
@@ -21,20 +28,24 @@ public class Person {
         this.name = name;
         this.world = world;
         this.cellPhone = cellPhone;
+        Address address = faker.address();
+        this.fullAddress = address.fullAddress();
+        this.zipCode = address.zipCode();
+        this.latitude = address.latitude();
+        this.longitude = address.longitude();
 
         tickConsumers = ImmutableList.of(
-            new ContractAccount(world,this)::tick,
-            new ContractDebitCard(world,this)::tick,
-            new InitialCapital(world,this)::tick,
-            new EveryDayRecurrentPayment(world,this)::tick,
+            new ContractAccount(world, this)::tick,
+            new ContractDebitCard(world, this)::tick,
+            new InitialCapital(world, this)::tick,
+            new EveryDayRecurrentPayment(world, this)::tick,
             new MonthlyRecurrentPayment(world,
                 this,
                 25,
                 ProductType.ELECTRICITY,
                 60,
                 120)::tick,
-            new TriggeredByBalanceThreshold(world,this)::tick
-            );
+            new TriggeredByBalanceThreshold(world, this)::tick);
 
         world.listenTicks(this::tick);
     }
@@ -84,6 +95,12 @@ public class Person {
             .put("person", identifier)
             .put("name", name)
             .put("cellPhone", cellPhone)
+            .put("address", ImmutableMap.of(
+                "full", fullAddress,
+                "zipCode", zipCode,
+                "geolocation", ImmutableMap.of(
+                    "latitude", latitude,
+                    "longitude", longitude)))
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
             .put("date", world.getCurrentDateTime().toDate())
@@ -109,6 +126,11 @@ public class Person {
 
     private String identifier;
 
+    private String fullAddress;
+    private String zipCode;
+    private String latitude;
+    private String longitude;
+
     private String pan;
 
     private World world;
@@ -122,6 +144,8 @@ public class Person {
     private final String cellPhone;
 
     private static final String STREAM_ID = "personEventStream";
+
+    private static final Faker faker = new Faker();
 
     private Collection<Runnable> tickConsumers;
 }
