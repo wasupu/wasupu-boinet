@@ -4,7 +4,7 @@ set -o pipefail
 set -o allexport
 [[ "${DEBUG}" == 'true' ]] && set -o xtrace
 
-if [[ $# -ne 9 && -ne 8 ]]; then
+if [[ $# -ne 9 && $# -ne 8 ]]; then
     echo "Usage: ./deploy.sh <AWS_ACCESS_KEY> <AWS_SECRET_KEY> <AWS_DEFAULT_REGION> <AWS_DOCKER_REGISTRY> <STREAM_SERVICE_API_KEY> <STREAM_SERVICE_NAMESPACE> <POPULATION> <COMPANIES> [<NUMBER_OF_TICKS>]"
     exit 1
 fi
