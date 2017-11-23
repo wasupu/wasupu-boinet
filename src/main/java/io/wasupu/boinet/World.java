@@ -70,7 +70,7 @@ public class World {
             .forEach(this::newSupplier);
 
         IntStream.range(0, numberOfPeople)
-            .forEach(hospital::newSettler);
+            .forEach(hospital::newBorn);
     }
 
     public void start(Optional<Integer> numberOfTicks) {
@@ -135,7 +135,7 @@ public class World {
     }
 
     public Person newSettler() {
-        return hospital.newSettler(3);
+        return hospital.newBorn(3);
     }
 
     private void newSupplier(Integer number) {

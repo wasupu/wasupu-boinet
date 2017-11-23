@@ -13,7 +13,9 @@ import io.wasupu.boinet.population.behaviours.TriggeredByBalanceThreshold;
 import io.wasupu.boinet.population.behaviours.WeekendRecurrentPayment;
 
 import java.math.BigDecimal;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 public class Hospital {
 
@@ -21,7 +23,7 @@ public class Hospital {
         this.world = world;
     }
 
-    public Person newSettler(Integer number) {
+    public Person newBorn(Integer number) {
         Person newPerson = new Person(
             createPersonUniqueIdentifier(),
             faker.name().fullName(),
@@ -54,7 +56,7 @@ public class Hospital {
     void withMortgage(Person newPerson) {
         newPerson.listenTicks(new MonthlyRecurrentPayment(world,
             newPerson,
-            3,
+            new Random().nextInt(28),
             ProductType.MORTGAGE,
             generateRandomPrice.apply(300, 500),
             world.findCompany())::tick);
