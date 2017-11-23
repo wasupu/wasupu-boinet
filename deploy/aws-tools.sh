@@ -48,10 +48,17 @@ createEcsTaskDefinition() {
     local awsDockerRegistry="$3"
     local awslogsGroupName="$4"
     local awsRegion="$5"
-    local streamServiceApiKey="$6"
-    local streamServiceNamespace="$7"
-    local population="$8"
-    local companies="$9"
+    local population="$6"
+    local companies="$7"
+    if [[ $# -gt 8 ]]; then
+        local streamServiceApiKey="$8"
+        local streamServiceNamespace="$9"
+    fi
+    if [[ $# -eq 8 ]]; then
+        local numberOfTicks="$8"
+    elif [[ $# -eq 10 ]]; then
+        local numberOfTicks="${10}"
+    fi
 
     sed -i.original "s~{{AWS_DOCKER_REGISTRY}}~${awsDockerRegistry}~" ${taskDefinitionFile}
     sed -i.original "s~{{AWSLOGS_GROUP}}~${awslogsGroupName}~" ${taskDefinitionFile}
@@ -60,6 +67,7 @@ createEcsTaskDefinition() {
     sed -i.original "s~{{STREAM_SERVICE_NAMESPACE}}~${streamServiceNamespace}~" ${taskDefinitionFile}
     sed -i.original "s~{{POPULATION}}~${population}~" ${taskDefinitionFile}
     sed -i.original "s~{{COMPANIES}}~${companies}~" ${taskDefinitionFile}
+    sed -i.original "s~{{NUMBER_OF_TICKS}}~${numberOfTicks}~" ${taskDefinitionFile}
     rm  ${taskDefinitionFile}.original
 
     $(awsCli) ecs register-task-definition \
@@ -73,6 +81,7 @@ createEcsTaskDefinition() {
     sed -i.original "s~--stream-service-namespace=${streamServiceNamespace}~--stream-service-namespace=\{\{STREAM_SERVICE_NAMESPACE\}\}~" ${taskDefinitionFile}
     sed -i.original "s~--population=${population}~--population=\{\{POPULATION\}\}~" ${taskDefinitionFile}
     sed -i.original "s~--companies=${companies}~--companies=\{\{COMPANIES\}\}~" ${taskDefinitionFile}
+    sed -i.original "s~--number-of-ticks=${numberOfTicks}~--number-of-ticks=\{\{NUMBER_OF_TICKS\}\}~" ${taskDefinitionFile}
     rm  ${taskDefinitionFile}.original
 }
 
