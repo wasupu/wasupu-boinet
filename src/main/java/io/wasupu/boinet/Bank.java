@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
@@ -66,6 +67,10 @@ public class Bank {
             .put("pan", pan)
             .put("amount", amount)
             .put("currency", "EUR")
+            .put("details", "anything")
+            .put("geolocation", ImmutableMap.of(
+                "latitude", faker.address().latitude(),
+                "longitude", faker.address().longitude()))
             .put("company", companyIndentifier)
             .put("date", world.getCurrentDateTime().toDate())
             .build());
@@ -82,5 +87,7 @@ public class Bank {
     private World world;
 
     private static final String STREAM_ID = "cardMovementEventStream";
+
+    private static final Faker faker = new Faker();
 
 }
