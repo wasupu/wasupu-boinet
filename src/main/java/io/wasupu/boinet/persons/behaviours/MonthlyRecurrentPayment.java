@@ -4,9 +4,6 @@ import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
-import java.math.BigDecimal;
-import java.util.Random;
-
 public class MonthlyRecurrentPayment extends RecurrentPayment{
 
     public MonthlyRecurrentPayment(World world,

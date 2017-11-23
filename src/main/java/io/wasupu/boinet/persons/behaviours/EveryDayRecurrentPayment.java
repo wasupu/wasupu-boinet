@@ -9,7 +9,7 @@ public class EveryDayRecurrentPayment extends RecurrentPayment {
     public EveryDayRecurrentPayment(World world, Person person) {
         super(world,
             person,
-            ProductType.MEAL,10,20);
+            ProductType.MEAL, 10, 20);
         this.person = person;
     }
 

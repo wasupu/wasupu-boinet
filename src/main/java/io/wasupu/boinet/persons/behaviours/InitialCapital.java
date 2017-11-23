@@ -5,22 +5,17 @@ import io.wasupu.boinet.persons.Person;
 
 import java.math.BigDecimal;
 
-public class InitialCapital {
+public class InitialCapital extends PersonBehaviour {
 
     public InitialCapital(World world, Person person) {
-        this.world = world;
-        this.person = person;
+        super(world, person);
     }
 
     public void tick() {
-        if (person.getAge() != 0) return;
+        if (getPerson().getAge() != 0) return;
 
-        world.getBank().deposit(person.getIban(), INITIAL_CAPITAL);
+        getWorld().getBank().deposit(getPerson().getIban(), INITIAL_CAPITAL);
     }
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
-
-    private World world;
-
-    private Person person;
 }

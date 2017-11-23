@@ -3,20 +3,15 @@ package io.wasupu.boinet.persons.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
-public class ContractAccount {
+public class ContractAccount extends PersonBehaviour {
 
     public ContractAccount(World world, Person person) {
-        this.world = world;
-        this.person = person;
+        super(world, person);
     }
 
     public void tick() {
-        if (person.getAge() != 0) return;
+        if (getPerson().getAge() != 0) return;
 
-        person.setIban(world.getBank().contractAccount());
+        getPerson().setIban(getWorld().getBank().contractAccount());
     }
-
-    private World world;
-
-    private Person person;
 }

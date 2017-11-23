@@ -12,7 +12,6 @@ public class WeekendRecurrentPayment extends RecurrentPayment {
                                    Integer startPriceRange,
                                    Integer endPriceRange) {
         super(world, person, productType, startPriceRange, endPriceRange);
-        this.world = world;
     }
 
     public void tick() {
@@ -22,8 +21,7 @@ public class WeekendRecurrentPayment extends RecurrentPayment {
     }
 
     private boolean isWeekend() {
-        return world.getCurrentDateTime().getDayOfWeek() > 5;
+        return getWorld().getCurrentDateTime().getDayOfWeek() > 5;
     }
 
-    private World world;
 }
