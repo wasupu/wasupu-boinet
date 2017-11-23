@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,10 +8,13 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
 
@@ -36,7 +40,18 @@ public class EventPublisher {
         Map<String, Object> formattedEvent = formatEvent(event);
 
         buildRequest(streamId)
-            .post(Entity.entity(formattedEvent, MediaType.APPLICATION_JSON_TYPE));
+            .async()
+            .post(Entity.entity(formattedEvent, MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
+                @Override
+                public void completed(Response response) {
+                    logger.info(appendEntries(ImmutableMap.of("status", response.getStatus())), "eventPublisher");
+                }
+
+                @Override
+                public void failed(Throwable throwable) {
+                    logger.error("post(). error posting to elasticsearch. Cause: " + throwable.getCause());
+                }
+            });
     }
 
     private Map<String, Object> formatEvent(Map<String, Object> event) {
