@@ -4,7 +4,7 @@
             "name": "boinet",
             "image": "{{AWS_DOCKER_REGISTRY}}/boinet:latest",
             "cpu": 100,
-            "memory": 500,
+            "memory": 1500,
             "essential": true,
             "portMappings": [],
             "environment": [

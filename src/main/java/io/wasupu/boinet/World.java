@@ -29,7 +29,7 @@ public class World {
      */
     public static void main(String[] args) {
         World world = (args.length == 2) ? new World(args[0], args[1]) : new World();
-        world.init(10, 2);
+        world.init(1000, 2);
         world.start();
     }
 
@@ -52,7 +52,7 @@ public class World {
     }
 
     public void start(Integer... numberOfTicks) {
-        int ticks = numberOfTicks.length == 0 ? 10 : numberOfTicks[0];
+        int ticks = numberOfTicks.length == 0 ? 100 : numberOfTicks[0];
 
         IntStream.range(0, ticks)
             .forEach(tickNumber -> {
