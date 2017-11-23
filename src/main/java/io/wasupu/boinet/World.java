@@ -4,7 +4,13 @@ import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.persons.Person;
-import io.wasupu.boinet.persons.behaviours.*;
+import io.wasupu.boinet.persons.behaviours.ContractAccount;
+import io.wasupu.boinet.persons.behaviours.ContractDebitCard;
+import io.wasupu.boinet.persons.behaviours.EveryDayRecurrentPayment;
+import io.wasupu.boinet.persons.behaviours.InitialCapital;
+import io.wasupu.boinet.persons.behaviours.MonthlyRecurrentPayment;
+import io.wasupu.boinet.persons.behaviours.TriggeredByBalanceThreshold;
+import io.wasupu.boinet.persons.behaviours.WeekendRecurrentPayment;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -44,11 +50,11 @@ public class World {
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
-        IntStream.range(0, numberOfPeople)
-            .forEach(this::newSettler);
-
         IntStream.range(0, numberOfCompanies)
             .forEach(this::newSupplier);
+
+        IntStream.range(0, numberOfPeople)
+            .forEach(this::newSettler);
     }
 
     public void start(Integer... numberOfTicks) {
@@ -104,13 +110,18 @@ public class World {
         newPerson.listenTicks(new ContractAccount(this, newPerson)::tick);
         newPerson.listenTicks(new ContractDebitCard(this, newPerson)::tick);
         newPerson.listenTicks(new InitialCapital(this, newPerson)::tick);
-        newPerson.listenTicks(new EveryDayRecurrentPayment(this, newPerson)::tick);
+        newPerson.listenTicks(new EveryDayRecurrentPayment(this,
+            newPerson,
+            ProductType.MEAL,
+            10,
+            20)::tick);
         newPerson.listenTicks(new MonthlyRecurrentPayment(this,
             newPerson,
             25,
             ProductType.ELECTRICITY,
             60,
-            120)::tick);
+            120,
+            findCompany())::tick);
         newPerson.listenTicks(new TriggeredByBalanceThreshold(this,
             newPerson,
             new BigDecimal("1000"),

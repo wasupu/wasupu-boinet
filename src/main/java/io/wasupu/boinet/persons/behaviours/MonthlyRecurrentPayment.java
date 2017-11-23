@@ -1,17 +1,19 @@
 package io.wasupu.boinet.persons.behaviours;
 
+import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
 
-public class MonthlyRecurrentPayment extends RecurrentPayment{
+public class MonthlyRecurrentPayment extends RecurrentPayment {
 
     public MonthlyRecurrentPayment(World world,
                                    Person person,
                                    Integer day,
                                    ProductType productType,
                                    Integer startPriceRange,
-                                   Integer endPriceRange) {
+                                   Integer endPriceRange,
+                                   Company company) {
         super(world,
             person,
             productType,
@@ -19,12 +21,18 @@ public class MonthlyRecurrentPayment extends RecurrentPayment{
             endPriceRange);
         this.world = world;
         this.day = day;
+        this.company = company;
     }
 
     public void tick() {
         if (!isDayOfMonth(day)) return;
 
         executePayment();
+    }
+
+    @Override
+    protected Company getCompany() {
+        return company;
     }
 
     private boolean isDayOfMonth(Integer dayOfMonth) {
@@ -34,4 +42,6 @@ public class MonthlyRecurrentPayment extends RecurrentPayment{
     private World world;
 
     private Integer day;
+
+    private Company company;
 }

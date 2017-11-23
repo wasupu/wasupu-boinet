@@ -12,10 +12,13 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EveryDayRecurrentPaymentBehaviourTest extends RecurrentPaymentTest {
+public class EveryDayRecurrentPaymentTest extends RecurrentPaymentTest {
+
     @Test
     public void shouldEatEveryTickAfterTwoTicks() {
         when(getPerson().getAge()).thenReturn(2L);
@@ -39,7 +42,7 @@ public class EveryDayRecurrentPaymentBehaviourTest extends RecurrentPaymentTest 
 
     @Before
     public void setUpEveryDayRecurrentPayment() {
-        eatEveryDay = new EveryDayRecurrentPayment(getWorld(), getPerson());
+        eatEveryDay = new EveryDayRecurrentPayment(getWorld(), getPerson(), ProductType.MEAL, 10, 20);
     }
 
     private EveryDayRecurrentPayment eatEveryDay;

@@ -1,5 +1,6 @@
 package io.wasupu.boinet.persons.behaviours;
 
+import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.persons.Person;
@@ -21,7 +22,11 @@ public abstract class RecurrentPayment extends PersonBehaviour {
     }
 
     protected void executePayment() {
-        getWorld().findCompany().buyProduct(getPerson().getPan(), productType, generateRandomPrice(startPriceRange, endPriceRange));
+        getCompany().buyProduct(getPerson().getPan(), productType, generateRandomPrice(startPriceRange, endPriceRange));
+    }
+
+    protected Company getCompany() {
+        return getWorld().findCompany();
     }
 
     private BigDecimal generateRandomPrice(Integer startPrice, Integer endPrice) {

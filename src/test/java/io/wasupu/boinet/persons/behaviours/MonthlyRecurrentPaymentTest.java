@@ -20,7 +20,6 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest{
 
     @Test
     public void shouldPayOnDay25th() {
-        when(getWorld().findCompany()).thenReturn(getCompany());
         when(getWorld().getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(25));
         when(getPerson().getPan()).thenReturn(getPAN());
 
@@ -50,7 +49,8 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest{
             25,
             ProductType.ELECTRICITY,
             60,
-            120);
+            120,
+            getCompany());
     }
 
     private MonthlyRecurrentPayment monthlyRecurrentPayment;

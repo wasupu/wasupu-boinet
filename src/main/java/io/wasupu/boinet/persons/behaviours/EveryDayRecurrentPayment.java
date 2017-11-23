@@ -6,10 +6,10 @@ import io.wasupu.boinet.persons.Person;
 
 public class EveryDayRecurrentPayment extends RecurrentPayment {
 
-    public EveryDayRecurrentPayment(World world, Person person) {
+    public EveryDayRecurrentPayment(World world, Person person, ProductType productType, Integer startPriceRange, Integer endPriceRange) {
         super(world,
             person,
-            ProductType.MEAL, 10, 20);
+            productType, startPriceRange, endPriceRange);
         this.person = person;
     }
 
