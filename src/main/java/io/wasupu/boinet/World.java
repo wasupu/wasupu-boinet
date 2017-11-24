@@ -9,7 +9,6 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -114,16 +113,8 @@ public class World {
         return currentDate;
     }
 
-    public Collection<Person> getCandidates(BigDecimal initialCapital) {
-        return employmentOffice.getCandidates(initialCapital);
-    }
-
     public EventPublisher getEventPublisher() {
         return eventPublisher;
-    }
-
-    public Person newSettler() {
-        return hospital.newBorn(3);
     }
 
     public GPS getGPS() {
@@ -144,8 +135,6 @@ public class World {
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Bank bank = new Bank(this);
-
-    private EmploymentOffice employmentOffice = new EmploymentOffice(this);
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
     private DateTime currentDate;

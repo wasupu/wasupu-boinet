@@ -36,7 +36,6 @@ public class Company {
     public void tick() {
         contractAccount();
         initialCapital();
-        hireStaff();
         paySalary();
         payBonus();
         publishCompanyBalance();
@@ -46,10 +45,6 @@ public class Company {
 
     public String getIban() {
         return iban;
-    }
-
-    public BigDecimal getMyBalance() {
-        return world.getBank().getBalance(iban);
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
@@ -84,14 +79,7 @@ public class Company {
         return employees.get(person);
     }
 
-    private void hireStaff() {
-        if (age != 1) return;
-
-        world.getCandidates(INITIAL_CAPITAL)
-            .forEach(this::hire);
-    }
-
-    void hire(Person person) {
+    public void hire(Person person) {
         employees.put(person, generateSalary());
         person.youAreHired(this);
     }
@@ -140,7 +128,6 @@ public class Company {
         employees.keySet().forEach(employee -> payEmployee(employee, bonus));
     }
 
-
     private void payEmployee(Person employee, BigDecimal salary) {
         world.getBank().transfer(iban, employee.getIban(), salary);
     }
@@ -168,7 +155,7 @@ public class Company {
             .build());
     }
 
-    static final BigDecimal INITIAL_CAPITAL = new BigDecimal(60000);
+    static final BigDecimal INITIAL_CAPITAL = new BigDecimal("60000");
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 

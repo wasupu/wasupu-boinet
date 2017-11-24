@@ -27,7 +27,7 @@ public class Person {
         this.fullAddress = address.fullAddress();
         this.zipCode = address.zipCode();
 
-        Pair<Double,Double> coordinates = this.world.getGPS().coordinates();
+        Pair<Double, Double> coordinates = this.world.getGPS().coordinates();
         this.latitude = coordinates.getLeft().toString();
         this.longitude = coordinates.getRight().toString();
 
@@ -79,7 +79,7 @@ public class Person {
         this.pan = pan;
     }
 
-    static void setFaker(Faker newFaker){
+    static void setFaker(Faker newFaker) {
         faker = newFaker;
     }
 
@@ -108,6 +108,10 @@ public class Person {
             .build());
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -126,6 +130,7 @@ public class Person {
     private String iban;
     private String identifier;
     private String fullAddress;
+
     private String zipCode;
 
     private String latitude;
@@ -151,4 +156,6 @@ public class Person {
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Company company;
+
+    static int occupied = 0;
 }

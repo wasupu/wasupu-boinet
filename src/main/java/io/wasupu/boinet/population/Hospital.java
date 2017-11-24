@@ -23,6 +23,7 @@ public class Hospital {
         newPerson.listenTicks(new ContractDebitCard(world, newPerson)::tick);
         newPerson.listenTicks(new InitialCapital(world, newPerson)::tick);
 
+        withJob(newPerson);
         withEating(newPerson);
         withPowerSupply(newPerson);
         withCountryside(newPerson);
@@ -47,6 +48,10 @@ public class Hospital {
         return newPerson;
     }
 
+    private void withJob(Person newPerson) {
+        newPerson.listenTicks(new FindAJob(world,newPerson)::tick);
+    }
+
     private void withPublicTransport(Person newPerson) {
         newPerson.listenTicks(new MonthlyRecurrentPayment(world,
             newPerson,
@@ -63,7 +68,7 @@ public class Hospital {
                 ProductType.GAS,
                 60,
                 100,
-                new Random().nextInt(7))::tick);
+                1 + new Random().nextInt(6))::tick);
     }
 
     private void withCarFaults(Person newPerson) {
@@ -179,7 +184,7 @@ public class Hospital {
                     world.findCompany()))::tick);
     }
 
-    void withSalaryRevision(Person newPerson){
+    void withSalaryRevision(Person newPerson) {
         newPerson.listenTicks(new RequestSalaryRevisionYearly(world,
             newPerson,
             random.nextInt(365))::tick);

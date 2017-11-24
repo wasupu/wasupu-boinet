@@ -1,13 +1,12 @@
 package io.wasupu.boinet;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
-import org.assertj.core.api.Condition;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -19,7 +18,6 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -75,79 +73,6 @@ public class CompanyTest {
         company.tick();
 
         verify(bank, times(1)).deposit(IBAN, Company.INITIAL_CAPITAL);
-    }
-
-    @Test
-    public void shouldHireEmployeesOnSecondTick() {
-        ImmutableList<Person> candidates = ImmutableList.of(person);
-        when(world.getCandidates(Company.INITIAL_CAPITAL)).thenReturn(candidates);
-
-        company.tick();
-        company.tick();
-
-        assertThat(company.getEmployees())
-            .as("The company must hire workers in first tick")
-            .isNotEmpty()
-            .containsExactly(person);
-    }
-
-    @Test
-    public void shouldHireEmployeesWithSalaryInRange() {
-        ImmutableList<Person> candidates = ImmutableList.of(person);
-        when(world.getCandidates(Company.INITIAL_CAPITAL)).thenReturn(candidates);
-
-        company.tick();
-        company.tick();
-
-        assertThat(company.getEmployees()
-            .stream()
-            .map(company::getEmployeeSalary))
-            .are(new Condition<>(bigDecimal -> between(bigDecimal,
-                new BigDecimal("700"),
-                new BigDecimal("2000")),
-                "The salary is not in range"));
-    }
-
-    @Test
-    public void shouldHireEmployeesWithDifferentSalary() {
-        Person firstPerson = mock(Person.class);
-        Person secondPerson = mock(Person.class);
-        ImmutableList<Person> candidates = ImmutableList.of(firstPerson, secondPerson);
-        when(world.getCandidates(Company.INITIAL_CAPITAL)).thenReturn(candidates);
-
-        company.tick();
-        company.tick();
-
-        assertNotEquals("Salaries should be different", company.getEmployeeSalary(firstPerson), company.getEmployeeSalary(secondPerson));
-    }
-
-    boolean between(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
-        return bigDecimal.compareTo(begin) >= 0 && bigDecimal.compareTo(end) <= 0;
-    }
-
-    @Test
-    public void shouldNotHireEmployeesTwice() {
-        ImmutableList<Person> candidates = ImmutableList.of(person);
-        when(world.getCandidates(Company.INITIAL_CAPITAL)).thenReturn(candidates);
-
-        company.tick();
-        company.tick();
-
-        assertThat(company.getEmployees())
-            .as("The company must hire workers in first tick")
-            .isNotEmpty()
-            .containsExactly(person);
-    }
-
-    @Test
-    public void shouldChangeEmployeesStateToHired() {
-        ImmutableList<Person> candidates = ImmutableList.of(person);
-        when(world.getCandidates(Company.INITIAL_CAPITAL)).thenReturn(candidates);
-
-        company.tick();
-        company.tick();
-
-        verify(person).youAreHired(company);
     }
 
     @Test
