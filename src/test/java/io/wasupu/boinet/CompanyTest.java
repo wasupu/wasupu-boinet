@@ -165,7 +165,7 @@ public class CompanyTest {
             IBAN,
             COMPANY_IDENTIFIER,
             "meal",
-            coordinates);
+            otherCoordinates);
     }
 
     @Test
@@ -229,6 +229,7 @@ public class CompanyTest {
 
     @Before
     public void setupGPS() {
+        when(gps.coordinatesAround(coordinates.getLeft(),coordinates.getRight())).thenReturn(otherCoordinates);
         when(gps.coordinates()).thenReturn(coordinates);
         when(world.getGPS()).thenReturn(gps);
     }
@@ -273,14 +274,6 @@ public class CompanyTest {
 
     private static final Date CURRENT_DATE = new Date();
 
-    private static final Map<String, Object> COMPANY_INFO = ImmutableMap
-        .<String, Object>builder()
-        .put("company", "companyId")
-        .put("balance", new BigDecimal("12"))
-        .put("currency", "EUR")
-        .put("date", CURRENT_DATE)
-        .build();
-
     @Mock
     private EventPublisher eventPublisher;
 
@@ -290,4 +283,5 @@ public class CompanyTest {
     private GPS gps;
 
     private Pair<Double, Double> coordinates = Pair.of(40.2, -3.7);
+    private Pair<Double, Double> otherCoordinates = Pair.of(41.2, -3.9);
 }

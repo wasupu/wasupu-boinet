@@ -1,6 +1,5 @@
 package io.wasupu.boinet;
 
-import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -89,7 +88,5 @@ public class Bank {
     private World world;
 
     private static final String STREAM_ID = "cardMovementEventStream";
-
-    private static final Faker faker = new Faker();
 
 }

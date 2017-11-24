@@ -22,6 +22,7 @@ public class Company {
         this.world = world;
 
         Pair<Double,Double> coordinates = this.world.getGPS().coordinates();
+        this.coordinates = coordinates;
         this.latitude = coordinates.getLeft().toString();
         this.longitude = coordinates.getRight().toString();
 
@@ -52,7 +53,7 @@ public class Company {
             iban,
             identifier,
             productType.toString().toLowerCase(),
-            world.getGPS().coordinates());
+            world.getGPS().coordinatesAround(coordinates.getLeft(),coordinates.getRight()));
     }
 
     public Collection<Person> getEmployees() {
@@ -158,5 +159,6 @@ public class Company {
 
     private static final Faker faker = new Faker();
 
+    private final Pair<Double, Double> coordinates;
 
 }

@@ -9,20 +9,33 @@ import java.util.Random;
 public class GPS {
 
     public Pair<Double, Double> coordinates() {
-        double distanceInDegrees = -0.1 + random.nextDouble() * 0.2;
+        return coordinatesAroundInRange(latitude, longitude,-0.1,0.1);
+    }
+
+    public Pair<Double, Double> coordinatesAround(Double startLatitude, Double startLongitude){
+        return coordinatesAroundInRange(startLatitude, startLongitude,-0.00001,0.00001);
+    }
+
+    private Pair<Double, Double> coordinatesAroundInRange(Double startLatitude,
+                                                          Double startLongitude,
+                                                          Double minRange,
+                                                          Double maxRange) {
+        double distanceInDegrees = getDistanceInDegrees(minRange,maxRange);
         double bearingInDegrees = random.nextDouble() * 360;
 
         Point point = SpatialContext.GEO
             .getDistCalc()
-            .pointOnBearing(SpatialContext.GEO
-                    .makePoint(latitude,longitude),
+            .pointOnBearing(SpatialContext.GEO.makePoint(startLatitude,startLongitude),
                 distanceInDegrees,
                 bearingInDegrees,
                 SpatialContext.GEO,
                 SpatialContext.GEO.makePoint(0, 0));
 
-
         return Pair.of(point.getX(), point.getY());
+    }
+
+    private double getDistanceInDegrees(Double minRange,Double maxRange) {
+        return minRange + random.nextDouble() * (maxRange - minRange);
     }
 
     private double latitude = 40.416657;
