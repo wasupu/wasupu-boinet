@@ -10,14 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static net.logstash.logback.marker.Markers.appendEntries;
@@ -138,6 +131,10 @@ public class World {
         return hospital.newBorn(3);
     }
 
+    public GPS getGPS() {
+        return GPS;
+    }
+
     private void newSupplier(Integer number) {
         companies.add(new Company(createCompanyUniqueIdentifier(), this));
     }
@@ -146,10 +143,9 @@ public class World {
         return UUID.randomUUID().toString();
     }
 
-
     private List<Company> companies = new ArrayList<>();
-
     private Collection<Person> population = new ArrayList<>();
+
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Bank bank = new Bank(this);
@@ -157,11 +153,12 @@ public class World {
     private EmploymentOffice employmentOffice = new EmploymentOffice(this);
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
-
     private DateTime currentDate;
+
     private EventPublisher eventPublisher;
 
     private final Hospital hospital = new Hospital(this);
+    private GPS GPS = new GPS();
 }
 
 

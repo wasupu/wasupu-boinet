@@ -5,6 +5,7 @@ import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.World;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 
@@ -14,20 +15,24 @@ import static java.lang.Boolean.TRUE;
 public class Person {
 
     public Person(String identifier,
-                  String name,
-                  String cellPhone,
                   World world) {
         this.identifier = identifier;
-        this.name = name;
+
+        this.name = faker.name().fullName();
         this.world = world;
-        this.cellPhone = cellPhone;
+        this.cellPhone = faker.phoneNumber().cellPhone();
         Address address = faker.address();
         this.fullAddress = address.fullAddress();
         this.zipCode = address.zipCode();
-        this.latitude = address.latitude();
-        this.longitude = address.longitude();
+
+        Pair<Double,Double> coordinates = this.world.getGPS().coordinates();
+        this.latitude = coordinates.getLeft().toString();
+        this.longitude = coordinates.getRight().toString();
 
         this.world.listenTicks(this::tick);
+
+
+
     }
 
     public void listenTicks(Runnable tickConsumer) {
@@ -73,6 +78,10 @@ public class Person {
 
     public void setPan(String pan) {
         this.pan = pan;
+    }
+
+    static void setFaker(Faker newFaker){
+        faker = newFaker;
     }
 
     private void publishPersonBalance() {
@@ -134,7 +143,7 @@ public class Person {
 
     private static final String STREAM_ID = "personEventStream";
 
-    private static final Faker faker = new Faker();
+    private static Faker faker = new Faker();
 
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 }

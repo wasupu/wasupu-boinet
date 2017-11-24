@@ -26,8 +26,6 @@ public class Hospital {
     public Person newBorn(Integer number) {
         Person newPerson = new Person(
             createPersonUniqueIdentifier(),
-            faker.name().fullName(),
-            faker.phoneNumber().cellPhone(),
             world);
 
         newPerson.listenTicks(new ContractAccount(world, newPerson)::tick);

@@ -18,7 +18,7 @@ public class GPSTest {
 
     @Test
     public void shouldReturnCoordinatesAroundALocation() {
-        IntStream.range(0, 100).forEach(i -> {
+        IntStream.range(0, 10000).forEach(i -> {
             Pair<Double, Double> coordinates = gps.coordinates();
 
             assertThat(coordinates.getLeft())

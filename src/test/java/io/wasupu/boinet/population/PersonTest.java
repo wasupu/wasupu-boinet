@@ -1,52 +1,52 @@
 package io.wasupu.boinet.population;
 
+import com.github.javafaker.Address;
+import com.github.javafaker.Faker;
+import com.github.javafaker.Name;
+import com.github.javafaker.PhoneNumber;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.Bank;
-import io.wasupu.boinet.Company;
 import io.wasupu.boinet.EventPublisher;
+import io.wasupu.boinet.GPS;
 import io.wasupu.boinet.World;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Spy;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Person.class)
 public class PersonTest {
 
     @Test
     public void testEquals() {
         new EqualsTester().
             addEqualityGroup(new Person("person1",
-                    "fullName1",
-                    CELL_PHONE,
                     world),
                 new Person("person1",
-                    "fullName1",
-                    CELL_PHONE,
                     world)).
 
             addEqualityGroup(new Person("person2",
-                    "fullName1",
-                    CELL_PHONE,
                     world),
                 new Person("person2",
-                    "fullName1",
-                    CELL_PHONE,
                     world)).
             testEquals();
     }
@@ -80,8 +80,6 @@ public class PersonTest {
 
     @Test
     public void shouldPublishPersonPanOnFirstTick() {
-
-
         person.tick();
 
         verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("pan", PAN)));
@@ -106,7 +104,17 @@ public class PersonTest {
 
     @Before
     public void setupPerson() {
-        person = new Person(IDENTIFIER, FULL_NAME, CELL_PHONE, world);
+        when(faker.name()).thenReturn(name);
+        when(name.fullName()).thenReturn(FULL_NAME);
+
+        when(faker.phoneNumber()).thenReturn(phoneNumber);
+        when(phoneNumber.cellPhone()).thenReturn(CELL_PHONE);
+
+        when(world.getGPS()).thenReturn(gps);
+        when(gps.coordinates()).thenReturn(Pair.of(40.2, -3.7));
+
+        person = new Person(IDENTIFIER, world);
+        Person.setFaker(faker);
         person.setIban(IBAN);
         person.setPan(PAN);
     }
@@ -125,9 +133,6 @@ public class PersonTest {
     private Bank bank;
 
     @Mock
-    private Company company;
-
-    @Mock
     private EventPublisher eventPublisher;
 
     private static final String IDENTIFIER = "personId";
@@ -142,5 +147,21 @@ public class PersonTest {
     private static final String CELL_PHONE = "686338292";
 
     private static final String PAN = "mipan";
+
+    @Spy
+    private Faker faker = new Faker();
+
+    @Mock
+    private Name name;
+
+    @Mock
+    private PhoneNumber phoneNumber;
+
+    @Mock
+    private Address address;
+
+    @Mock
+    private GPS gps;
+
 
 }
