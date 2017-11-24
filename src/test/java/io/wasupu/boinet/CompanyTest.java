@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.population.Person;
+import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.Condition;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -194,6 +195,8 @@ public class CompanyTest {
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
+
+
     }
 
     @Test
@@ -220,6 +223,13 @@ public class CompanyTest {
         verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
         verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
     }
+
+    @Before
+    public void setupGPS() {
+        when(gps.coordinates()).thenReturn(Pair.of(40.2, -3.7));
+        when(world.getGPS()).thenReturn(gps);
+    }
+
 
     @Before
     public void setupEventPublisher() {
@@ -274,4 +284,7 @@ public class CompanyTest {
     private EventPublisher eventPublisher;
 
     private static final BigDecimal PRICE = new BigDecimal(10);
+
+    @Mock
+    private GPS gps;
 }

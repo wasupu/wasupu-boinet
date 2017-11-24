@@ -1,6 +1,5 @@
 package io.wasupu.boinet.population;
 
-import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import com.github.javafaker.PhoneNumber;
@@ -156,9 +155,6 @@ public class PersonTest {
 
     @Mock
     private PhoneNumber phoneNumber;
-
-    @Mock
-    private Address address;
 
     @Mock
     private GPS gps;

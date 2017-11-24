@@ -13,5 +13,4 @@ public class GenerateRandomPrice implements BiFunction<Integer, Integer, BigDeci
         return new BigDecimal(randomValue)
             .setScale(2, BigDecimal.ROUND_HALF_UP);
     }
-
 }

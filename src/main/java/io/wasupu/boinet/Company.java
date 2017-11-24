@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -19,6 +20,10 @@ public class Company {
         this.name = faker.company().name();
         this.address = faker.address();
         this.world = world;
+
+        Pair<Double,Double> coordinates = this.world.getGPS().coordinates();
+        this.latitude = coordinates.getLeft().toString();
+        this.longitude = coordinates.getRight().toString();
 
         world.listenTicks(this::tick);
     }
@@ -118,8 +123,8 @@ public class Company {
                 "full", address.fullAddress(),
                 "zipCode", address.zipCode(),
                 "geolocation", ImmutableMap.of(
-                    "latitude", address.latitude(),
-                    "longitude", address.longitude())))
+                    "latitude", latitude,
+                    "longitude", longitude)))
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
             .put("date", world.getCurrentDateTime().toDate())
@@ -130,13 +135,14 @@ public class Company {
 
     private Map<Person, BigDecimal> employees = new HashMap<>();
 
-    static final BigDecimal SALARY = new BigDecimal(1000);
-
     private String iban;
 
     private String identifier;
 
     private String name;
+    private String latitude;
+    private String longitude;
+
 
     private Address address;
 
