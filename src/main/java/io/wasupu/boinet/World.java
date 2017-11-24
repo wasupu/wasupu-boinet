@@ -110,11 +110,6 @@ public class World {
         return bank;
     }
 
-    @Deprecated
-    public Date getCurrentDate() {
-        return currentDate.toDate();
-    }
-
     public DateTime getCurrentDateTime() {
         return currentDate;
     }

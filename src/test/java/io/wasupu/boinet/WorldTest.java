@@ -105,32 +105,12 @@ public class WorldTest {
     }
 
     @Test
-    public void shouldTheHaveAnInitCurrentDate() {
-        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
-        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        assertNotNull("The current date must be not null", world.getCurrentDate());
-        assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDate());
-    }
-
-    @Test
     public void shouldTheHaveAnInitCurrentDateTime() {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 5);
         gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         assertNotNull("The current date must be not null", world.getCurrentDateTime());
         assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDateTime().toDate());
-    }
-
-    @Test
-    public void shouldHaveTwoDaysLaterBeforeTwoTicks() {
-        GregorianCalendar gregorianCalendar = new GregorianCalendar(2017, 9, 7);
-        gregorianCalendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        world.start(Optional.of(2));
-
-        assertNotNull("The current date must be not null", world.getCurrentDate());
-        assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDate());
     }
 
     @Before
