@@ -9,9 +9,11 @@ import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -36,6 +38,7 @@ public class Company {
         initialCapital();
         hireStaff();
         paySalary();
+        payBonus();
         publishCompanyBalance();
 
         age++;
@@ -98,7 +101,9 @@ public class Company {
 
         BigDecimal salary = employees.get(person);
 
-        BigDecimal newSalary = salary.add(salary.multiply(new BigDecimal(0.2)));
+        BigDecimal newSalary = salary.add(salary.multiply(new BigDecimal(0.2)))
+            .setScale(2,RoundingMode.CEILING);
+
         employees.put(person, newSalary);
     }
 
@@ -121,8 +126,23 @@ public class Company {
     private void paySalary() {
         if (!isDayOfMonth(28)) return;
 
-        employees.forEach((employee, salary) ->
-            world.getBank().transfer(iban, employee.getIban(), salary));
+        employees.forEach(this::payEmployee);
+    }
+
+    private void payBonus() {
+        if (age < 3) return;
+        if (world.getBank().getBalance(iban).compareTo(new BigDecimal("100000")) < 0) return;
+
+        BigDecimal bonus = world.getBank().getBalance(iban)
+            .subtract(new BigDecimal("60000"))
+            .divide(new BigDecimal(employees.size()), RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR);
+
+        employees.keySet().forEach(employee -> payEmployee(employee, bonus));
+    }
+
+
+    private void payEmployee(Person employee, BigDecimal salary) {
+        world.getBank().transfer(iban, employee.getIban(), salary);
     }
 
     private boolean isDayOfMonth(Integer dayOfMonth) {

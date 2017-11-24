@@ -223,7 +223,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldReviseTheSalaryOfAnEmployee(){
+    public void shouldReviseTheSalaryOfAnEmployee() {
         company.tick();
         company.hire(person);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(16000));
@@ -235,7 +235,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldOnlyChangeTheSalaryCompanyBalanceIsPositive(){
+    public void shouldOnlyChangeTheSalaryCompanyBalanceIsPositive() {
         company.tick();
         company.hire(person);
 
@@ -245,9 +245,36 @@ public class CompanyTest {
         assertEquals("The employee not has change its salary", salary, company.getEmployeeSalary(person));
     }
 
+    @Test
+    public void shouldPayBonusToEmployeesIfCompanyCan() {
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(100000));
+        when(person.getIban()).thenReturn(OTHER_IBAN);
+
+        company.tick();
+        company.hire(person);
+        company.tick();
+        company.tick();
+        company.tick();
+
+        verify(bank).transfer(IBAN, OTHER_IBAN, new BigDecimal("40000.00"));
+    }
+
+    @Test
+    public void shouldNotPayBonusToEmployeesIfCompanyCan() {
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1000));
+
+        company.tick();
+        company.hire(person);
+        company.tick();
+        company.tick();
+        company.tick();
+
+        verify(bank, never()).transfer(any(), any(),any());
+    }
+
     @Before
     public void setupGPS() {
-        when(gps.coordinatesAround(coordinates.getLeft(),coordinates.getRight())).thenReturn(otherCoordinates);
+        when(gps.coordinatesAround(coordinates.getLeft(), coordinates.getRight())).thenReturn(otherCoordinates);
         when(gps.coordinates()).thenReturn(coordinates);
         when(world.getGPS()).thenReturn(gps);
     }
