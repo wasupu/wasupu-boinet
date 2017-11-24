@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WeekendRecurrentPaymentTest extends RecurrentPaymentTest {
+public class WeeklyRecurrentPaymentTest extends RecurrentPaymentTest {
 
     @Test
     public void shouldPayOnDayInWeekend() {
@@ -49,12 +49,12 @@ public class WeekendRecurrentPaymentTest extends RecurrentPaymentTest {
 
     @Before
     public void setupMonthlyRecurrentPayment() {
-        weekendRecurrentPayment = new WeekendRecurrentPayment(getWorld(),
+        weekendRecurrentPayment = new WeeklyRecurrentPayment(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             60,
-            120);
+            120, 6);
     }
 
-    private WeekendRecurrentPayment weekendRecurrentPayment;
+    private WeeklyRecurrentPayment weekendRecurrentPayment;
 }

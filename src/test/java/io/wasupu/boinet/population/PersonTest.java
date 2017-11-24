@@ -4,10 +4,7 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import com.github.javafaker.PhoneNumber;
 import com.google.common.testing.EqualsTester;
-import io.wasupu.boinet.Bank;
-import io.wasupu.boinet.EventPublisher;
-import io.wasupu.boinet.GPS;
-import io.wasupu.boinet.World;
+import io.wasupu.boinet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -52,7 +49,7 @@ public class PersonTest {
 
     @Test
     public void shouldNotBeUnemployedAfterYouAreHired() {
-        person.youAreHired();
+        person.youAreHired(company);
 
         assertNotNull("Must be not null", person.isUnemployed());
         assertFalse("The person must be hired", person.isUnemployed());
@@ -159,5 +156,7 @@ public class PersonTest {
     @Mock
     private GPS gps;
 
+    @Mock
+    private Company company;
 
 }

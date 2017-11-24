@@ -1,6 +1,5 @@
 package io.wasupu.boinet.population;
 
-import com.github.javafaker.Faker;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.behaviours.*;
@@ -29,6 +28,7 @@ public class Hospital {
         withCountryside(newPerson);
         withCableTV(newPerson);
         withMedicalCosts(newPerson);
+        withSalaryRevision(newPerson);
 
         if (getProbability(0.0, 100.0) < 90) {
             withMortgage(newPerson);
@@ -58,11 +58,12 @@ public class Hospital {
 
     private void withGasForCar(Person newPerson) {
         newPerson.listenTicks(
-            new WeekendRecurrentPayment(world,
+            new WeeklyRecurrentPayment(world,
                 newPerson,
                 ProductType.GAS,
                 60,
-                100)::tick);
+                100,
+                new Random().nextInt(7))::tick);
     }
 
     private void withCarFaults(Person newPerson) {
@@ -144,11 +145,11 @@ public class Hospital {
             newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new WeekendRecurrentPayment(world,
+            new WeeklyRecurrentPayment(world,
                 newPerson,
                 ProductType.ENTERTAINMENT,
                 100,
-                500))::tick);
+                500, 6))::tick);
     }
 
     void withCableTV(Person newPerson) {
@@ -176,6 +177,13 @@ public class Hospital {
                     ProductType.INTERNET,
                     generateRandomPrice.apply(40, 100),
                     world.findCompany()))::tick);
+    }
+
+    void withSalaryRevision(Person newPerson){
+        newPerson.listenTicks(new RequestSalaryRevisionYearly(world,
+            newPerson,
+            random.nextInt(365))::tick);
+
     }
 
     private double getProbability(Double minRange, Double maxRange) {

@@ -21,6 +21,7 @@ public class MonthlyRecurrentPayment extends RecurrentPayment {
             productType,
             startPriceRange,
             endPriceRange);
+
         this.world = world;
         this.day = day;
         this.company = company;

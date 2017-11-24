@@ -147,7 +147,7 @@ public class CompanyTest {
         company.tick();
         company.tick();
 
-        verify(person).youAreHired();
+        verify(person).youAreHired(company);
     }
 
     @Test
@@ -222,6 +222,29 @@ public class CompanyTest {
         verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
     }
 
+    @Test
+    public void shouldReviseTheSalaryOfAnEmployee(){
+        company.tick();
+        company.hire(person);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(16000));
+        BigDecimal salary = company.getEmployeeSalary(person);
+
+        company.requestSalaryRevision(person);
+
+        assertNotEquals("The employee has change its salary", salary, company.getEmployeeSalary(person));
+    }
+
+    @Test
+    public void shouldOnlyChangeTheSalaryCompanyBalanceIsPositive(){
+        company.tick();
+        company.hire(person);
+
+        BigDecimal salary = company.getEmployeeSalary(person);
+        company.requestSalaryRevision(person);
+
+        assertEquals("The employee not has change its salary", salary, company.getEmployeeSalary(person));
+    }
+
     @Before
     public void setupGPS() {
         when(gps.coordinatesAround(coordinates.getLeft(),coordinates.getRight())).thenReturn(otherCoordinates);
@@ -237,7 +260,6 @@ public class CompanyTest {
     @Before
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
-
         when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
         when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));

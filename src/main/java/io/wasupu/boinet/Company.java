@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Company {
 
@@ -21,7 +23,7 @@ public class Company {
         this.address = faker.address();
         this.world = world;
 
-        Pair<Double,Double> coordinates = this.world.getGPS().coordinates();
+        Pair<Double, Double> coordinates = this.world.getGPS().coordinates();
         this.coordinates = coordinates;
         this.latitude = coordinates.getLeft().toString();
         this.longitude = coordinates.getRight().toString();
@@ -53,7 +55,7 @@ public class Company {
             iban,
             identifier,
             productType.toString().toLowerCase(),
-            world.getGPS().coordinatesAround(coordinates.getLeft(),coordinates.getRight()));
+            world.getGPS().coordinatesAround(coordinates.getLeft(), coordinates.getRight()));
     }
 
     public Collection<Person> getEmployees() {
@@ -88,7 +90,16 @@ public class Company {
 
     void hire(Person person) {
         employees.put(person, generateSalary());
-        person.youAreHired();
+        person.youAreHired(this);
+    }
+
+    public void requestSalaryRevision(Person person) {
+        if (world.getBank().getBalance(iban).compareTo(new BigDecimal(6000)) < 0) return;
+
+        BigDecimal salary = employees.get(person);
+
+        BigDecimal newSalary = salary.add(salary.multiply(new BigDecimal(0.2)));
+        employees.put(person, newSalary);
     }
 
     private BigDecimal generateSalary() {
@@ -139,7 +150,7 @@ public class Company {
 
     static final BigDecimal INITIAL_CAPITAL = new BigDecimal(60000);
 
-    private Map<Person, BigDecimal> employees = new HashMap<>();
+    private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
     private String iban;
 
@@ -160,5 +171,6 @@ public class Company {
     private static final Faker faker = new Faker();
 
     private final Pair<Double, Double> coordinates;
+
 
 }

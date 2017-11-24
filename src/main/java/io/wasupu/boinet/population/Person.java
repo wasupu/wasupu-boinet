@@ -4,9 +4,11 @@ import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.Company;
 import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import static java.lang.Boolean.FALSE;
@@ -30,9 +32,6 @@ public class Person {
         this.longitude = coordinates.getRight().toString();
 
         this.world.listenTicks(this::tick);
-
-
-
     }
 
     public void listenTicks(Runnable tickConsumer) {
@@ -55,7 +54,8 @@ public class Person {
         return !employed;
     }
 
-    public void youAreHired() {
+    public void youAreHired(Company company) {
+        this.company = company;
         employed = TRUE;
     }
 
@@ -75,13 +75,16 @@ public class Person {
         this.iban = iban;
     }
 
-
     public void setPan(String pan) {
         this.pan = pan;
     }
 
     static void setFaker(Faker newFaker){
         faker = newFaker;
+    }
+
+    public Company getEmployer() {
+        return company;
     }
 
     private void publishPersonBalance() {
@@ -121,12 +124,12 @@ public class Person {
     }
 
     private String iban;
-
     private String identifier;
-
     private String fullAddress;
     private String zipCode;
+
     private String latitude;
+
     private String longitude;
 
     private String pan;
@@ -146,4 +149,6 @@ public class Person {
     private static Faker faker = new Faker();
 
     private Collection<Runnable> tickConsumers = ImmutableList.of();
+
+    private Company company;
 }

@@ -95,11 +95,11 @@ public class TriggeredByBalanceThresholdTest {
             person,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new WeekendRecurrentPayment(world,
+            new WeeklyRecurrentPayment(world,
                 person,
                 ProductType.ENTERTAINMENT,
                 100,
-                500));
+                500, 6));
     }
 
     private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
