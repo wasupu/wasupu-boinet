@@ -52,6 +52,11 @@
             <version>0.14</version>
         </dependency>
         <dependency>
+            <groupId>com.spatial4j</groupId>
+            <artifactId>spatial4j</artifactId>
+            <version>0.5</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava-testlib</artifactId>
             <version>${guava.version}</version>
