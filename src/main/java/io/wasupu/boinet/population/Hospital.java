@@ -3,14 +3,7 @@ package io.wasupu.boinet.population;
 import com.github.javafaker.Faker;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.behaviours.ContractAccount;
-import io.wasupu.boinet.population.behaviours.ContractDebitCard;
-import io.wasupu.boinet.population.behaviours.EveryDayRecurrentPayment;
-import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
-import io.wasupu.boinet.population.behaviours.InitialCapital;
-import io.wasupu.boinet.population.behaviours.MonthlyRecurrentPayment;
-import io.wasupu.boinet.population.behaviours.TriggeredByBalanceThreshold;
-import io.wasupu.boinet.population.behaviours.WeekendRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.*;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -38,9 +31,58 @@ public class Hospital {
         withCableTV(newPerson);
         withMortgage(newPerson);
         withInternetConnection(newPerson);
-
+        withCardFaults(newPerson);
+        withMedicalCosts(newPerson);
         world.getPopulation().add(newPerson);
         return newPerson;
+    }
+
+    private void withCardFaults(Person newPerson) {
+        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+            newPerson,
+            ProductType.CAR_FAULT,
+            100,
+            300,
+            2.0)::tick);
+
+        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+            newPerson,
+            ProductType.CAR_FAULT,
+            300,
+            800,
+            1.0)::tick);
+
+        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+            newPerson,
+            ProductType.CAR_FAULT,
+            800,
+            2000,
+            0.1)::tick);
+
+    }
+
+    private void withMedicalCosts(Person newPerson) {
+        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+            newPerson,
+            ProductType.MEDICAL_COSTS,
+            50,
+            100,
+            0.1)::tick);
+
+        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+            newPerson,
+            ProductType.MEDICAL_COSTS,
+            100,
+            500,
+            0.05)::tick);
+
+        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+            newPerson,
+            ProductType.MEDICAL_COSTS,
+            3000,
+            5000,
+            0.001)::tick);
+
     }
 
     void withEating(Person newPerson) {

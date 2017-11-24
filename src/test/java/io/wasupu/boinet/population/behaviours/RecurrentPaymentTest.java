@@ -32,9 +32,6 @@ public class RecurrentPaymentTest {
         return company;
     }
 
-    @Captor
-    private ArgumentCaptor<BigDecimal> pricesCaptor;
-
     public Person getPerson() {
         return person;
     }
@@ -42,6 +39,9 @@ public class RecurrentPaymentTest {
     public World getWorld() {
         return world;
     }
+
+    @Captor
+    private ArgumentCaptor<BigDecimal> pricesCaptor;
 
     @Mock
     private Person person;

@@ -35,7 +35,6 @@ public abstract class RecurrentPayment extends PersonBehaviour {
         return getWorld().findCompany();
     }
 
-
     private ProductType productType;
 
     private BigDecimal fixedPrice;

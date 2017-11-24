@@ -119,7 +119,7 @@ public class Company {
     }
 
     private void publishCompanyBalance() {
-        if (age % 90 != 0) return;
+        if (age % 30 != 0) return;
 
         world.getEventPublisher().publish(STREAM_ID, ImmutableMap
             .<String, Object>builder()
