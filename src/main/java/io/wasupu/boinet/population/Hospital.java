@@ -8,7 +8,6 @@ import io.wasupu.boinet.population.behaviours.*;
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 public class Hospital {
 
@@ -29,36 +28,64 @@ public class Hospital {
         withPowerSupply(newPerson);
         withCountryside(newPerson);
         withCableTV(newPerson);
-        withMortgage(newPerson);
-        withInternetConnection(newPerson);
-        withCardFaults(newPerson);
         withMedicalCosts(newPerson);
+
+        if (getProbability(0.0, 100.0) < 90) {
+            withMortgage(newPerson);
+        }
+
+        withInternetConnection(newPerson);
+
+        if (getProbability(0.0, 100.0) < 80) {
+            withCarFaults(newPerson);
+            withGasForCar(newPerson);
+        } else {
+            withPublicTransport(newPerson);
+        }
+
         world.getPopulation().add(newPerson);
         return newPerson;
     }
 
-    private void withCardFaults(Person newPerson) {
+    private void withPublicTransport(Person newPerson) {
+        newPerson.listenTicks(new MonthlyRecurrentPayment(world,
+            newPerson,
+            new Random().nextInt(28),
+            ProductType.PUBLIC_TRANSPORT,
+            generateRandomPrice.apply(50, 70),
+            world.findCompany())::tick);
+    }
+
+    private void withGasForCar(Person newPerson) {
+        newPerson.listenTicks(
+            new WeekendRecurrentPayment(world,
+                newPerson,
+                ProductType.GAS,
+                60,
+                100)::tick);
+    }
+
+    private void withCarFaults(Person newPerson) {
         newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
             newPerson,
             ProductType.CAR_FAULT,
             100,
             300,
-            2.0)::tick);
+            getProbability(0.001, 0.1))::tick);
 
         newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
             newPerson,
             ProductType.CAR_FAULT,
             300,
             800,
-            1.0)::tick);
+            getProbability(0.001, 0.5))::tick);
 
         newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
             newPerson,
             ProductType.CAR_FAULT,
             800,
             2000,
-            0.1)::tick);
-
+            getProbability(0.001, 0.01))::tick);
     }
 
     private void withMedicalCosts(Person newPerson) {
@@ -67,21 +94,21 @@ public class Hospital {
             ProductType.MEDICAL_COSTS,
             50,
             100,
-            0.1)::tick);
+            getProbability(0.001, 0.1))::tick);
 
         newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             100,
             500,
-            0.05)::tick);
+            getProbability(0.001, 0.05))::tick);
 
         newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             3000,
             5000,
-            0.001)::tick);
+            getProbability(0.00001, 0.001))::tick);
 
     }
 
@@ -151,13 +178,17 @@ public class Hospital {
                     world.findCompany()))::tick);
     }
 
+    private double getProbability(Double minRange, Double maxRange) {
+        return minRange + random.nextDouble() * (maxRange - minRange);
+    }
+
     private String createPersonUniqueIdentifier() {
         return UUID.randomUUID().toString();
     }
 
-    private Faker faker = new Faker();
-
     private GenerateRandomPrice generateRandomPrice = new GenerateRandomPrice();
 
     private World world;
+
+    private Random random = new Random();
 }
