@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +21,6 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Bank.class)
 public class BankTest {
-
-    public static final String DETAILS = "meal";
 
     @Test
     public void shouldContractANewAccount() throws Exception {
@@ -89,7 +88,7 @@ public class BankTest {
 
         BigDecimal amount = new BigDecimal(10);
 
-        bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS);
+        bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verify(secondAccount).deposit(amount);
     }
@@ -99,6 +98,7 @@ public class BankTest {
         when(world.getEventPublisher()).thenReturn(eventPublisher);
     }
 
+
     private static final String IBAN = "0";
 
     private static final String SECOND_IBAN = "1";
@@ -107,11 +107,14 @@ public class BankTest {
 
     private static final String COMPANY = "12";
 
+    private Pair<Double,Double> coordinates = Pair.of(40.34,-3.4);
+
     @Before
     public void setupBank() {
         bank = new Bank(world);
         when(world.getCurrentDateTime()).thenReturn(new DateTime(new GregorianCalendar(2017, 10, 10).getTime()));
     }
+
 
     private Bank bank;
 
@@ -127,4 +130,5 @@ public class BankTest {
     @Mock
     private EventPublisher eventPublisher;
 
+    private static final String DETAILS = "meal";
 }

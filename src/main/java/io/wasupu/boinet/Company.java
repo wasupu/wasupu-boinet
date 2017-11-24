@@ -47,7 +47,12 @@ public class Company {
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
-        world.getBank().processPayment(price, pan, iban, identifier, productType.toString().toLowerCase());
+        world.getBank().processPayment(price,
+            pan,
+            iban,
+            identifier,
+            productType.toString().toLowerCase(),
+            world.getGPS().coordinates());
     }
 
     public Collection<Person> getEmployees() {
@@ -142,7 +147,6 @@ public class Company {
     private String name;
     private String latitude;
     private String longitude;
-
 
     private Address address;
 

@@ -2,6 +2,7 @@ package io.wasupu.boinet;
 
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -34,11 +35,11 @@ public class Bank {
         account.deposit(amount);
     }
 
-    public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details) {
+    public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
         String buyerAccount = cards.get(pan);
 
         transfer(buyerAccount, sellerAccount, amount);
-        publishMovement(amount, pan, companyIdentifier, details);
+        publishMovement(amount, pan, companyIdentifier, details,coordinates);
     }
 
     public BigDecimal getBalance(String iban) {
@@ -61,7 +62,8 @@ public class Bank {
         return cards.get(pan);
     }
 
-    private void publishMovement(BigDecimal amount, String pan, String companyIndentifier, String details) {
+    private void publishMovement(BigDecimal amount, String pan, String companyIndentifier, String details,
+                                 Pair<Double,Double> coordinates) {
         world.getEventPublisher().publish(STREAM_ID, ImmutableMap
             .<String, Object>builder()
             .put("pan", pan)
@@ -69,8 +71,8 @@ public class Bank {
             .put("currency", "EUR")
             .put("details", details)
             .put("geolocation", ImmutableMap.of(
-                "latitude", faker.address().latitude(),
-                "longitude", faker.address().longitude()))
+                "latitude", coordinates.getLeft().toString(),
+                "longitude", coordinates.getRight().toString()))
             .put("company", companyIndentifier)
             .put("date", world.getCurrentDateTime().toDate())
             .build());

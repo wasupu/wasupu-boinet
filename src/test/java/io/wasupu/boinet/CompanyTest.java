@@ -160,7 +160,12 @@ public class CompanyTest {
         company.tick();
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
-        verify(bank).processPayment(PRICE, PAN, IBAN, COMPANY_IDENTIFIER, "meal");
+        verify(bank).processPayment(PRICE,
+            PAN,
+            IBAN,
+            COMPANY_IDENTIFIER,
+            "meal",
+            coordinates);
     }
 
     @Test
@@ -195,8 +200,6 @@ public class CompanyTest {
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
-
-
     }
 
     @Test
@@ -226,10 +229,9 @@ public class CompanyTest {
 
     @Before
     public void setupGPS() {
-        when(gps.coordinates()).thenReturn(Pair.of(40.2, -3.7));
+        when(gps.coordinates()).thenReturn(coordinates);
         when(world.getGPS()).thenReturn(gps);
     }
-
 
     @Before
     public void setupEventPublisher() {
@@ -249,7 +251,6 @@ public class CompanyTest {
     public void setupCompany() {
         company = new Company(COMPANY_IDENTIFIER, world);
     }
-
 
     private Company company;
 
@@ -287,4 +288,6 @@ public class CompanyTest {
 
     @Mock
     private GPS gps;
+
+    private Pair<Double, Double> coordinates = Pair.of(40.2, -3.7);
 }
