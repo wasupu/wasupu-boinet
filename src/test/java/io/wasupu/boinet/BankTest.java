@@ -14,6 +14,8 @@ import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -82,16 +84,37 @@ public class BankTest {
             .withArguments(SECOND_IBAN)
             .thenReturn(secondAccount);
 
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         String firstIban = bank.contractAccount();
         String secondIban = bank.contractAccount();
         String pan = bank.contractDebitCard(firstIban);
 
-        BigDecimal amount = new BigDecimal(10);
+        BigDecimal amount = new BigDecimal("10");
 
         bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verify(secondAccount).deposit(amount);
     }
+
+    @Test
+    public void shouldDontAllowRedNumberWhenProcessAPayment() throws Exception {
+        whenNew(Account.class)
+            .withArguments(IBAN)
+            .thenReturn(firstAccount);
+
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
+
+        String firstIban = bank.contractAccount();
+        String secondIban = bank.contractAccount();
+        String pan = bank.contractDebitCard(firstIban);
+
+        BigDecimal amount = new BigDecimal("10");
+
+        bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+
+        verify(secondAccount, never()).deposit(any());
+    }
+
 
     @Before
     public void setupEventPublisher() {
@@ -107,7 +130,7 @@ public class BankTest {
 
     private static final String COMPANY = "12";
 
-    private Pair<Double,Double> coordinates = Pair.of(40.34,-3.4);
+    private Pair<Double, Double> coordinates = Pair.of(40.34, -3.4);
 
     @Before
     public void setupBank() {

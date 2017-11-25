@@ -49,7 +49,7 @@ public class Hospital {
     }
 
     private void withJob(Person newPerson) {
-        newPerson.listenTicks(new FindAJob(world,newPerson)::tick);
+        newPerson.listenTicks(new FindAJob(world, newPerson)::tick);
     }
 
     private void withPublicTransport(Person newPerson) {
@@ -62,13 +62,16 @@ public class Hospital {
     }
 
     private void withGasForCar(Person newPerson) {
-        newPerson.listenTicks(
+        newPerson.listenTicks(new TriggeredByBalanceThreshold(world,
+            newPerson,
+            new BigDecimal("300"),
+            new BigDecimal("300"),
             new WeeklyRecurrentPayment(world,
                 newPerson,
                 ProductType.GAS,
                 60,
                 100,
-                1 + new Random().nextInt(6))::tick);
+                1 + new Random().nextInt(6)))::tick);
     }
 
     private void withCarFaults(Person newPerson) {
@@ -127,12 +130,16 @@ public class Hospital {
     }
 
     void withMortgage(Person newPerson) {
-        newPerson.listenTicks(new MonthlyRecurrentPayment(world,
+        newPerson.listenTicks(new TriggeredByBalanceThreshold(world,
             newPerson,
-            new Random().nextInt(28),
-            ProductType.MORTGAGE,
-            generateRandomPrice.apply(300, 500),
-            world.findCompany())::tick);
+            new BigDecimal("50"),
+            new BigDecimal("50"),
+            new MonthlyRecurrentPayment(world,
+                newPerson,
+                new Random().nextInt(28),
+                ProductType.MORTGAGE,
+                generateRandomPrice.apply(300, 500),
+                world.findCompany()))::tick);
     }
 
     void withPowerSupply(Person newPerson) {
