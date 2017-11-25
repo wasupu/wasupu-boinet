@@ -3,6 +3,11 @@ package io.wasupu.boinet.population;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.behaviours.*;
+import io.wasupu.boinet.population.behaviours.balance.StopWhenBalanceIsLessThreshold;
+import io.wasupu.boinet.population.behaviours.balance.TriggeredBetweenABalanceThreshold;
+import io.wasupu.boinet.population.behaviours.recurrent.EveryDayRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.recurrent.MonthlyRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.recurrent.WeeklyRecurrentPayment;
 
 import java.math.BigDecimal;
 import java.util.Random;

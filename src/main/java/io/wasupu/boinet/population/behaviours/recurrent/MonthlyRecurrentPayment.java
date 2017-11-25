@@ -1,9 +1,10 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.recurrent.RecurrentPayment;
 
 import java.math.BigDecimal;
 

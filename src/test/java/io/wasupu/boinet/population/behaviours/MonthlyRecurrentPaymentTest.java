@@ -1,6 +1,7 @@
 package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.ProductType;
+import io.wasupu.boinet.population.behaviours.recurrent.MonthlyRecurrentPayment;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;

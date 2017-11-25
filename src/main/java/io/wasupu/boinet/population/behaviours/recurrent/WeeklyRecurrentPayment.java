@@ -1,8 +1,9 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.recurrent.RecurrentPayment;
 
 public class WeeklyRecurrentPayment extends RecurrentPayment {
 

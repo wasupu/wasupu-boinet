@@ -1,7 +1,8 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.balance;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 
 import java.math.BigDecimal;
 

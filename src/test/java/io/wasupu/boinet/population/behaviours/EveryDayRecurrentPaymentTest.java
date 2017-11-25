@@ -2,6 +2,7 @@ package io.wasupu.boinet.population.behaviours;
 
 
 import io.wasupu.boinet.ProductType;
+import io.wasupu.boinet.population.behaviours.recurrent.EveryDayRecurrentPayment;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;

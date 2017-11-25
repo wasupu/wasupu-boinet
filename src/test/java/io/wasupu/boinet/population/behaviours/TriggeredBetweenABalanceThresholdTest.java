@@ -5,6 +5,8 @@ import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.balance.TriggeredBetweenABalanceThreshold;
+import io.wasupu.boinet.population.behaviours.recurrent.WeeklyRecurrentPayment;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
