@@ -2,17 +2,7 @@ package io.wasupu.boinet.population;
 
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.behaviours.ContractAccount;
-import io.wasupu.boinet.population.behaviours.ContractDebitCard;
-import io.wasupu.boinet.population.behaviours.EveryDayRecurrentPayment;
-import io.wasupu.boinet.population.behaviours.FindAJob;
-import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
-import io.wasupu.boinet.population.behaviours.ImponderablePaymentBehaviour;
-import io.wasupu.boinet.population.behaviours.InitialCapital;
-import io.wasupu.boinet.population.behaviours.MonthlyRecurrentPayment;
-import io.wasupu.boinet.population.behaviours.RequestSalaryRevisionYearly;
-import io.wasupu.boinet.population.behaviours.TriggeredByBalanceThreshold;
-import io.wasupu.boinet.population.behaviours.WeeklyRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.*;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -73,9 +63,8 @@ public class Hospital {
     }
 
     private void withGasForCar(Person newPerson) {
-        newPerson.listenTicks(new TriggeredByBalanceThreshold(world,
+        newPerson.listenTicks(new StopWhenBalanceIsLessThreshold(world,
             newPerson,
-            new BigDecimal("300"),
             new BigDecimal("300"),
             new WeeklyRecurrentPayment(world,
                 newPerson,
@@ -141,9 +130,8 @@ public class Hospital {
     }
 
     void withMortgage(Person newPerson) {
-        newPerson.listenTicks(new TriggeredByBalanceThreshold(world,
+        newPerson.listenTicks(new StopWhenBalanceIsLessThreshold(world,
             newPerson,
-            new BigDecimal("50"),
             new BigDecimal("50"),
             new MonthlyRecurrentPayment(world,
                 newPerson,
@@ -174,7 +162,7 @@ public class Hospital {
     }
 
     void withCountryside(Person newPerson) {
-        newPerson.listenTicks(new TriggeredByBalanceThreshold(world,
+        newPerson.listenTicks(new TriggeredBetweenABalanceThreshold(world,
             newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
@@ -186,7 +174,7 @@ public class Hospital {
     }
 
     void withCableTV(Person newPerson) {
-        newPerson.listenTicks(new TriggeredByBalanceThreshold(world,
+        newPerson.listenTicks(new TriggeredBetweenABalanceThreshold(world,
             newPerson,
             new BigDecimal("1000"),
             new BigDecimal("2000"),
@@ -200,9 +188,8 @@ public class Hospital {
 
     void withInternetConnection(Person newPerson) {
         newPerson.listenTicks(
-            new TriggeredByBalanceThreshold(world,
+            new StopWhenBalanceIsLessThreshold(world,
                 newPerson,
-                new BigDecimal("1000"),
                 new BigDecimal("1000"),
                 new MonthlyRecurrentPayment(world,
                     newPerson,

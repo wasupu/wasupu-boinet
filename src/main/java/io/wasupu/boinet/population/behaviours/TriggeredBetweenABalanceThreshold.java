@@ -6,16 +6,16 @@ import io.wasupu.boinet.population.Person;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TriggeredByBalanceThreshold extends PersonBehaviour {
+public class TriggeredBetweenABalanceThreshold extends PersonBehaviour {
 
-    public TriggeredByBalanceThreshold(World world,
-                                       Person person,
-                                       BigDecimal lowerThreshold,
-                                       BigDecimal upperThreshold,
-                                       RecurrentPayment recurrentPayment) {
+    public TriggeredBetweenABalanceThreshold(World world,
+                                             Person person,
+                                             BigDecimal lowerThreshold,
+                                             BigDecimal upperThreshold,
+                                             PersonBehaviour personBehaviour) {
         super(world, person);
 
-        this.recurrentPayment = recurrentPayment;
+        this.personBehaviour = personBehaviour;
         this.lowerThreshold = lowerThreshold;
         this.upperThreshold = upperThreshold;
     }
@@ -29,7 +29,7 @@ public class TriggeredByBalanceThreshold extends PersonBehaviour {
         if (!iWasGoingToCountryside.get() && !iHaveMoreThan(upperThreshold)) return;
 
         iWasGoingToCountryside.set(true);
-        recurrentPayment.tick();
+        personBehaviour.tick();
     }
 
     private boolean iHaveLessThan(BigDecimal expectedThreshold) {
@@ -47,7 +47,7 @@ public class TriggeredByBalanceThreshold extends PersonBehaviour {
     private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
 
 
-    private RecurrentPayment recurrentPayment;
+    private PersonBehaviour personBehaviour;
 
     private BigDecimal lowerThreshold;
     private BigDecimal upperThreshold;

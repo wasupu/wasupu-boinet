@@ -23,14 +23,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TriggeredByBalanceThresholdTest {
+public class TriggeredBetweenABalanceThresholdTest {
 
     @Test
     public void shouldNotGoToTheCountrysideIfNotWeekendsWhenIHaveMoreThan6000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(3));
 
-        triggeredByBalanceThreshold.tick();
+        triggeredBetweenABalanceThreshold.tick();
 
         verify(company, never()).buyProduct(any(), any(), any());
     }
@@ -40,7 +40,7 @@ public class TriggeredByBalanceThresholdTest {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
-        triggeredByBalanceThreshold.tick();
+        triggeredBetweenABalanceThreshold.tick();
 
         verify(company, atLeastOnce()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
         assertTrue("Go to countryside must cost between 100 and 500 euro",
@@ -51,7 +51,7 @@ public class TriggeredByBalanceThresholdTest {
     public void shouldNotGoToTheCountrysideOnWeekendsWhenIHave3000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1000"));
 
-        triggeredByBalanceThreshold.tick();
+        triggeredBetweenABalanceThreshold.tick();
 
         verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
     }
@@ -62,11 +62,11 @@ public class TriggeredByBalanceThresholdTest {
 
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
-        triggeredByBalanceThreshold.tick();
+        triggeredBetweenABalanceThreshold.tick();
 
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
 
-        triggeredByBalanceThreshold.tick();
+        triggeredBetweenABalanceThreshold.tick();
 
         verify(company, times(2)).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
     }
@@ -75,7 +75,7 @@ public class TriggeredByBalanceThresholdTest {
     public void shouldStopGoingToTheCountrysideOnWeekendsWhenIHaveLessOf1000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("999.99"));
 
-        triggeredByBalanceThreshold.tick();
+        triggeredBetweenABalanceThreshold.tick();
 
         verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
     }
@@ -91,7 +91,7 @@ public class TriggeredByBalanceThresholdTest {
 
     @Before
     public void setupGoToCountryside() {
-        triggeredByBalanceThreshold = new TriggeredByBalanceThreshold(world,
+        triggeredBetweenABalanceThreshold = new TriggeredBetweenABalanceThreshold(world,
             person,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
@@ -129,5 +129,5 @@ public class TriggeredByBalanceThresholdTest {
     @Captor
     private ArgumentCaptor<BigDecimal> pricesCaptor;
 
-    private TriggeredByBalanceThreshold triggeredByBalanceThreshold;
+    private TriggeredBetweenABalanceThreshold triggeredBetweenABalanceThreshold;
 }
