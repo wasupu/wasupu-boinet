@@ -41,7 +41,6 @@ public class EventPublisher {
         Map<String, Object> formattedEvent = formatEvent(event);
         bufferEvent(formattedEvent);
 
-        logger.info(appendEntries(ImmutableMap.of("buffer-size", eventsBuffer.size())), "eventPublisher");
         if (eventsBuffer.size() > BATCH_SIZE) {
             buildRequest(streamId)
                 .async()
