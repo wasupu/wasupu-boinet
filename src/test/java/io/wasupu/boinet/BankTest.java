@@ -56,6 +56,7 @@ public class BankTest {
 
     @Test
     public void shouldTransferMoneyBetweenToAccounts() throws Exception {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         whenNew(Account.class)
             .withArguments(IBAN)
             .thenReturn(firstAccount);
@@ -72,6 +73,28 @@ public class BankTest {
 
         verify(firstAccount).withdraw(amount);
         verify(secondAccount).deposit(amount);
+    }
+
+    @Test
+    public void shouldNotRedNumberWhenTransferMoneyBetweenToAccounts() throws Exception {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("5"));
+
+        whenNew(Account.class)
+            .withArguments(IBAN)
+            .thenReturn(firstAccount);
+
+        whenNew(Account.class)
+            .withArguments(SECOND_IBAN)
+            .thenReturn(secondAccount);
+
+        String firstIban = bank.contractAccount();
+        String secondIban = bank.contractAccount();
+
+        BigDecimal amount = new BigDecimal(10);
+        bank.transfer(firstIban, secondIban, amount);
+
+        verify(firstAccount, never()).withdraw(amount);
+        verify(secondAccount, never()).deposit(amount);
     }
 
     @Test
@@ -97,7 +120,7 @@ public class BankTest {
     }
 
     @Test
-    public void shouldDontAllowRedNumberWhenProcessAPayment() throws Exception {
+    public void shouldNotAllowRedNumberWhenProcessAPayment() throws Exception {
         whenNew(Account.class)
             .withArguments(IBAN)
             .thenReturn(firstAccount);
@@ -120,7 +143,6 @@ public class BankTest {
     public void setupEventPublisher() {
         when(world.getEventPublisher()).thenReturn(eventPublisher);
     }
-
 
     private static final String IBAN = "0";
 

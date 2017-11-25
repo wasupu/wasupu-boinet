@@ -36,9 +36,6 @@ public class Bank {
 
     public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
         String iban = cards.get(pan);
-        Account fromAccount = accounts.get(iban);
-        if (fromAccount.getBalance().compareTo(amount) < 0) return;
-
         transfer(iban, sellerAccount, amount);
         publishCardPayment(amount, pan, companyIdentifier, details,coordinates);
     }
@@ -53,6 +50,8 @@ public class Bank {
 
     public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
         Account fromAccount = accounts.get(ibanFrom);
+        if (fromAccount.getBalance().compareTo(amount) < 0) return;
+
         Account toAccount = accounts.get(ibanTo);
 
         fromAccount.withdraw(amount);
