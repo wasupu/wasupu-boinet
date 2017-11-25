@@ -1,7 +1,6 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.ProductType;
-import io.wasupu.boinet.population.behaviours.recurrent.WeeklyRecurrentPayment;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,10 +19,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WeeklyRecurrentPaymentTest extends RecurrentPaymentTest {
+public class WeeklyPaymentTest extends RecurrentPaymentTest {
 
     @Test
-    public void shouldPayOnDayInWeekend() {
+    public void shouldPayOnDayInWeek() {
         when(getWorld().findCompany()).thenReturn(getCompany());
         when(getWorld().getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
         when(getPerson().getPan()).thenReturn(getPAN());
@@ -50,12 +49,12 @@ public class WeeklyRecurrentPaymentTest extends RecurrentPaymentTest {
 
     @Before
     public void setupMonthlyRecurrentPayment() {
-        weekendRecurrentPayment = new WeeklyRecurrentPayment(getWorld(),
+        weekendRecurrentPayment = new WeeklyPayment(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             60,
             120, 6);
     }
 
-    private WeeklyRecurrentPayment weekendRecurrentPayment;
+    private WeeklyPayment weekendRecurrentPayment;
 }

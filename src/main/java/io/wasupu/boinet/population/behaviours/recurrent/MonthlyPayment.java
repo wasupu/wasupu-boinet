@@ -4,19 +4,18 @@ import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.recurrent.RecurrentPayment;
 
 import java.math.BigDecimal;
 
-public class MonthlyRecurrentPayment extends RecurrentPayment {
+public class MonthlyPayment extends Payment {
 
-    public MonthlyRecurrentPayment(World world,
-                                   Person person,
-                                   Integer day,
-                                   ProductType productType,
-                                   Integer startPriceRange,
-                                   Integer endPriceRange,
-                                   Company company) {
+    public MonthlyPayment(World world,
+                          Person person,
+                          Integer day,
+                          ProductType productType,
+                          Integer startPriceRange,
+                          Integer endPriceRange,
+                          Company company) {
         super(world,
             person,
             productType,
@@ -28,7 +27,7 @@ public class MonthlyRecurrentPayment extends RecurrentPayment {
         this.company = company;
     }
 
-    public MonthlyRecurrentPayment(World world, Person person, Integer day, ProductType productType, BigDecimal price, Company company) {
+    public MonthlyPayment(World world, Person person, Integer day, ProductType productType, BigDecimal price, Company company) {
         super(world, person, productType, price);
         this.world = world;
         this.day = day;
@@ -38,7 +37,7 @@ public class MonthlyRecurrentPayment extends RecurrentPayment {
     public void tick() {
         if (!isDayOfMonth(day)) return;
 
-        executePayment();
+        super.tick();
     }
 
     @Override

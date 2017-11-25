@@ -1,7 +1,6 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.ProductType;
-import io.wasupu.boinet.population.behaviours.recurrent.MonthlyRecurrentPayment;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
+public class MonthlyPaymentTest extends RecurrentPaymentTest {
 
     @Test
     public void shouldPayOnDay25th() {
@@ -51,7 +50,7 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
     public void shouldPayAlwaysTheSamePrice() {
         BigDecimal fixedPrice = new BigDecimal("300");
         int paymentDay = 15;
-        MonthlyRecurrentPayment monthlyRecurrentPayment = new MonthlyRecurrentPayment(getWorld(),
+        MonthlyPayment monthlyRecurrentPayment = new MonthlyPayment(getWorld(),
             getPerson(),
             paymentDay,
             ProductType.MORTGAGE,
@@ -69,7 +68,7 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
 
     @Before
     public void setupMonthlyRecurrentPayment() {
-        monthlyRecurrentPayment = new MonthlyRecurrentPayment(getWorld(),
+        monthlyRecurrentPayment = new MonthlyPayment(getWorld(),
             getPerson(),
             25,
             ProductType.POWER_SUPPLY,
@@ -78,7 +77,7 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
             getCompany());
     }
 
-    private MonthlyRecurrentPayment monthlyRecurrentPayment;
+    private MonthlyPayment monthlyRecurrentPayment;
 
     private DateTime fixedDateTime = new DateTime(2017, 1, 1, 1, 1);
 }

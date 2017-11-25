@@ -1,9 +1,9 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.balance;
 
 import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.balance.StopWhenBalanceIsLessThreshold;
+import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,22 +15,22 @@ import java.math.BigDecimal;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StopWhenBalanceIsLessAThresholdTest {
+public class StartWhenBalanceIsOverAThresholdTest {
 
     @Test
     public void shouldNotExecuteBehaviourIfBalanceIsBelowTheThreshold() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("300"));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
 
-        stopWhenBalanceIsLessThreshold.tick();
+        startWhenBalanceIsOverAThreshold.tick();
 
         verify(personBehaviour, never()).tick();
     }
 
     @Test
     public void shouldExecuteTheBehaviourIfIsUpperTheThreshold() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("300"));
 
-        stopWhenBalanceIsLessThreshold.tick();
+        startWhenBalanceIsOverAThreshold.tick();
 
         verify(personBehaviour).tick();
     }
@@ -43,7 +43,7 @@ public class StopWhenBalanceIsLessAThresholdTest {
 
     @Before
     public void setupGoToCountryside() {
-        stopWhenBalanceIsLessThreshold = new StopWhenBalanceIsLessThreshold(world,
+        startWhenBalanceIsOverAThreshold = new StartWhenBalanceIsOverAThreshold(world,
             person,
             new BigDecimal("1000"),
             personBehaviour);
@@ -63,5 +63,5 @@ public class StopWhenBalanceIsLessAThresholdTest {
 
     private static final String IBAN = "2";
 
-    private StopWhenBalanceIsLessThreshold stopWhenBalanceIsLessThreshold;
+    private StartWhenBalanceIsOverAThreshold startWhenBalanceIsOverAThreshold;
 }

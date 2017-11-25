@@ -7,13 +7,13 @@ import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TriggeredBetweenABalanceThreshold extends PersonBehaviour {
+public class TriggeredWhenBalanceBetweenAThreshold extends PersonBehaviour {
 
-    public TriggeredBetweenABalanceThreshold(World world,
-                                             Person person,
-                                             BigDecimal lowerThreshold,
-                                             BigDecimal upperThreshold,
-                                             PersonBehaviour personBehaviour) {
+    public TriggeredWhenBalanceBetweenAThreshold(World world,
+                                                 Person person,
+                                                 BigDecimal lowerThreshold,
+                                                 BigDecimal upperThreshold,
+                                                 PersonBehaviour personBehaviour) {
         super(world, person);
 
         this.personBehaviour = personBehaviour;

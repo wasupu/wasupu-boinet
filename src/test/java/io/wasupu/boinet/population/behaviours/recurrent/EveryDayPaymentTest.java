@@ -1,8 +1,7 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.recurrent;
 
 
 import io.wasupu.boinet.ProductType;
-import io.wasupu.boinet.population.behaviours.recurrent.EveryDayRecurrentPayment;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EveryDayRecurrentPaymentTest extends RecurrentPaymentTest {
+public class EveryDayPaymentTest extends RecurrentPaymentTest {
 
     @Test
     public void shouldEatEveryTickAfterTwoTicks() {
@@ -43,8 +42,8 @@ public class EveryDayRecurrentPaymentTest extends RecurrentPaymentTest {
 
     @Before
     public void setUpEveryDayRecurrentPayment() {
-        eatEveryDay = new EveryDayRecurrentPayment(getWorld(), getPerson(), ProductType.MEAL, 10, 20);
+        eatEveryDay = new EveryDayPayment(getWorld(), getPerson(), ProductType.MEAL, 10, 20);
     }
 
-    private EveryDayRecurrentPayment eatEveryDay;
+    private EveryDayPayment eatEveryDay;
 }

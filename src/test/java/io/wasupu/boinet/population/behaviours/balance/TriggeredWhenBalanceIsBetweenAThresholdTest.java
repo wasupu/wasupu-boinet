@@ -1,12 +1,11 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.population.behaviours.balance;
 
 import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.balance.TriggeredBetweenABalanceThreshold;
-import io.wasupu.boinet.population.behaviours.recurrent.WeeklyRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.recurrent.WeeklyPayment;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +24,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TriggeredBetweenABalanceThresholdTest {
+public class TriggeredWhenBalanceIsBetweenAThresholdTest {
 
     @Test
     public void shouldNotGoToTheCountrysideIfNotWeekendsWhenIHaveMoreThan6000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(3));
 
-        triggeredBetweenABalanceThreshold.tick();
+        triggeredWhenBalanceBetweenAThreshold.tick();
 
         verify(company, never()).buyProduct(any(), any(), any());
     }
@@ -42,7 +41,7 @@ public class TriggeredBetweenABalanceThresholdTest {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
-        triggeredBetweenABalanceThreshold.tick();
+        triggeredWhenBalanceBetweenAThreshold.tick();
 
         verify(company, atLeastOnce()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
         assertTrue("Go to countryside must cost between 100 and 500 euro",
@@ -53,7 +52,7 @@ public class TriggeredBetweenABalanceThresholdTest {
     public void shouldNotGoToTheCountrysideOnWeekendsWhenIHave3000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1000"));
 
-        triggeredBetweenABalanceThreshold.tick();
+        triggeredWhenBalanceBetweenAThreshold.tick();
 
         verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
     }
@@ -64,11 +63,11 @@ public class TriggeredBetweenABalanceThresholdTest {
 
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
-        triggeredBetweenABalanceThreshold.tick();
+        triggeredWhenBalanceBetweenAThreshold.tick();
 
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
 
-        triggeredBetweenABalanceThreshold.tick();
+        triggeredWhenBalanceBetweenAThreshold.tick();
 
         verify(company, times(2)).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
     }
@@ -77,7 +76,7 @@ public class TriggeredBetweenABalanceThresholdTest {
     public void shouldStopGoingToTheCountrysideOnWeekendsWhenIHaveLessOf1000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("999.99"));
 
-        triggeredBetweenABalanceThreshold.tick();
+        triggeredWhenBalanceBetweenAThreshold.tick();
 
         verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
     }
@@ -93,11 +92,11 @@ public class TriggeredBetweenABalanceThresholdTest {
 
     @Before
     public void setupGoToCountryside() {
-        triggeredBetweenABalanceThreshold = new TriggeredBetweenABalanceThreshold(world,
+        triggeredWhenBalanceBetweenAThreshold = new TriggeredWhenBalanceBetweenAThreshold(world,
             person,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new WeeklyRecurrentPayment(world,
+            new WeeklyPayment(world,
                 person,
                 ProductType.ENTERTAINMENT,
                 100,
@@ -131,5 +130,5 @@ public class TriggeredBetweenABalanceThresholdTest {
     @Captor
     private ArgumentCaptor<BigDecimal> pricesCaptor;
 
-    private TriggeredBetweenABalanceThreshold triggeredBetweenABalanceThreshold;
+    private TriggeredWhenBalanceBetweenAThreshold triggeredWhenBalanceBetweenAThreshold;
 }

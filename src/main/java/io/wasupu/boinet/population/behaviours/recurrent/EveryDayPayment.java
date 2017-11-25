@@ -3,11 +3,10 @@ package io.wasupu.boinet.population.behaviours.recurrent;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.recurrent.RecurrentPayment;
 
-public class EveryDayRecurrentPayment extends RecurrentPayment {
+public class EveryDayPayment extends Payment {
 
-    public EveryDayRecurrentPayment(World world, Person person, ProductType productType, Integer startPriceRange, Integer endPriceRange) {
+    public EveryDayPayment(World world, Person person, ProductType productType, Integer startPriceRange, Integer endPriceRange) {
         super(world,
             person,
             productType, startPriceRange, endPriceRange);
@@ -17,7 +16,7 @@ public class EveryDayRecurrentPayment extends RecurrentPayment {
     public void tick() {
         if (person.getAge() < 2) return;
 
-        executePayment();
+        super.tick();
     }
 
     private Person person;

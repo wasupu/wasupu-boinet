@@ -6,11 +6,11 @@ import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 
 import java.math.BigDecimal;
 
-public class StopWhenBalanceIsLessThreshold extends PersonBehaviour {
-    public StopWhenBalanceIsLessThreshold(World world,
-                                          Person person,
-                                          BigDecimal threshold,
-                                          PersonBehaviour personBehaviour) {
+public class StartWhenBalanceIsOverAThreshold extends PersonBehaviour {
+    public StartWhenBalanceIsOverAThreshold(World world,
+                                            Person person,
+                                            BigDecimal threshold,
+                                            PersonBehaviour personBehaviour) {
         super(world, person);
         this.threshold = threshold;
         this.personBehaviour = personBehaviour;
@@ -18,7 +18,7 @@ public class StopWhenBalanceIsLessThreshold extends PersonBehaviour {
 
     @Override
     public void tick() {
-        if (threshold.compareTo(getWorld().getBank().getBalance(getPerson().getIban())) > 0) return;
+        if (threshold.compareTo(getWorld().getBank().getBalance(getPerson().getIban())) < 0) return;
 
         personBehaviour.tick();
     }

@@ -9,26 +9,28 @@ import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 
 import java.math.BigDecimal;
 
-public abstract class RecurrentPayment extends PersonBehaviour {
+public class Payment extends PersonBehaviour {
 
-    public RecurrentPayment(World world,
-                            Person person,
-                            ProductType productType,
-                            Integer startPriceRange,
-                            Integer endPriceRange) {
+    public Payment(World world,
+                   Person person,
+                   ProductType productType,
+                   Integer startPriceRange,
+                   Integer endPriceRange) {
         super(world, person);
+
         this.productType = productType;
         this.startPriceRange = startPriceRange;
         this.endPriceRange = endPriceRange;
     }
 
-    public RecurrentPayment(World world, Person person, ProductType productType, BigDecimal price) {
+    public Payment(World world, Person person, ProductType productType, BigDecimal price) {
         super(world, person);
+
         this.productType = productType;
         this.fixedPrice = price;
     }
 
-    protected void executePayment() {
+    public void tick() {
         BigDecimal price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.apply(startPriceRange, endPriceRange);
         getCompany().buyProduct(getPerson().getPan(), productType, price);
     }
