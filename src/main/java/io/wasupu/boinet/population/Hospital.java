@@ -157,7 +157,7 @@ public class Hospital {
         newPerson.listenTicks(new MonthlyRecurrentPayment(world,
             newPerson,
             25,
-            ProductType.ELECTRICITY,
+            ProductType.POWER_SUPPLY,
             60,
             120,
             world.findCompany())::tick);

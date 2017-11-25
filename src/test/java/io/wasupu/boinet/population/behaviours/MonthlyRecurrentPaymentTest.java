@@ -29,7 +29,7 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
 
         monthlyRecurrentPayment.tick();
 
-        verify(getCompany(), atLeastOnce()).buyProduct(eq(getPAN()), eq(ProductType.ELECTRICITY), getPricesCaptor().capture());
+        verify(getCompany(), atLeastOnce()).buyProduct(eq(getPAN()), eq(ProductType.POWER_SUPPLY), getPricesCaptor().capture());
         assertTrue("The 25 tick must pay electricity",
             priceBetween(getLastRecordedPrice(getPricesCaptor().getAllValues()), new BigDecimal(60), new BigDecimal(120)));
     }
@@ -43,7 +43,7 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
                 monthlyRecurrentPayment.tick();
             });
 
-        verify(getCompany(), never()).buyProduct(eq(getPAN()), eq(ProductType.ELECTRICITY), any());
+        verify(getCompany(), never()).buyProduct(eq(getPAN()), eq(ProductType.POWER_SUPPLY), any());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class MonthlyRecurrentPaymentTest extends RecurrentPaymentTest {
         monthlyRecurrentPayment = new MonthlyRecurrentPayment(getWorld(),
             getPerson(),
             25,
-            ProductType.ELECTRICITY,
+            ProductType.POWER_SUPPLY,
             60,
             120,
             getCompany());
