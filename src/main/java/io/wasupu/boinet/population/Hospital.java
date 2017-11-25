@@ -2,7 +2,17 @@ package io.wasupu.boinet.population;
 
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.behaviours.*;
+import io.wasupu.boinet.population.behaviours.ContractAccount;
+import io.wasupu.boinet.population.behaviours.ContractDebitCard;
+import io.wasupu.boinet.population.behaviours.EveryDayRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.FindAJob;
+import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
+import io.wasupu.boinet.population.behaviours.ImponderablePaymentBehaviour;
+import io.wasupu.boinet.population.behaviours.InitialCapital;
+import io.wasupu.boinet.population.behaviours.MonthlyRecurrentPayment;
+import io.wasupu.boinet.population.behaviours.RequestSalaryRevisionYearly;
+import io.wasupu.boinet.population.behaviours.TriggeredByBalanceThreshold;
+import io.wasupu.boinet.population.behaviours.WeeklyRecurrentPayment;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -26,6 +36,7 @@ public class Hospital {
         withJob(newPerson);
         withEating(newPerson);
         withPowerSupply(newPerson);
+        withWaterSupply(newPerson);
         withCountryside(newPerson);
         withCableTV(newPerson);
         withMedicalCosts(newPerson);
@@ -55,7 +66,7 @@ public class Hospital {
     private void withPublicTransport(Person newPerson) {
         newPerson.listenTicks(new MonthlyRecurrentPayment(world,
             newPerson,
-            new Random().nextInt(28),
+            aDayOfMonth(),
             ProductType.PUBLIC_TRANSPORT,
             generateRandomPrice.apply(50, 70),
             world.findCompany())::tick);
@@ -136,7 +147,7 @@ public class Hospital {
             new BigDecimal("50"),
             new MonthlyRecurrentPayment(world,
                 newPerson,
-                new Random().nextInt(28),
+                aDayOfMonth(),
                 ProductType.MORTGAGE,
                 generateRandomPrice.apply(300, 500),
                 world.findCompany()))::tick);
@@ -149,6 +160,16 @@ public class Hospital {
             ProductType.ELECTRICITY,
             60,
             120,
+            world.findCompany())::tick);
+    }
+
+    void withWaterSupply(Person newPerson) {
+        newPerson.listenTicks(new MonthlyRecurrentPayment(world,
+            newPerson,
+            aDayOfMonth(),
+            ProductType.WATER_SUPPLY,
+            20,
+            25,
             world.findCompany())::tick);
     }
 
@@ -196,6 +217,10 @@ public class Hospital {
             newPerson,
             random.nextInt(365))::tick);
 
+    }
+
+    private Integer aDayOfMonth() {
+        return new Random().nextInt(28);
     }
 
     private double getProbability(Double minRange, Double maxRange) {
