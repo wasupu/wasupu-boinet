@@ -9,6 +9,7 @@ import io.wasupu.boinet.population.behaviours.recurrent.EveryDayBehaviour;
 import io.wasupu.boinet.population.behaviours.recurrent.MonthlyBehaviour;
 import io.wasupu.boinet.population.behaviours.Payment;
 import io.wasupu.boinet.population.behaviours.recurrent.WeeklyBehaviour;
+import io.wasupu.boinet.population.behaviours.recurrent.YearlyBehaviour;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -37,6 +38,10 @@ public class Hospital {
         withCableTV(newPerson);
         withMedicalCosts(newPerson);
         withSalaryRevision(newPerson);
+        withVacationsOneTimeInAYear(newPerson);
+        withLuxuryProductPayment(newPerson);
+        withNewCar(newPerson);
+        withElectronicProductPayment(newPerson);
 
         if (getProbability(0.0, 100.0) < 90) {
             withMortgage(newPerson);
@@ -55,6 +60,62 @@ public class Hospital {
         return newPerson;
     }
 
+    private void withVacationsOneTimeInAYear(Person newPerson) {
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+            newPerson,
+            new BigDecimal("10000"),
+            new YearlyBehaviour(world,
+                newPerson,
+                207,//If you have money in 26 of july
+                new Payment(world,
+                    newPerson,
+                    ProductType.VACATIONS,
+                    2000,
+                    6000)))::tick);
+    }
+
+    private void withElectronicProductPayment(Person newPerson) {
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+            newPerson,
+            new BigDecimal("10000"),
+            new MonthlyBehaviour(world,
+                newPerson,
+                get10to25MonthDay(),
+                new Payment(world,
+                    newPerson,
+                    ProductType.ELECTRONIC_DEVICE,
+                    300,
+                    1000)))::tick);
+    }
+
+    private void withLuxuryProductPayment(Person newPerson) {
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+            newPerson,
+            new BigDecimal("30000"),
+            new MonthlyBehaviour(world,
+                newPerson,
+                get10to25MonthDay(),
+                new Payment(world,
+                    newPerson,
+                    ProductType.LUXURY,
+                    4000,
+                    6000)))::tick);
+    }
+
+    private void withNewCar(Person newPerson) {
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+            newPerson,
+            new BigDecimal("60000"),
+            new YearlyBehaviour(world,
+                newPerson,
+                1 + new Random().nextInt(360),
+                new Payment(world,
+                    newPerson,
+                    ProductType.NEW_CAR,
+                    20000,
+                    50000)))::tick);
+    }
+
     private void withJob(Person newPerson) {
         newPerson.listenTicks(new FindAJob(world, newPerson)::tick);
     }
@@ -62,7 +123,7 @@ public class Hospital {
     private void withPublicTransport(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
-            aDayOfMonth(),
+            get1to10MonthDay(),
             new Payment(world,
                 newPerson,
                 ProductType.PUBLIC_TRANSPORT,
@@ -113,7 +174,7 @@ public class Hospital {
             ProductType.MEDICAL_COSTS,
             50,
             100,
-            getProbability(0.001, 0.1))::tick);
+            getProbability(0.01, 0.5))::tick);
 
         newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
             newPerson,
@@ -128,7 +189,6 @@ public class Hospital {
             3000,
             5000,
             getProbability(0.00001, 0.001))::tick);
-
     }
 
     void withEating(Person newPerson) {
@@ -146,7 +206,7 @@ public class Hospital {
             new BigDecimal("50"),
             new MonthlyBehaviour(world,
                 newPerson,
-                aDayOfMonth(),
+                3,
                 new Payment(world,
                     newPerson,
                     ProductType.MORTGAGE,
@@ -157,7 +217,7 @@ public class Hospital {
     void withPowerSupply(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
-            25,
+            get1to10MonthDay(),
             new Payment(world,
                 newPerson,
                 ProductType.POWER_SUPPLY,
@@ -168,7 +228,7 @@ public class Hospital {
     void withWaterSupply(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
-            aDayOfMonth(),
+            get1to10MonthDay(),
             new Payment(world,
                 newPerson,
                 ProductType.WATER_SUPPLY,
@@ -197,7 +257,7 @@ public class Hospital {
             new BigDecimal("2000"),
             new MonthlyBehaviour(world,
                 newPerson,
-                5,
+                1 + new Random().nextInt(5),
                 new Payment(world,
                     newPerson,
                     ProductType.ENTERTAINMENT,
@@ -212,7 +272,7 @@ public class Hospital {
                 new BigDecimal("1000"),
                 new MonthlyBehaviour(world,
                     newPerson,
-                    5,
+                    get10to25MonthDay(),
                     new Payment(world,
                         newPerson,
                         ProductType.INTERNET,
@@ -224,11 +284,14 @@ public class Hospital {
         newPerson.listenTicks(new RequestSalaryRevisionYearly(world,
             newPerson,
             random.nextInt(365))::tick);
-
     }
 
-    private Integer aDayOfMonth() {
-        return new Random().nextInt(28);
+    private int get1to10MonthDay() {
+        return 1 + new Random().nextInt(10);
+    }
+
+    private int get10to25MonthDay() {
+        return 10 + new Random().nextInt(15);
     }
 
     private double getProbability(Double minRange, Double maxRange) {

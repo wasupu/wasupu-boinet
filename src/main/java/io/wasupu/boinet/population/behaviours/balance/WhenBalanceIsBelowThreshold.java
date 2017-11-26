@@ -18,7 +18,7 @@ public class WhenBalanceIsBelowThreshold extends PersonBehaviour {
 
     @Override
     public void tick() {
-        if (threshold.compareTo(getWorld().getBank().getBalance(getPerson().getIban())) < 0) return;
+        if (threshold.compareTo(getWorld().getBank().getBalance(getPerson().getIban())) > 0) return;
 
         personBehaviour.tick();
     }

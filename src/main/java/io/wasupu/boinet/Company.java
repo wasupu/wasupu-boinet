@@ -92,7 +92,7 @@ public class Company {
     }
 
     private BigDecimal generateSalary() {
-        return new GenerateRandomPrice().apply(700, 2000);
+        return new GenerateRandomPrice().apply(1000, 2100);
     }
 
     private void initialCapital() {

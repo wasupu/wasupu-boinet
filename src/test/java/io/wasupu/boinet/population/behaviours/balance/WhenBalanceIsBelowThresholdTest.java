@@ -19,7 +19,7 @@ public class WhenBalanceIsBelowThresholdTest {
 
     @Test
     public void shouldNotExecuteBehaviourIfBalanceIsBelowTheThreshold() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1"));
 
         whenBalanceIsBelowThreshold.tick();
 
@@ -27,8 +27,8 @@ public class WhenBalanceIsBelowThresholdTest {
     }
 
     @Test
-    public void shouldExecuteTheBehaviourIfIsUpperTheThreshold() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("300"));
+    public void shouldExecuteTheBehaviourIfIsOverTheThreshold() {
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("10000"));
 
         whenBalanceIsBelowThreshold.tick();
 
