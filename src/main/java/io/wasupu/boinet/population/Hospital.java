@@ -2,12 +2,18 @@ package io.wasupu.boinet.population;
 
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.behaviours.*;
-import io.wasupu.boinet.population.behaviours.balance.WhenBalanceExceedsThreshold;
+import io.wasupu.boinet.population.behaviours.ContractAccount;
+import io.wasupu.boinet.population.behaviours.ContractDebitCard;
+import io.wasupu.boinet.population.behaviours.FindAJob;
+import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
+import io.wasupu.boinet.population.behaviours.ImponderablePaymentBehaviour;
+import io.wasupu.boinet.population.behaviours.InitialCapital;
+import io.wasupu.boinet.population.behaviours.Payment;
+import io.wasupu.boinet.population.behaviours.RequestSalaryRevisionYearly;
 import io.wasupu.boinet.population.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
+import io.wasupu.boinet.population.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.population.behaviours.recurrent.EveryDayBehaviour;
 import io.wasupu.boinet.population.behaviours.recurrent.MonthlyBehaviour;
-import io.wasupu.boinet.population.behaviours.Payment;
 import io.wasupu.boinet.population.behaviours.recurrent.WeeklyBehaviour;
 import io.wasupu.boinet.population.behaviours.recurrent.YearlyBehaviour;
 
@@ -38,18 +44,18 @@ public class Hospital {
         withCableTV(newPerson);
         withMedicalCosts(newPerson);
         withSalaryRevision(newPerson);
-        withVacationsOneTimeInAYear(newPerson);
+        withHolidaysOnceInAYear(newPerson);
         withLuxuryProductPayment(newPerson);
         withNewCar(newPerson);
         withElectronicProductPayment(newPerson);
 
-        if (getProbability(0.0, 100.0) < 90) {
+        if (isInPercentage(90)) {
             withMortgage(newPerson);
         }
 
         withInternetConnection(newPerson);
 
-        if (getProbability(0.0, 100.0) < 80) {
+        if (isInPercentage(80)) {
             withCarFaults(newPerson);
             withGasForCar(newPerson);
         } else {
@@ -60,7 +66,11 @@ public class Hospital {
         return newPerson;
     }
 
-    private void withVacationsOneTimeInAYear(Person newPerson) {
+    private boolean isInPercentage(Integer percentage) {
+        return getProbability(0.0, 100.0) < percentage;
+    }
+
+    private void withHolidaysOnceInAYear(Person newPerson) {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("10000"),
@@ -69,7 +79,7 @@ public class Hospital {
                 207,//If you have money in 26 of july
                 new Payment(world,
                     newPerson,
-                    ProductType.VACATIONS,
+                    ProductType.HOLIDAYS,
                     2000,
                     6000)))::tick);
     }

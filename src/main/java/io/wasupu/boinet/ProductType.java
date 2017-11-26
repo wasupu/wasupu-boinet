@@ -10,7 +10,7 @@ public enum ProductType {
     PUBLIC_TRANSPORT,
     GAS,
     WATER_SUPPLY,
-    VACATIONS,
+    HOLIDAYS,
     INVERSION,
     LUXURY,
     NEW_CAR,
