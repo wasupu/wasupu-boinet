@@ -15,22 +15,22 @@ import java.math.BigDecimal;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StopWhenBalanceIsBeyondAThresholdTest {
+public class WhenBalanceIsBelowThresholdTest {
 
     @Test
     public void shouldNotExecuteBehaviourIfBalanceIsBelowTheThreshold() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("300"));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
 
-        stopWhenBalanceIsBeyondAThreshold.tick();
+        whenBalanceIsBelowThreshold.tick();
 
         verify(personBehaviour, never()).tick();
     }
 
     @Test
     public void shouldExecuteTheBehaviourIfIsUpperTheThreshold() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("300"));
 
-        stopWhenBalanceIsBeyondAThreshold.tick();
+        whenBalanceIsBelowThreshold.tick();
 
         verify(personBehaviour).tick();
     }
@@ -43,7 +43,7 @@ public class StopWhenBalanceIsBeyondAThresholdTest {
 
     @Before
     public void setupGoToCountryside() {
-        stopWhenBalanceIsBeyondAThreshold = new StopWhenBalanceIsBeyondAThreshold(world,
+        whenBalanceIsBelowThreshold = new WhenBalanceIsBelowThreshold(world,
             person,
             new BigDecimal("1000"),
             personBehaviour);
@@ -63,5 +63,5 @@ public class StopWhenBalanceIsBeyondAThresholdTest {
 
     private static final String IBAN = "2";
 
-    private StopWhenBalanceIsBeyondAThreshold stopWhenBalanceIsBeyondAThreshold;
+    private WhenBalanceIsBelowThreshold whenBalanceIsBelowThreshold;
 }

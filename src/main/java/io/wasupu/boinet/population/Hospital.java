@@ -3,7 +3,7 @@ package io.wasupu.boinet.population;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.behaviours.*;
-import io.wasupu.boinet.population.behaviours.balance.StopWhenBalanceIsBeyondAThreshold;
+import io.wasupu.boinet.population.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.population.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.population.behaviours.recurrent.EveryDayBehaviour;
 import io.wasupu.boinet.population.behaviours.recurrent.MonthlyBehaviour;
@@ -71,7 +71,7 @@ public class Hospital {
     }
 
     private void withGasForCar(Person newPerson) {
-        newPerson.listenTicks(new StopWhenBalanceIsBeyondAThreshold(world,
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("300"),
             new WeeklyBehaviour(world,
@@ -141,7 +141,7 @@ public class Hospital {
     }
 
     void withMortgage(Person newPerson) {
-        newPerson.listenTicks(new StopWhenBalanceIsBeyondAThreshold(world,
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("50"),
             new MonthlyBehaviour(world,
@@ -207,7 +207,7 @@ public class Hospital {
 
     void withInternetConnection(Person newPerson) {
         newPerson.listenTicks(
-            new StopWhenBalanceIsBeyondAThreshold(world,
+            new WhenBalanceExceedsThreshold(world,
                 newPerson,
                 new BigDecimal("1000"),
                 new MonthlyBehaviour(world,

@@ -6,11 +6,11 @@ import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 
 import java.math.BigDecimal;
 
-public class StartWhenBalanceIsOverAThreshold extends PersonBehaviour {
-    public StartWhenBalanceIsOverAThreshold(World world,
-                                            Person person,
-                                            BigDecimal threshold,
-                                            PersonBehaviour personBehaviour) {
+public class WhenBalanceIsBelowThreshold extends PersonBehaviour {
+    public WhenBalanceIsBelowThreshold(World world,
+                                       Person person,
+                                       BigDecimal threshold,
+                                       PersonBehaviour personBehaviour) {
         super(world, person);
         this.threshold = threshold;
         this.personBehaviour = personBehaviour;
