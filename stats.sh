@@ -10,6 +10,7 @@ fi
 FILE=$1
 
 PRODUCT_TYPES=("mortgage" "power_supply" "water_supply" "meal" "entertainment" "internet" "gas" "medical_costs" "car_fault" "public_transport" "electronic_device" "holidays" "luxury" "new_car")
+
 for productType in "${PRODUCT_TYPES[@]}"
 do
     echo "${productType}:" $(grep --regexp="\"details\":\"${productType}\"" ${FILE} | wc -l)

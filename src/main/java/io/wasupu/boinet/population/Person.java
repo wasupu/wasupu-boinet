@@ -59,6 +59,11 @@ public class Person {
         employed = TRUE;
     }
 
+    public void youAreFired() {
+        this.company = null;
+        employed = FALSE;
+    }
+
     public String getIban() {
         return iban;
     }
@@ -123,9 +128,9 @@ public class Person {
     public int hashCode() {
         return identifier.hashCode();
     }
-
     private String iban;
     private String identifier;
+
     private String fullAddress;
 
     private String zipCode;

@@ -133,12 +133,12 @@ public class Hospital {
     private void withPublicTransport(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
-            get1to10MonthDay(),
+            get2to10MonthDay(),
             new Payment(world,
                 newPerson,
                 ProductType.PUBLIC_TRANSPORT,
-                generateRandomPrice.apply(50, 70),
-                world.findCompany()))::tick);
+                50,
+                70))::tick);
     }
 
     private void withGasForCar(Person newPerson) {
@@ -207,7 +207,7 @@ public class Hospital {
             new Payment(world, newPerson,
                 ProductType.MEAL,
                 10,
-                20))::tick);
+                25))::tick);
     }
 
     void withMortgage(Person newPerson) {
@@ -216,7 +216,7 @@ public class Hospital {
             new BigDecimal("50"),
             new MonthlyBehaviour(world,
                 newPerson,
-                3,
+                28,
                 new Payment(world,
                     newPerson,
                     ProductType.MORTGAGE,
@@ -227,7 +227,7 @@ public class Hospital {
     void withPowerSupply(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
-            get1to10MonthDay(),
+            get2to10MonthDay(),
             new Payment(world,
                 newPerson,
                 ProductType.POWER_SUPPLY,
@@ -238,7 +238,7 @@ public class Hospital {
     void withWaterSupply(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
-            get1to10MonthDay(),
+            get2to10MonthDay(),
             new Payment(world,
                 newPerson,
                 ProductType.WATER_SUPPLY,
@@ -267,7 +267,7 @@ public class Hospital {
             new BigDecimal("2000"),
             new MonthlyBehaviour(world,
                 newPerson,
-                1 + new Random().nextInt(5),
+                get10to25MonthDay(),
                 new Payment(world,
                     newPerson,
                     ProductType.ENTERTAINMENT,
@@ -296,8 +296,8 @@ public class Hospital {
             random.nextInt(365))::tick);
     }
 
-    private int get1to10MonthDay() {
-        return 1 + new Random().nextInt(10);
+    private int get2to10MonthDay() {
+        return 2 + new Random().nextInt(8);
     }
 
     private int get10to25MonthDay() {

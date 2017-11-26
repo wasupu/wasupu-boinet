@@ -16,9 +16,9 @@ import static org.mockito.Mockito.*;
 public class FindAJobTest {
 
     @Test
-    public void shouldDepositASocialSalaryInTheFirstTick() {
-        when(person.getAge()).thenReturn(0L);
-        when(world.findCompany()).thenReturn(company);
+    public void shouldFindAJobWhenIsUnemployed() {
+        when(person.isUnemployed()).thenReturn(true);
+        when(world.findBestCompanyToWork()).thenReturn(company);
 
         findAJob.tick();
 
@@ -26,8 +26,8 @@ public class FindAJobTest {
     }
 
     @Test
-    public void shouldNotDepositAnySalaryInOtherTick() {
-        when(person.getAge()).thenReturn(1L);
+    public void shouldNotFindAJobWhenIsEmployed() {
+        when(person.isUnemployed()).thenReturn(false);
         findAJob.tick();
 
         verify(company, never()).hire(any());

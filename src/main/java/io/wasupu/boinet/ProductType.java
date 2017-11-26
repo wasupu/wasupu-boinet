@@ -11,7 +11,6 @@ public enum ProductType {
     GAS,
     WATER_SUPPLY,
     HOLIDAYS,
-    INVERSION,
     LUXURY,
     NEW_CAR,
     ELECTRONIC_DEVICE,

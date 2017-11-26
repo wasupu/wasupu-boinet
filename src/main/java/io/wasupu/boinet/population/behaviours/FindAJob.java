@@ -11,9 +11,9 @@ public class FindAJob extends PersonBehaviour {
 
     @Override
     public void tick() {
-        if (getPerson().getAge() != 0) return;
+        if (!getPerson().isUnemployed()) return;
 
-        Company company = getWorld().findCompany();
+        Company company = getWorld().findBestCompanyToWork();
         company.hire(getPerson());
     }
 }

@@ -17,5 +17,5 @@ public class InitialCapital extends PersonBehaviour {
         getWorld().getBank().deposit(getPerson().getIban(), INITIAL_CAPITAL);
     }
 
-    static final BigDecimal INITIAL_CAPITAL = new BigDecimal(1000);
+    static final BigDecimal INITIAL_CAPITAL = new BigDecimal(3000);
 }

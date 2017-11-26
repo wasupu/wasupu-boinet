@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.toList;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class World {
@@ -121,6 +122,25 @@ public class World {
         return GPS;
     }
 
+    public Company findBestCompanyToWork() {
+        return companies
+            .stream()
+            .sorted((company1, company2) -> {
+                double company1Ratio = bank.getBalance(company1.getIban()).doubleValue()/
+                    (company1.getNumberOfEmployees() + 1);
+
+                double company2Ratio = bank.getBalance(company2.getIban()).doubleValue() /
+                    (company2.getNumberOfEmployees() + 1);
+
+                if (company1Ratio == company2Ratio) return 0;
+                if (company1Ratio < company2Ratio) return 1;
+
+                return -1;
+            })
+            .collect(toList())
+            .get(0);
+    }
+
     private void newSupplier(Integer number) {
         companies.add(new Company(createCompanyUniqueIdentifier(), this));
     }
@@ -130,18 +150,19 @@ public class World {
     }
 
     private List<Company> companies = new ArrayList<>();
+
     private Collection<Person> population = new ArrayList<>();
 
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Bank bank = new Bank(this);
-
     private static Logger logger = LoggerFactory.getLogger(World.class);
+
     private DateTime currentDate;
 
     private EventPublisher eventPublisher;
-
     private final Hospital hospital = new Hospital(this);
+
     private GPS GPS = new GPS();
 }
 

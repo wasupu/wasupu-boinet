@@ -13,7 +13,9 @@ public class RequestSalaryRevisionYearly extends PersonBehaviour {
     @Override
     public void tick() {
         if (getPerson().getAge() < 2) return;
+        if (getPerson().isUnemployed()) return;
         if (getWorld().getCurrentDateTime().getDayOfYear() != dayOfYear) return;
+
 
         getPerson().getEmployer().requestSalaryRevision(getPerson());
     }

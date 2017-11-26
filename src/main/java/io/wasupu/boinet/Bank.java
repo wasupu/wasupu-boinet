@@ -35,9 +35,12 @@ public class Bank {
     }
 
     public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        String iban = cards.get(pan);
-        transfer(iban, sellerAccount, amount);
-        publishCardPayment(amount, pan, companyIdentifier, details,coordinates);
+        String buyerIban = cards.get(pan);
+        Account fromAccount = accounts.get(buyerIban);
+        if (fromAccount.getBalance().compareTo(amount) < 0) return;
+
+        transfer(buyerIban, sellerAccount, amount);
+        publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
     }
 
     public BigDecimal getBalance(String iban) {
@@ -63,7 +66,7 @@ public class Bank {
     }
 
     private void publishCardPayment(BigDecimal amount, String pan, String companyIndentifier, String details,
-                                    Pair<Double,Double> coordinates) {
+                                    Pair<Double, Double> coordinates) {
         world.getEventPublisher().publish(STREAM_ID, ImmutableMap
             .<String, Object>builder()
             .put("pan", pan)

@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
@@ -53,6 +54,15 @@ public class PersonTest {
 
         assertNotNull("Must be not null", person.isUnemployed());
         assertFalse("The person must be hired", person.isUnemployed());
+    }
+
+    @Test
+    public void shouldBeUnemployedAfterYouAreFired() {
+        person.youAreHired(company);
+        person.youAreFired();
+
+        assertNotNull("Must be not null", person.isUnemployed());
+        assertTrue("The person must be hired", person.isUnemployed());
     }
 
     @Test

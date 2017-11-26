@@ -91,7 +91,8 @@ public class CompanyTest {
     @Test
     public void shouldPayTheEmployeesOnEvery28th() {
         when(person.getIban()).thenReturn(OTHER_IBAN);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(28));
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(10000));
 
         company.hire(person);
         company.tick();
@@ -127,7 +128,6 @@ public class CompanyTest {
         company.tick();
 
         verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(hasKey("address")));
-        // verify(eventPublisher).publish(eq("companyEventStream"), argThat(hasEntry(eq("address"), MockitoHamcrest.<Map<String, Object>>argThat(hasKey("full")))));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldPublishCompanyInfoAt90Ticks() {
+    public void shouldPublishCompanyInfoAt30Ticks() {
         IntStream.range(0, 31).forEach(i -> company.tick());
 
         verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
@@ -195,6 +195,18 @@ public class CompanyTest {
         company.tick();
 
         verify(bank, never()).transfer(any(), any(),any());
+    }
+
+    @Test
+    public void shouldFireEmployeesThatCompanyCanPay() {
+        when(person.getIban()).thenReturn(IBAN);
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1));
+
+        company.hire(person);
+        company.tick();
+
+        verify(person).youAreFired();
     }
 
     @Before

@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -20,13 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(World.class)
+@PrepareForTest({World.class, Hospital.class})
 public class WorldTest {
 
     @Test
@@ -113,20 +113,76 @@ public class WorldTest {
         assertEquals("The date is not the expected", gregorianCalendar.getTime(), world.getCurrentDateTime().toDate());
     }
 
-    @Before
-    public void setupPeople() throws Exception {
-        whenNew(Person.class)
-            .withAnyArguments()
-            .thenReturn(firstPerson, secondPerson);
+    @Test
+    public void shouldReturnTheBestCompanyToWork() throws Exception {
+        when(firstCompany.getNumberOfEmployees()).thenReturn(0);
+        when(firstCompany.getIban()).thenReturn(IBAN);
+
+        when(secondCompany.getNumberOfEmployees()).thenReturn(0);
+        when(secondCompany.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal("2000"));
+
+        world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
+
+        Company company = world.findBestCompanyToWork();
+
+        assertNotNull("Company must be not null", company);
+        assertEquals("The first company to work is company 1", firstCompany, company);
+    }
+
+    @Test
+    public void shouldReturnTheBestCompanyToWorkSecondCompany() throws Exception {
+        when(firstCompany.getNumberOfEmployees()).thenReturn(6);
+        when(firstCompany.getIban()).thenReturn(IBAN);
+
+        when(secondCompany.getNumberOfEmployees()).thenReturn(0);
+        when(secondCompany.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal("2000"));
+
+        world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
+
+        Company company = world.findBestCompanyToWork();
+
+        assertNotNull("Company must be not null", company);
+        assertEquals("The first company to work is company 1", secondCompany, company);
+    }
+
+    @Test
+    public void shouldReturnTheBestCompanyToWorkFirstCompanyWhenEquals() throws Exception {
+        when(firstCompany.getNumberOfEmployees()).thenReturn(2);
+        when(firstCompany.getIban()).thenReturn(IBAN);
+
+        when(secondCompany.getNumberOfEmployees()).thenReturn(2);
+        when(secondCompany.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("3000"));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal("2000"));
+
+        world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
+
+        Company company = world.findBestCompanyToWork();
+
+        assertNotNull("Company must be not null", company);
+        assertEquals("The first company to work is company 1", firstCompany, company);
     }
 
     @Before
-    public void setupCompany() throws Exception {
+    public void createWorld() throws Exception {
         whenNew(Company.class)
             .withAnyArguments()
             .thenReturn(firstCompany, secondCompany);
-    }
 
+        whenNew(Person.class)
+            .withAnyArguments()
+            .thenReturn(firstPerson, secondPerson);
+
+        whenNew(Bank.class).withAnyArguments().thenReturn(bank);
+        world = new World("unusedApiKey", "unusedNamespace");
+    }
     @Mock(name = "firstPerson")
     private Person firstPerson;
 
@@ -139,10 +195,17 @@ public class WorldTest {
     @Mock(name = "secondCompany")
     private Company secondCompany;
 
-    private World world = new World("unusedApiKey", "unusedNamespace");
+    @Mock
+    private Bank bank;
+
+    private World world;
 
     private static final Integer NUMBER_OF_PEOPLE = 2;
 
     private static final Integer NUMBER_OF_COMPANIES = 2;
+
+    private static final String IBAN = "";
+
+    private static final String OTHER_IBAN = "";
 
 }

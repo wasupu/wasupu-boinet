@@ -48,6 +48,7 @@ public class Company {
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
+
         world.getBank().processPayment(price,
             pan,
             iban,
@@ -80,6 +81,15 @@ public class Company {
         person.youAreHired(this);
     }
 
+    public int getNumberOfEmployees() {
+        return employees.size();
+    }
+
+    private void fire(Person person) {
+        employees.remove(person);
+        person.youAreFired();
+    }
+
     public void requestSalaryRevision(Person person) {
         if (world.getBank().getBalance(iban).compareTo(new BigDecimal(6000)) < 0) return;
 
@@ -92,7 +102,7 @@ public class Company {
     }
 
     private BigDecimal generateSalary() {
-        return new GenerateRandomPrice().apply(1000, 2100);
+        return new GenerateRandomPrice().apply(1200, 2300);
     }
 
     private void initialCapital() {
@@ -108,7 +118,7 @@ public class Company {
     }
 
     private void paySalary() {
-        if (!isDayOfMonth(28)) return;
+        if (!isDayOfMonth(27)) return;
 
         employees.forEach(this::payEmployee);
     }
@@ -125,6 +135,10 @@ public class Company {
     }
 
     private void payEmployee(Person employee, BigDecimal salary) {
+        if (world.getBank().getBalance(iban).compareTo(salary) < 0){
+            fire(employee);
+        }
+
         world.getBank().transfer(iban, employee.getIban(), salary);
     }
 
@@ -157,11 +171,11 @@ public class Company {
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
     private String iban;
-
     private String identifier;
-
     private String name;
+
     private String latitude;
+
     private String longitude;
 
     private Address address;
@@ -175,6 +189,4 @@ public class Company {
     private static final Faker faker = new Faker();
 
     private final Pair<Double, Double> coordinates;
-
-
 }
