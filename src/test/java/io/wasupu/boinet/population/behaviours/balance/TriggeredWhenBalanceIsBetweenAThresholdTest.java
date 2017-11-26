@@ -5,7 +5,8 @@ import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.recurrent.WeeklyPayment;
+import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.recurrent.WeeklyBehaviour;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,6 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     @Test
     public void shouldNotGoToTheCountrysideIfNotWeekendsWhenIHaveMoreThan6000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
-        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(3));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
@@ -39,13 +39,10 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     @Test
     public void shouldStartGoingToTheCountrysideOnWeekendsWhenIHaveMoreThan6000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
-        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(company, atLeastOnce()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
-        assertTrue("Go to countryside must cost between 100 and 500 euro",
-            priceBetween(getLastRecordedPrice(pricesCaptor.getAllValues()), new BigDecimal(100), new BigDecimal(500)));
+        verify(personBehaviour, atLeastOnce()).tick();
     }
 
     @Test
@@ -54,14 +51,12 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
+        verify(personBehaviour, never()).tick();
     }
 
     @Test
     public void shouldKeepGoingToTheCountrysideOnWeekendsWhenIHave3000Euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
-
-        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
@@ -69,7 +64,7 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(company, times(2)).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), pricesCaptor.capture());
+        verify(personBehaviour, times(2)).tick();
     }
 
     @Test
@@ -78,16 +73,14 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(company, never()).buyProduct(eq(PAN), eq(ProductType.ENTERTAINMENT), any());
+        verify(personBehaviour, never()).tick();
     }
 
     @Before
     public void setupBank() {
         when(person.getIban()).thenReturn(IBAN);
-        when(person.getPan()).thenReturn(PAN);
         when(world.getBank()).thenReturn(bank);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
-        when(world.findCompany()).thenReturn(company);
     }
 
     @Before
@@ -96,11 +89,7 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
             person,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new WeeklyPayment(world,
-                person,
-                ProductType.ENTERTAINMENT,
-                100,
-                500, 6));
+            personBehaviour);
     }
 
     private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
@@ -131,4 +120,7 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     private ArgumentCaptor<BigDecimal> pricesCaptor;
 
     private TriggeredWhenBalanceBetweenAThreshold triggeredWhenBalanceBetweenAThreshold;
+
+    @Mock
+    private PersonBehaviour personBehaviour;
 }

@@ -33,12 +33,6 @@ public class EventPublisher {
     public void publish(String streamId, Map<String, Object> event) {
         logger.info(appendEntries(event), streamId);
 
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         if (streamServiceNamespace == null) return;
 
         publishInStreamService(streamId, event);

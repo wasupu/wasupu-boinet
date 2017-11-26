@@ -5,9 +5,10 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.behaviours.*;
 import io.wasupu.boinet.population.behaviours.balance.StopWhenBalanceIsBeyondAThreshold;
 import io.wasupu.boinet.population.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
-import io.wasupu.boinet.population.behaviours.recurrent.EveryDayPayment;
-import io.wasupu.boinet.population.behaviours.recurrent.MonthlyPayment;
-import io.wasupu.boinet.population.behaviours.recurrent.WeeklyPayment;
+import io.wasupu.boinet.population.behaviours.recurrent.EveryDayBehaviour;
+import io.wasupu.boinet.population.behaviours.recurrent.MonthlyBehaviour;
+import io.wasupu.boinet.population.behaviours.Payment;
+import io.wasupu.boinet.population.behaviours.recurrent.WeeklyBehaviour;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -59,24 +60,28 @@ public class Hospital {
     }
 
     private void withPublicTransport(Person newPerson) {
-        newPerson.listenTicks(new MonthlyPayment(world,
+        newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             aDayOfMonth(),
-            ProductType.PUBLIC_TRANSPORT,
-            generateRandomPrice.apply(50, 70),
-            world.findCompany())::tick);
+            new Payment(world,
+                newPerson,
+                ProductType.PUBLIC_TRANSPORT,
+                generateRandomPrice.apply(50, 70),
+                world.findCompany()))::tick);
     }
 
     private void withGasForCar(Person newPerson) {
         newPerson.listenTicks(new StopWhenBalanceIsBeyondAThreshold(world,
             newPerson,
             new BigDecimal("300"),
-            new WeeklyPayment(world,
+            new WeeklyBehaviour(world,
                 newPerson,
-                ProductType.GAS,
-                60,
-                100,
-                1 + new Random().nextInt(6)))::tick);
+                1 + new Random().nextInt(6),
+                new Payment(world,
+                    newPerson,
+                    ProductType.GAS,
+                    60,
+                    100)))::tick);
     }
 
     private void withCarFaults(Person newPerson) {
@@ -127,43 +132,48 @@ public class Hospital {
     }
 
     void withEating(Person newPerson) {
-        newPerson.listenTicks(new EveryDayPayment(world,
+        newPerson.listenTicks(new EveryDayBehaviour(world,
             newPerson,
-            ProductType.MEAL,
-            10,
-            20)::tick);
+            new Payment(world, newPerson,
+                ProductType.MEAL,
+                10,
+                20))::tick);
     }
 
     void withMortgage(Person newPerson) {
         newPerson.listenTicks(new StopWhenBalanceIsBeyondAThreshold(world,
             newPerson,
             new BigDecimal("50"),
-            new MonthlyPayment(world,
+            new MonthlyBehaviour(world,
                 newPerson,
                 aDayOfMonth(),
-                ProductType.MORTGAGE,
-                generateRandomPrice.apply(300, 500),
-                world.findCompany()))::tick);
+                new Payment(world,
+                    newPerson,
+                    ProductType.MORTGAGE,
+                    generateRandomPrice.apply(300, 500),
+                    world.findCompany())))::tick);
     }
 
     void withPowerSupply(Person newPerson) {
-        newPerson.listenTicks(new MonthlyPayment(world,
+        newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             25,
-            ProductType.POWER_SUPPLY,
-            60,
-            120,
-            world.findCompany())::tick);
+            new Payment(world,
+                newPerson,
+                ProductType.POWER_SUPPLY,
+                generateRandomPrice.apply(60, 120),
+                world.findCompany()))::tick);
     }
 
     void withWaterSupply(Person newPerson) {
-        newPerson.listenTicks(new MonthlyPayment(world,
+        newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             aDayOfMonth(),
-            ProductType.WATER_SUPPLY,
-            20,
-            25,
-            world.findCompany())::tick);
+            new Payment(world,
+                newPerson,
+                ProductType.WATER_SUPPLY,
+                generateRandomPrice.apply(20, 40),
+                world.findCompany()))::tick);
     }
 
     void withCountryside(Person newPerson) {
@@ -171,11 +181,13 @@ public class Hospital {
             newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new WeeklyPayment(world,
+            new WeeklyBehaviour(world,
                 newPerson,
-                ProductType.ENTERTAINMENT,
-                100,
-                500, 6))::tick);
+                6,
+                new Payment(world,
+                    newPerson, ProductType.ENTERTAINMENT,
+                    100,
+                    500)))::tick);
     }
 
     void withCableTV(Person newPerson) {
@@ -183,12 +195,14 @@ public class Hospital {
             newPerson,
             new BigDecimal("1000"),
             new BigDecimal("2000"),
-            new MonthlyPayment(world,
+            new MonthlyBehaviour(world,
                 newPerson,
                 5,
-                ProductType.ENTERTAINMENT,
-                generateRandomPrice.apply(10, 25),
-                world.findCompany()))::tick);
+                new Payment(world,
+                    newPerson,
+                    ProductType.ENTERTAINMENT,
+                    generateRandomPrice.apply(10, 25),
+                    world.findCompany())))::tick);
     }
 
     void withInternetConnection(Person newPerson) {
@@ -196,12 +210,14 @@ public class Hospital {
             new StopWhenBalanceIsBeyondAThreshold(world,
                 newPerson,
                 new BigDecimal("1000"),
-                new MonthlyPayment(world,
+                new MonthlyBehaviour(world,
                     newPerson,
                     5,
-                    ProductType.INTERNET,
-                    generateRandomPrice.apply(40, 100),
-                    world.findCompany()))::tick);
+                    new Payment(world,
+                        newPerson,
+                        ProductType.INTERNET,
+                        generateRandomPrice.apply(40, 100),
+                        world.findCompany())))::tick);
     }
 
     void withSalaryRevision(Person newPerson) {

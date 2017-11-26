@@ -1,4 +1,4 @@
-package io.wasupu.boinet.population.behaviours.recurrent;
+package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.Company;
 import io.wasupu.boinet.ProductType;
@@ -23,11 +23,12 @@ public class Payment extends PersonBehaviour {
         this.endPriceRange = endPriceRange;
     }
 
-    public Payment(World world, Person person, ProductType productType, BigDecimal price) {
+    public Payment(World world, Person person, ProductType productType, BigDecimal price, Company company) {
         super(world, person);
 
         this.productType = productType;
         this.fixedPrice = price;
+        this.fixedCompany = company;
     }
 
     public void tick() {
@@ -36,7 +37,7 @@ public class Payment extends PersonBehaviour {
     }
 
     protected Company getCompany() {
-        return getWorld().findCompany();
+        return (fixedCompany != null) ? fixedCompany : getWorld().findCompany();
     }
 
     private ProductType productType;
@@ -48,5 +49,7 @@ public class Payment extends PersonBehaviour {
     private Integer endPriceRange;
 
     private GenerateRandomPrice generateRandomPrice = new GenerateRandomPrice();
+
+    private Company fixedCompany;
 
 }

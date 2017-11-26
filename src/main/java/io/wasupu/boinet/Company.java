@@ -56,10 +56,6 @@ public class Company {
             world.getGPS().coordinatesAround(coordinates.getLeft(), coordinates.getRight()));
     }
 
-    public Collection<Person> getEmployees() {
-        return ImmutableList.copyOf(employees.keySet());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

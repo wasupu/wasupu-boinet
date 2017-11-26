@@ -8,7 +8,6 @@ import io.wasupu.boinet.Company;
 import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 
 import static java.lang.Boolean.FALSE;
@@ -108,10 +107,6 @@ public class Person {
             .build());
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -156,6 +151,4 @@ public class Person {
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Company company;
-
-    static int occupied = 0;
 }
