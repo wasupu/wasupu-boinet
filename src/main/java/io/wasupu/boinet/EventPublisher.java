@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class EventPublisher {
 
     private Map<String, Object> formatEvent(Map<String, Object> event) {
         Map<String, Object> newEvent = new HashMap<>(event);
-        newEvent.put("date", simpleDateFormat.format(event.get("date")));
+        newEvent.put("date", dateFormat.format(event.get("date")));
         return newEvent;
     }
 
@@ -111,7 +112,7 @@ public class EventPublisher {
 
     private Collection<Map<String, Object>> eventsBuffer = ImmutableList.of();
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private static final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
 
     private static final Integer BATCH_SIZE = 50;
 
