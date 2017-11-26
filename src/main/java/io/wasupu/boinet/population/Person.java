@@ -5,6 +5,7 @@ import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.Company;
+import io.wasupu.boinet.EventPublisher;
 import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -104,6 +105,7 @@ public class Person {
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
             .put("date", world.getCurrentDateTime().toDate())
+            .put("eventType", "personBalance")
             .build());
     }
 

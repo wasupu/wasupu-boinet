@@ -22,7 +22,6 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 public class EventPublisher {
 
     public EventPublisher() {
-
     }
 
     public EventPublisher(String streamServiceApiKey, String streamServiceNamespace) {
@@ -31,11 +30,24 @@ public class EventPublisher {
     }
 
     public void publish(String streamId, Map<String, Object> event) {
-        logger.info(appendEntries(event), streamId);
+        if (streamServiceNamespace != null) {
+            logRelevantEvents(streamId, event);
+            publishInStreamService(streamId, event);
+        } else {
+            logger.info(appendEntries(event), streamId);
+        }
+    }
 
-        if (streamServiceNamespace == null) return;
+    private void logRelevantEvents(String streamId, Map<String, Object> event) {
+        if (event.get("eventType" ) != null){
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        publishInStreamService(streamId, event);
+            logger.info(appendEntries(event), streamId);
+        }
     }
 
     private void publishInStreamService(String streamId, Map<String, Object> event) {

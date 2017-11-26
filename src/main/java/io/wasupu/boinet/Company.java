@@ -148,6 +148,7 @@ public class Company {
             .put("balance", world.getBank().getBalance(iban))
             .put("currency", "EUR")
             .put("date", world.getCurrentDateTime().toDate())
+            .put("eventType", "companyBalance")
             .build());
     }
 
