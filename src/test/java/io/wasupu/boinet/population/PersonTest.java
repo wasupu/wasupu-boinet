@@ -22,9 +22,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasKey;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
@@ -69,43 +67,43 @@ public class PersonTest {
     public void shouldPublishPersonStatusOnFirstTick() {
         person.tick();
 
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
     }
 
     @Test
     public void shouldPublishPersonAddressOnFirstTick() {
         person.tick();
 
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(hasKey("address")));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(hasKey("address")));
     }
 
     @Test
     public void shouldPublishPersonPanOnFirstTick() {
         person.tick();
 
-        verify(eventPublisher).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("pan", PAN)));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("pan", PAN)));
     }
 
     @Test
     public void shouldPublishPersonStatusAt30Ticks() {
         IntStream.range(0, 31).forEach(i -> person.tick());
 
-        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
-        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
-        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
-        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher, times(2)).publish(eq("personEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
+        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
+        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
+        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
+        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
     }
 
     @Before
     public void setupEventPublisher() {
-        when(world.getEventPublisher()).thenReturn(eventPublisher);
+        when(world.getEventPersonPublisher()).thenReturn(eventPublisher);
     }
 
     @Before

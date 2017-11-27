@@ -95,7 +95,7 @@ public class Person {
     private void publishPersonBalance() {
         if (age % 30 != 0) return;
 
-        world.getEventPublisher().publish(STREAM_ID, ImmutableMap
+        world.getEventPersonPublisher().publish(ImmutableMap
             .<String, Object>builder()
             .put("person", identifier)
             .put("name", name)
@@ -128,6 +128,7 @@ public class Person {
     public int hashCode() {
         return identifier.hashCode();
     }
+
     private String iban;
     private String identifier;
 
@@ -150,8 +151,6 @@ public class Person {
     private String name;
 
     private final String cellPhone;
-
-    private static final String STREAM_ID = "personEventStream";
 
     private static Faker faker = new Faker();
 

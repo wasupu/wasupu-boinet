@@ -2,14 +2,7 @@ package io.wasupu.boinet.population;
 
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.behaviours.ContractAccount;
-import io.wasupu.boinet.population.behaviours.ContractDebitCard;
-import io.wasupu.boinet.population.behaviours.FindAJob;
-import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
-import io.wasupu.boinet.population.behaviours.ImponderablePaymentBehaviour;
-import io.wasupu.boinet.population.behaviours.InitialCapital;
-import io.wasupu.boinet.population.behaviours.Payment;
-import io.wasupu.boinet.population.behaviours.RequestSalaryRevisionYearly;
+import io.wasupu.boinet.population.behaviours.*;
 import io.wasupu.boinet.population.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.population.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.population.behaviours.recurrent.EveryDayBehaviour;

@@ -3,7 +3,6 @@ package io.wasupu.boinet;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -140,7 +139,7 @@ public class BankTest {
 
     @Before
     public void setupEventPublisher() {
-        when(world.getEventPublisher()).thenReturn(eventPublisher);
+        when(world.getEventCardEventPublisher()).thenReturn(eventPublisher);
     }
 
     private static final String IBAN = "0";

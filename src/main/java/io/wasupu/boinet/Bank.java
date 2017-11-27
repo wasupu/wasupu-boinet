@@ -67,7 +67,7 @@ public class Bank {
 
     private void publishCardPayment(BigDecimal amount, String pan, String companyIndentifier, String details,
                                     Pair<Double, Double> coordinates) {
-        world.getEventPublisher().publish(STREAM_ID, ImmutableMap
+        world.getEventCardEventPublisher().publish(ImmutableMap
             .<String, Object>builder()
             .put("pan", pan)
             .put("amount", amount)
@@ -91,6 +91,6 @@ public class Bank {
 
     private World world;
 
-    private static final String STREAM_ID = "cardMovementEventStream";
+
 
 }

@@ -2,7 +2,6 @@ package io.wasupu.boinet;
 
 import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
@@ -10,12 +9,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class Company {
 
@@ -149,7 +144,7 @@ public class Company {
     private void publishCompanyBalance() {
         if (age % 30 != 0) return;
 
-        world.getEventPublisher().publish(STREAM_ID, ImmutableMap
+        world.getEventCompanyPublisher().publish(ImmutableMap
             .<String, Object>builder()
             .put("company", identifier)
             .put("name", name)
@@ -183,8 +178,6 @@ public class Company {
     private World world;
 
     private Long age = 0L;
-
-    private static final String STREAM_ID = "companyEventStream";
 
     private static final Faker faker = new Faker();
 

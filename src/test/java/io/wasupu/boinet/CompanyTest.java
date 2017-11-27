@@ -6,14 +6,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -117,34 +115,34 @@ public class CompanyTest {
     public void shouldPublishCompanyInfoAt0Ticks() {
         company.tick();
 
-        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
-        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE.toDate())));
+        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
+        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE.toDate())));
     }
 
     @Test
     public void shouldPublishCompanyInfoWithAddress() {
         company.tick();
 
-        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(hasKey("address")));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(hasKey("address")));
     }
 
     @Test
     public void shouldPublishCompanyInfoWithName() {
         company.tick();
 
-        verify(eventPublisher).publish(eq("companyEventStream"), (Map<String, Object>) argThat(hasKey("name")));
+        verify(eventPublisher).publish((Map<String, Object>) argThat(hasKey("name")));
     }
 
     @Test
     public void shouldPublishCompanyInfoAt30Ticks() {
         IntStream.range(0, 31).forEach(i -> company.tick());
 
-        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
-        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher, times(2)).publish(eq("companyEventStream"), (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE.toDate())));
+        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
+        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
+        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
+        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE.toDate())));
     }
 
     @Test
@@ -218,7 +216,7 @@ public class CompanyTest {
 
     @Before
     public void setupEventPublisher() {
-        when(world.getEventPublisher()).thenReturn(eventPublisher);
+        when(world.getEventCompanyPublisher()).thenReturn(eventPublisher);
     }
 
     @Before

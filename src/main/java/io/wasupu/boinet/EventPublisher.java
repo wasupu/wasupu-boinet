@@ -6,14 +6,9 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,25 +17,27 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class EventPublisher {
 
-    public EventPublisher() {
+    public EventPublisher(String streamId) {
+        this.streamId = streamId;
     }
 
-    public EventPublisher(String streamServiceApiKey, String streamServiceNamespace) {
+    public EventPublisher(String streamId, String streamServiceApiKey, String streamServiceNamespace) {
         this.streamServiceApiKey = streamServiceApiKey;
         this.streamServiceNamespace = streamServiceNamespace;
+        this.streamId = streamId;
     }
 
-    public void publish(String streamId, Map<String, Object> event) {
+    public void publish(Map<String, Object> event) {
         if (streamServiceNamespace != null) {
-            logRelevantEvents(streamId, event);
-            publishInStreamService(streamId, event);
+            logRelevantEvents(event);
+            publishInStreamService(event);
         } else {
             logger.info(appendEntries(event), streamId);
         }
     }
 
-    private void logRelevantEvents(String streamId, Map<String, Object> event) {
-        if (event.get("eventType" ) != null){
+    private void logRelevantEvents(Map<String, Object> event) {
+        if (event.get("eventType") != null) {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException e) {
@@ -51,12 +48,12 @@ public class EventPublisher {
         }
     }
 
-    private void publishInStreamService(String streamId, Map<String, Object> event) {
+    private void publishInStreamService(Map<String, Object> event) {
         Map<String, Object> formattedEvent = formatEvent(event);
         bufferEvent(formattedEvent);
 
         if (eventsBuffer.size() > BATCH_SIZE) {
-            buildRequest(streamId)
+            buildRequest()
                 .async()
                 .post(Entity.entity(ImmutableMap.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
                     @Override
@@ -91,7 +88,7 @@ public class EventPublisher {
         return newEvent;
     }
 
-    private Invocation.Builder buildRequest(String streamId) {
+    private Invocation.Builder buildRequest() {
         return buildClient()
             .target(streamServiceNamespace)
             .path(String.format("/streams/%s:putRecordBatch", streamId))
@@ -104,7 +101,6 @@ public class EventPublisher {
         return ClientBuilder.newClient();
     }
 
-
     private String streamServiceApiKey;
     private String streamServiceNamespace;
 
@@ -115,5 +111,7 @@ public class EventPublisher {
     private static final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
 
     private static final Integer BATCH_SIZE = 50;
+
+    private String streamId;
 
 }
