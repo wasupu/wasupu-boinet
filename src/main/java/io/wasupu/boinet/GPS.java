@@ -9,23 +9,23 @@ import java.util.Random;
 public class GPS {
 
     public Pair<Double, Double> coordinates() {
-        return coordinatesAroundInRange(latitude, longitude,-0.1,0.1);
+        return coordinatesAroundInRange(latitude, longitude, -0.1, 0.1);
     }
 
-    public Pair<Double, Double> coordinatesAround(Double startLatitude, Double startLongitude){
-        return coordinatesAroundInRange(startLatitude, startLongitude,-0.00001,0.00001);
+    public Pair<Double, Double> coordinatesAround(Double startLatitude, Double startLongitude) {
+        return coordinatesAroundInRange(startLatitude, startLongitude, -0.00001, 0.00001);
     }
 
     private Pair<Double, Double> coordinatesAroundInRange(Double startLatitude,
                                                           Double startLongitude,
                                                           Double minRange,
                                                           Double maxRange) {
-        double distanceInDegrees = getDistanceInDegrees(minRange,maxRange);
+        double distanceInDegrees = getDistanceInDegrees(minRange, maxRange);
         double bearingInDegrees = random.nextDouble() * 360;
 
         Point point = SpatialContext.GEO
             .getDistCalc()
-            .pointOnBearing(SpatialContext.GEO.makePoint(startLatitude,startLongitude),
+            .pointOnBearing(SpatialContext.GEO.makePoint(startLatitude, startLongitude),
                 distanceInDegrees,
                 bearingInDegrees,
                 SpatialContext.GEO,
@@ -34,12 +34,13 @@ public class GPS {
         return Pair.of(point.getX(), point.getY());
     }
 
-    private double getDistanceInDegrees(Double minRange,Double maxRange) {
+    private double getDistanceInDegrees(Double minRange, Double maxRange) {
         return minRange + random.nextDouble() * (maxRange - minRange);
     }
 
-    private double latitude = 42.354357;
-    private double longitude = -3.668481;
+    // Cuenca coordinates
+    private double latitude = 40.073417;
+    private double longitude = -2.137937;
 
     private Random random = new Random();
 }

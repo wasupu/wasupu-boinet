@@ -17,7 +17,10 @@ public class Company {
     public Company(String identifier, World world) {
         this.identifier = identifier;
         this.name = faker.company().name();
-        this.address = faker.address();
+        Address addressFaker = faker.address();
+        this.fullAddress = addressFaker.fullAddress();
+        this.zipCode = addressFaker.zipCode();
+
         this.world = world;
 
         Pair<Double, Double> coordinates = this.world.getGPS().coordinates();
@@ -91,7 +94,7 @@ public class Company {
         BigDecimal salary = employees.get(person);
 
         BigDecimal newSalary = salary.add(salary.multiply(new BigDecimal(0.2)))
-            .setScale(2,RoundingMode.CEILING);
+            .setScale(2, RoundingMode.CEILING);
 
         employees.put(person, newSalary);
     }
@@ -130,7 +133,7 @@ public class Company {
     }
 
     private void payEmployee(Person employee, BigDecimal salary) {
-        if (world.getBank().getBalance(iban).compareTo(salary) < 0){
+        if (world.getBank().getBalance(iban).compareTo(salary) < 0) {
             fire(employee);
         }
 
@@ -149,8 +152,8 @@ public class Company {
             .put("company", identifier)
             .put("name", name)
             .put("address", ImmutableMap.of(
-                "full", address.fullAddress(),
-                "zipCode", address.zipCode(),
+                "full", fullAddress,
+                "zipCode", zipCode,
                 "geolocation", ImmutableMap.of(
                     "latitude", latitude,
                     "longitude", longitude)))
@@ -173,7 +176,9 @@ public class Company {
 
     private String longitude;
 
-    private Address address;
+    private String zipCode;
+
+    private String fullAddress;
 
     private World world;
 

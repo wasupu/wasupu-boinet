@@ -6,7 +6,11 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
@@ -37,22 +41,22 @@ public class EventPublisher {
     }
 
     private void logRelevantEvents(Map<String, Object> event) {
-        if (event.get("eventType") != null) {
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (event.get("eventType") == null) return;
 
-            logger.info(appendEntries(event), streamId);
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        logger.info(appendEntries(event), streamId);
     }
 
     private void publishInStreamService(Map<String, Object> event) {
         Map<String, Object> formattedEvent = formatEvent(event);
         bufferEvent(formattedEvent);
 
-        if (eventsBuffer.size() > BATCH_SIZE) {
+        if (eventsBuffer.size() >= BATCH_SIZE) {
             buildRequest()
                 .async()
                 .post(Entity.entity(ImmutableMap.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
