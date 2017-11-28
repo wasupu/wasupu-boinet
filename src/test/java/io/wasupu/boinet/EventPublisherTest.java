@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.builder.verify.VerifyHttp.verifyHttp;
@@ -32,7 +31,7 @@ public class EventPublisherTest {
     @Test
     public void shouldPublishABatchOfEvents() throws InterruptedException {
         EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, 50)
+        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
 
@@ -42,14 +41,14 @@ public class EventPublisherTest {
             .subscribe(verifyHttp -> verifyHttp.once(
                 post(EXPECTED_PATH),
                 withHeader("API-KEY", STREAM_SERVICE_API_KEY),
-                withNumberOfRecords(50)))
+                withNumberOfRecords(BATCH_SIZE)))
             .run();
     }
 
     @Test
     public void shouldPublishABatchWithTheRightEvents() throws InterruptedException {
         EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, 50)
+        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
 
@@ -66,8 +65,9 @@ public class EventPublisherTest {
     @Test
     public void shouldPublishTwoBatchOfEvents() throws InterruptedException {
         EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Stream<Map<String, Object>> eventsBatch = IntStream.range(0, 100)
-            .mapToObj(this::buildTestEvent);
+        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
+            .mapToObj(this::buildTestEvent)
+            .collect(Collectors.toList());
 
         eventsBatch.forEach(eventPublisher::publish);
 
@@ -75,7 +75,28 @@ public class EventPublisherTest {
             .subscribe(verifyHttp -> verifyHttp.times(2,
                 post(EXPECTED_PATH),
                 withHeader("API-KEY", STREAM_SERVICE_API_KEY),
-                withNumberOfRecords(50)))
+                withNumberOfRecords(BATCH_SIZE)))
+            .run();
+    }
+
+    @Test
+    public void shouldPublishTheTwoRightBatchOfEvents() throws InterruptedException {
+        EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
+            .mapToObj(this::buildTestEvent)
+            .collect(Collectors.toList());
+
+        eventsBatch.forEach(eventPublisher::publish);
+
+        retry(() -> verifyHttp(server))
+            .subscribe(verifyHttp -> verifyHttp.once(
+                post(EXPECTED_PATH),
+                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
+                withRecords(eventsBatch.stream().limit(BATCH_SIZE).collect(Collectors.toList()))))
+            .subscribe(verifyHttp -> verifyHttp.once(
+                post(EXPECTED_PATH),
+                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
+                withRecords(eventsBatch.stream().skip(BATCH_SIZE).collect(Collectors.toList()))))
             .run();
     }
 
@@ -146,4 +167,5 @@ public class EventPublisherTest {
     private ObjectMapper objectMapper = new ObjectMapper();
     private ISO8601DateFormat dateFormat = new ISO8601DateFormat();
 
+    private static final int BATCH_SIZE = 50;
 }
