@@ -63,6 +63,20 @@ public class Hospital {
         return getProbability(0.0, 100.0) < percentage;
     }
 
+    private void withElectronicProductPayment(Person newPerson) {
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+            newPerson,
+            new BigDecimal("8000"),
+            new MonthlyBehaviour(world,
+                newPerson,
+                get10to25MonthDay(),
+                new Payment(world,
+                    newPerson,
+                    ProductType.ELECTRONIC_DEVICE,
+                    300,
+                    2000)))::tick);
+    }
+
     private void withHolidaysOnceInAYear(Person newPerson) {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
@@ -74,27 +88,13 @@ public class Hospital {
                     newPerson,
                     ProductType.HOLIDAYS,
                     2000,
-                    6000)))::tick);
-    }
-
-    private void withElectronicProductPayment(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
-            newPerson,
-            new BigDecimal("10000"),
-            new MonthlyBehaviour(world,
-                newPerson,
-                get10to25MonthDay(),
-                new Payment(world,
-                    newPerson,
-                    ProductType.ELECTRONIC_DEVICE,
-                    300,
-                    1000)))::tick);
+                    4000)))::tick);
     }
 
     private void withLuxuryProductPayment(Person newPerson) {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
-            new BigDecimal("30000"),
+            new BigDecimal("20000"),
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
@@ -108,7 +108,7 @@ public class Hospital {
     private void withNewCar(Person newPerson) {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
-            new BigDecimal("60000"),
+            new BigDecimal("40000"),
             new YearlyBehaviour(world,
                 newPerson,
                 1 + new Random().nextInt(360),
@@ -116,7 +116,7 @@ public class Hospital {
                     newPerson,
                     ProductType.NEW_CAR,
                     20000,
-                    50000)))::tick);
+                    30000)))::tick);
     }
 
     private void withJob(Person newPerson) {

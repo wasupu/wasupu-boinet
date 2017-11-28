@@ -38,8 +38,8 @@ public class GPS {
         return minRange + random.nextDouble() * (maxRange - minRange);
     }
 
-    private double latitude = 40.416657;
-    private double longitude = -3.703502;
+    private double latitude = 42.354357;
+    private double longitude = -3.668481;
 
     private Random random = new Random();
 }
