@@ -1,7 +1,6 @@
 package io.wasupu.boinet;
 
 import com.github.javafaker.Address;
-import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
@@ -12,23 +11,14 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Company {
+public class Company extends EconomicalSubject {
 
     public Company(String identifier, World world) {
-        this.identifier = identifier;
+        super(identifier, world);
         this.name = faker.company().name();
         Address addressFaker = faker.address();
         this.fullAddress = addressFaker.fullAddress();
         this.zipCode = addressFaker.zipCode();
-
-        this.world = world;
-
-        Pair<Double, Double> coordinates = this.world.getGPS().coordinates();
-        this.coordinates = coordinates;
-        this.latitude = coordinates.getLeft().toString();
-        this.longitude = coordinates.getRight().toString();
-
-        world.listenTicks(this::tick);
     }
 
     public void tick() {
@@ -38,36 +28,18 @@ public class Company {
         payBonus();
         publishCompanyBalance();
 
-        age++;
-    }
-
-    public String getIban() {
-        return iban;
+        increaseAge();
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
 
-        world.getBank().processPayment(price,
+        getWorld().getBank().processPayment(price,
             pan,
-            iban,
-            identifier,
+            getIban(),
+            getIdentifier(),
             productType.toString().toLowerCase(),
-            world.getGPS().coordinatesAround(coordinates.getLeft(), coordinates.getRight()));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Company company = (Company) o;
-
-        return identifier.equals(company.identifier);
-    }
-
-    @Override
-    public int hashCode() {
-        return identifier.hashCode();
+            getWorld().getGPS().coordinatesAround(getCoordinates().getLeft(),
+                getCoordinates().getRight()));
     }
 
     BigDecimal getEmployeeSalary(Person person) {
@@ -89,7 +61,7 @@ public class Company {
     }
 
     public void requestSalaryRevision(Person person) {
-        if (world.getBank().getBalance(iban).compareTo(new BigDecimal(6000)) < 0) return;
+        if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal(6000)) < 0) return;
 
         BigDecimal salary = employees.get(person);
 
@@ -104,15 +76,15 @@ public class Company {
     }
 
     private void initialCapital() {
-        if (age != 0) return;
+        if (getAge() != 0) return;
 
-        world.getBank().deposit(iban, INITIAL_CAPITAL);
+        getWorld().getBank().deposit(getIban(), INITIAL_CAPITAL);
     }
 
     private void contractAccount() {
-        if (age != 0) return;
+        if (getAge() != 0) return;
 
-        iban = world.getBank().contractAccount();
+        setIban(getWorld().getBank().contractAccount());
     }
 
     private void paySalary() {
@@ -122,10 +94,10 @@ public class Company {
     }
 
     private void payBonus() {
-        if (age < 3) return;
-        if (world.getBank().getBalance(iban).compareTo(new BigDecimal("100000")) < 0) return;
+        if (getAge() < 3) return;
+        if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal("100000")) < 0) return;
 
-        BigDecimal bonus = world.getBank().getBalance(iban)
+        BigDecimal bonus = getWorld().getBank().getBalance(getIban())
             .subtract(new BigDecimal("60000"))
             .divide(new BigDecimal(employees.size()), RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR);
 
@@ -133,33 +105,33 @@ public class Company {
     }
 
     private void payEmployee(Person employee, BigDecimal salary) {
-        if (world.getBank().getBalance(iban).compareTo(salary) < 0) {
+        if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
             fire(employee);
         }
 
-        world.getBank().transfer(iban, employee.getIban(), salary);
+        getWorld().getBank().transfer(getIban(), employee.getIban(), salary);
     }
 
     private boolean isDayOfMonth(Integer dayOfMonth) {
-        return dayOfMonth.equals(world.getCurrentDateTime().getDayOfMonth());
+        return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
     }
 
     private void publishCompanyBalance() {
-        if (age % 30 != 0) return;
+        if (getAge() % 30 != 0) return;
 
-        world.getEventCompanyPublisher().publish(ImmutableMap
+        getWorld().getEventCompanyPublisher().publish(ImmutableMap
             .<String, Object>builder()
-            .put("company", identifier)
+            .put("company", getIdentifier())
             .put("name", name)
             .put("address", ImmutableMap.of(
                 "full", fullAddress,
                 "zipCode", zipCode,
                 "geolocation", ImmutableMap.of(
-                    "latitude", latitude,
-                    "longitude", longitude)))
-            .put("balance", world.getBank().getBalance(iban))
+                    "latitude", getLatitude(),
+                    "longitude", getLongitude())))
+            .put("balance", getWorld().getBank().getBalance(getIban()))
             .put("currency", "EUR")
-            .put("date", world.getCurrentDateTime().toDate())
+            .put("date", getWorld().getCurrentDateTime().toDate())
             .put("eventType", "companyBalance")
             .build());
     }
@@ -168,23 +140,9 @@ public class Company {
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
-    private String iban;
-    private String identifier;
     private String name;
-
-    private String latitude;
-
-    private String longitude;
 
     private String zipCode;
 
     private String fullAddress;
-
-    private World world;
-
-    private Long age = 0L;
-
-    private static final Faker faker = new Faker();
-
-    private final Pair<Double, Double> coordinates;
 }
