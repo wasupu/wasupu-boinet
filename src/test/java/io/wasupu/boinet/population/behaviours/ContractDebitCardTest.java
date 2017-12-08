@@ -1,6 +1,6 @@
 package io.wasupu.boinet.population.behaviours;
 
-import io.wasupu.boinet.Bank;
+import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;

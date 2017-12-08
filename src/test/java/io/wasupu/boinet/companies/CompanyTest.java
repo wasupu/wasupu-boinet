@@ -2,7 +2,7 @@ package io.wasupu.boinet.companies;
 
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.*;
-import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
@@ -37,29 +37,6 @@ public class CompanyTest {
             .testEquals();
     }
 
-    @Test
-    public void shouldContractAnAccountInFirstTick() {
-        company.tick();
-
-        assertNotNull("After first tick must have an account", company.getIban());
-        assertEquals("After first tick must have the expected iban", IBAN, company.getIban());
-    }
-
-    @Test
-    public void shouldNotContractAgainAnAccountIfHasOneInOtherTick() {
-        when(world.getBank()).thenReturn(bank);
-        when(bank.contractAccount())
-            .thenReturn(IBAN)
-            .thenReturn(OTHER_IBAN);
-
-        company.tick();
-        company.tick();
-
-        assertNotNull("After second tick must have an account", company.getIban());
-        assertEquals("After second tick must the same account that have in first tick",
-            IBAN, company.getIban());
-    }
-
 
     @Test
     public void shouldCanBuyAProductToTheCompany() {
@@ -80,7 +57,7 @@ public class CompanyTest {
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(10000));
 
-        company.setIban(IBAN);
+
         company.hire(person);
         company.tick();
 
@@ -213,13 +190,13 @@ public class CompanyTest {
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
         when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
-        when(bank.contractAccount()).thenReturn(IBAN);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
 
     @Before
     public void setupCompany() {
         company = new Company(COMPANY_IDENTIFIER, world);
+        company.setIban(IBAN);
     }
 
     private Company company;

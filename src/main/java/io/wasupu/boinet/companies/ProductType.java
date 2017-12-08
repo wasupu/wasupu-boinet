@@ -1,4 +1,4 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.companies;
 
 public enum ProductType {
     MEAL,

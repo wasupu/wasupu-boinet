@@ -1,5 +1,6 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.financial;
 
+import io.wasupu.boinet.financial.Account;
 import org.junit.Test;
 
 import java.math.BigDecimal;

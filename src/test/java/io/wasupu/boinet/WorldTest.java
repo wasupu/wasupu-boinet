@@ -1,9 +1,11 @@
 package io.wasupu.boinet;
 
 import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -135,9 +137,11 @@ public class WorldTest {
 
     @Test
     public void shouldReturnTheBestCompanyToWorkSecondCompany() throws Exception {
+        when(firstCompany.getIdentifier()).thenReturn("first");
         when(firstCompany.getNumberOfEmployees()).thenReturn(6);
         when(firstCompany.getIban()).thenReturn(IBAN);
 
+        when(secondCompany.getIdentifier()).thenReturn("second");
         when(secondCompany.getNumberOfEmployees()).thenReturn(0);
         when(secondCompany.getIban()).thenReturn(OTHER_IBAN);
 
@@ -149,7 +153,7 @@ public class WorldTest {
         Company company = world.findBestCompanyToWork();
 
         assertNotNull("Company must be not null", company);
-        assertEquals("The first company to work is company 1", secondCompany, company);
+        assertEquals("The first company to work is company 2", secondCompany, company);
     }
 
     @Test

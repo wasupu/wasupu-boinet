@@ -3,6 +3,7 @@ package io.wasupu.boinet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
@@ -12,6 +13,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -150,7 +152,9 @@ public class World {
     public Company findBestCompanyToWork() {
         return companies
             .stream()
-            .sorted(Comparator.comparingDouble(this::getCompanyRatio))
+            .sorted(Comparator
+                .comparingDouble(this::getCompanyRatio)
+                .reversed())
             .collect(toList())
             .get(0);
     }
@@ -163,7 +167,7 @@ public class World {
         Company company = new Company(createCompanyUniqueIdentifier(), this);
 
         company.listenTicks(new ContractAccount(this, company)::tick);
-        company.listenTicks(new InitialCapital(this, company)::tick);
+        company.listenTicks(new InitialCapital(this, company, new BigDecimal(60000))::tick);
 
         companies.add(company);
     }

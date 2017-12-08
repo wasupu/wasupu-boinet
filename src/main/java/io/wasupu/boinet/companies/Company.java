@@ -3,7 +3,6 @@ package io.wasupu.boinet.companies;
 import com.github.javafaker.Address;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
-import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
@@ -26,8 +25,6 @@ public class Company extends EconomicalSubject {
     }
 
     public void tick() {
-        listenTicks(new ContractAccount(getWorld(),this)::tick);
-
         paySalary();
         payBonus();
 
@@ -125,8 +122,6 @@ public class Company extends EconomicalSubject {
             .put("eventType", "companyBalance")
             .build());
     }
-
-    static final BigDecimal INITIAL_CAPITAL = new BigDecimal("60000");
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 

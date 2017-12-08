@@ -1,14 +1,15 @@
 package io.wasupu.boinet.economicalSubjects.behaviours;
 
-import io.wasupu.boinet.Bank;
+import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -24,7 +25,7 @@ public class InitialCapitalTest {
 
         initialCapital.tick();
 
-        verify(bank).deposit(IBAN, InitialCapital.INITIAL_CAPITAL);
+        verify(bank).deposit(IBAN, new BigDecimal(3000));
     }
 
     @Test
@@ -37,7 +38,7 @@ public class InitialCapitalTest {
 
     @Before
     public void setupInitialCapital() {
-        initialCapital = new InitialCapital(world, person);
+        initialCapital = new InitialCapital(world, person, new BigDecimal(3000));
     }
 
     private InitialCapital initialCapital;

@@ -1,4 +1,4 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.financial;
 
 import java.math.BigDecimal;
 

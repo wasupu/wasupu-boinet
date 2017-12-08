@@ -1,7 +1,7 @@
 package io.wasupu.boinet.population;
 
-import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.companies.ProductType;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.population.behaviours.*;
@@ -29,7 +29,7 @@ public class Hospital {
 
         newPerson.listenTicks(new ContractAccount(world, newPerson)::tick);
         newPerson.listenTicks(new ContractDebitCard(world, newPerson)::tick);
-        newPerson.listenTicks(new InitialCapital(world, newPerson)::tick);
+        newPerson.listenTicks(new InitialCapital(world, newPerson, new BigDecimal(3000))::tick);
 
         withJob(newPerson);
         withEating(newPerson);

@@ -1,5 +1,9 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.financial;
 
+import io.wasupu.boinet.EventPublisher;
+import io.wasupu.boinet.World;
+import io.wasupu.boinet.financial.Account;
+import io.wasupu.boinet.financial.Bank;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;

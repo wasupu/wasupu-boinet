@@ -1,6 +1,7 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.financial;
 
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
