@@ -1,10 +1,13 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.companies;
 
 import com.github.javafaker.Address;
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.EconomicalSubject;
+import io.wasupu.boinet.ProductType;
+import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.ContractAccount;
 import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,6 +18,7 @@ public class Company extends EconomicalSubject {
 
     public Company(String identifier, World world) {
         super(identifier, world);
+
         this.name = faker.company().name();
         Address addressFaker = faker.address();
         this.fullAddress = addressFaker.fullAddress();
@@ -22,17 +26,15 @@ public class Company extends EconomicalSubject {
     }
 
     public void tick() {
-        contractAccount();
-        initialCapital();
+        listenTicks(new ContractAccount(getWorld(),this)::tick);
+
         paySalary();
         payBonus();
-        publishCompanyBalance();
 
-        increaseAge();
+        super.tick();
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
-
         getWorld().getBank().processPayment(price,
             pan,
             getIban(),
@@ -75,18 +77,6 @@ public class Company extends EconomicalSubject {
         return new GenerateRandomPrice().apply(1200, 2300);
     }
 
-    private void initialCapital() {
-        if (getAge() != 0) return;
-
-        getWorld().getBank().deposit(getIban(), INITIAL_CAPITAL);
-    }
-
-    private void contractAccount() {
-        if (getAge() != 0) return;
-
-        setIban(getWorld().getBank().contractAccount());
-    }
-
     private void paySalary() {
         if (!isDayOfMonth(27)) return;
 
@@ -116,7 +106,7 @@ public class Company extends EconomicalSubject {
         return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
     }
 
-    private void publishCompanyBalance() {
+    protected void publishBalance() {
         if (getAge() % 30 != 0) return;
 
         getWorld().getEventCompanyPublisher().publish(ImmutableMap

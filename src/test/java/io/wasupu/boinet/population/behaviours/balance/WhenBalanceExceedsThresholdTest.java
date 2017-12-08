@@ -3,7 +3,7 @@ package io.wasupu.boinet.population.behaviours.balance;
 import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +59,7 @@ public class WhenBalanceExceedsThresholdTest {
     private Bank bank;
 
     @Mock
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 
     private static final String IBAN = "2";
 

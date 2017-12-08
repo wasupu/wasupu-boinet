@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;

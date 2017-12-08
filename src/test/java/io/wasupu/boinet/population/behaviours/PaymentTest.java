@@ -1,10 +1,9 @@
 package io.wasupu.boinet.population.behaviours;
 
-import io.wasupu.boinet.Company;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.Payment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;

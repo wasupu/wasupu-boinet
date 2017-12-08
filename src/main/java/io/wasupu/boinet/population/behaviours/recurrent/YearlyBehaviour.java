@@ -2,14 +2,14 @@ package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 
-public class YearlyBehaviour extends PersonBehaviour {
+public class YearlyBehaviour extends EconomicalSubjectBehaviour {
 
     public YearlyBehaviour(World world,
                            Person person,
                            Integer day,
-                           PersonBehaviour personBehaviour) {
+                           EconomicalSubjectBehaviour personBehaviour) {
         super(world, person);
         this.day = day;
         this.personBehaviour = personBehaviour;
@@ -25,7 +25,7 @@ public class YearlyBehaviour extends PersonBehaviour {
         return getWorld().getCurrentDateTime().getDayOfYear() == day;
     }
 
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 
     private int day;
 }

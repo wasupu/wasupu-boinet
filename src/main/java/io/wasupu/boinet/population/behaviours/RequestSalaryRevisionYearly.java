@@ -3,7 +3,7 @@ package io.wasupu.boinet.population.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
 
-public class RequestSalaryRevisionYearly extends PersonBehaviour {
+public class RequestSalaryRevisionYearly extends EconomicalSubjectBehaviour {
 
     public RequestSalaryRevisionYearly(World world, Person person, int dayInAYear) {
         super(world, person);
@@ -12,12 +12,12 @@ public class RequestSalaryRevisionYearly extends PersonBehaviour {
 
     @Override
     public void tick() {
-        if (getPerson().getAge() < 2) return;
-        if (getPerson().isUnemployed()) return;
+        if (getEconomicalSubject().getAge() < 2) return;
+        if (((Person) getEconomicalSubject()).isUnemployed()) return;
         if (getWorld().getCurrentDateTime().getDayOfYear() != dayOfYear) return;
 
 
-        getPerson().getEmployer().requestSalaryRevision(getPerson());
+        ((Person) getEconomicalSubject()).getEmployer().requestSalaryRevision((Person) getEconomicalSubject());
     }
 
     private int dayOfYear;

@@ -1,13 +1,10 @@
 package io.wasupu.boinet.population;
 
 import com.github.javafaker.Address;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.wasupu.boinet.Company;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.EconomicalSubject;
 import io.wasupu.boinet.World;
-
-import java.util.Collection;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -23,22 +20,6 @@ public class Person extends EconomicalSubject{
         Address address = faker.address();
         this.fullAddress = address.fullAddress();
         this.zipCode = address.zipCode();
-    }
-
-    public void listenTicks(Runnable tickConsumer) {
-        tickConsumers = ImmutableList
-            .<Runnable>builder()
-            .addAll(tickConsumers)
-            .add(tickConsumer)
-            .build();
-    }
-
-    public void tick() {
-        tickConsumers.forEach(Runnable::run);
-
-        publishPersonBalance();
-
-        increaseAge();
     }
 
     public Boolean isUnemployed() {
@@ -67,7 +48,7 @@ public class Person extends EconomicalSubject{
         return company;
     }
 
-    private void publishPersonBalance() {
+    protected  void publishBalance() {
         if (getAge() % 30 != 0) return;
 
         getWorld().getEventPersonPublisher().publish(ImmutableMap
@@ -100,8 +81,6 @@ public class Person extends EconomicalSubject{
     private String name;
 
     private final String cellPhone;
-
-    private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Company company;
 }

@@ -2,7 +2,7 @@ package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,5 +50,5 @@ public class YearlyBehaviourTest {
     private Person person;
 
     @Mock
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 }

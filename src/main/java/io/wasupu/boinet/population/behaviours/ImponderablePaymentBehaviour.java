@@ -1,13 +1,13 @@
 package io.wasupu.boinet.population.behaviours;
 
-import io.wasupu.boinet.Company;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
 
 import java.util.Random;
 
-public class ImponderablePaymentBehaviour extends PersonBehaviour{
+public class ImponderablePaymentBehaviour extends EconomicalSubjectBehaviour {
 
     public ImponderablePaymentBehaviour(World world,
                                         Person person,
@@ -26,7 +26,7 @@ public class ImponderablePaymentBehaviour extends PersonBehaviour{
     public void tick() {
         if (!fulfillsTheProbability()) return;
 
-        getCompany().buyProduct(getPerson().getPan(), productType, generateRandomPrice.apply(startPriceRange, endPriceRange));
+        getCompany().buyProduct( ((Person)getEconomicalSubject()).getPan(), productType, generateRandomPrice.apply(startPriceRange, endPriceRange));
     }
 
     private boolean fulfillsTheProbability(){

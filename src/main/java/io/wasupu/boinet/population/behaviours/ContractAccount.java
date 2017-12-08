@@ -1,17 +1,17 @@
 package io.wasupu.boinet.population.behaviours;
 
+import io.wasupu.boinet.EconomicalSubject;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.Person;
 
-public class ContractAccount extends PersonBehaviour {
+public class ContractAccount extends EconomicalSubjectBehaviour {
 
-    public ContractAccount(World world, Person person) {
-        super(world, person);
+    public ContractAccount(World world, EconomicalSubject economicalSubject) {
+        super(world, economicalSubject);
     }
 
     public void tick() {
-        if (getPerson().getAge() != 0) return;
+        if (getEconomicalSubject().getAge() != 0) return;
 
-        getPerson().setIban(getWorld().getBank().contractAccount());
+        getEconomicalSubject().setIban(getWorld().getBank().contractAccount());
     }
 }

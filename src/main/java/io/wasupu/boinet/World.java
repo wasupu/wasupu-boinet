@@ -2,8 +2,12 @@ package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.population.behaviours.ContractAccount;
+import io.wasupu.boinet.population.behaviours.ContractDebitCard;
+import io.wasupu.boinet.population.behaviours.InitialCapital;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -147,24 +151,22 @@ public class World {
     public Company findBestCompanyToWork() {
         return companies
             .stream()
-            .sorted((company1, company2) -> {
-                double company1Ratio = bank.getBalance(company1.getIban()).doubleValue() /
-                    (company1.getNumberOfEmployees() + 1);
-
-                double company2Ratio = bank.getBalance(company2.getIban()).doubleValue() /
-                    (company2.getNumberOfEmployees() + 1);
-
-                if (company1Ratio == company2Ratio) return 0;
-                if (company1Ratio < company2Ratio) return 1;
-
-                return -1;
-            })
+            .sorted(Comparator.comparingDouble(this::getCompanyRatio))
             .collect(toList())
             .get(0);
     }
 
+    private double getCompanyRatio(Company company) {
+        return bank.getBalance(company.getIban()).doubleValue() / (company.getNumberOfEmployees() + 1);
+    }
+
     private void newSupplier(Integer number) {
-        companies.add(new Company(createCompanyUniqueIdentifier(), this));
+        Company company = new Company(createCompanyUniqueIdentifier(), this);
+
+        company.listenTicks(new ContractAccount(this, company)::tick);
+        company.listenTicks(new InitialCapital(this, company)::tick);
+
+        companies.add(company);
     }
 
     private String createCompanyUniqueIdentifier() {

@@ -2,15 +2,15 @@ package io.wasupu.boinet.population.behaviours.balance;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 
 import java.math.BigDecimal;
 
-public class WhenBalanceIsBelowThreshold extends PersonBehaviour {
+public class WhenBalanceIsBelowThreshold extends EconomicalSubjectBehaviour {
     public WhenBalanceIsBelowThreshold(World world,
                                        Person person,
                                        BigDecimal threshold,
-                                       PersonBehaviour personBehaviour) {
+                                       EconomicalSubjectBehaviour personBehaviour) {
         super(world, person);
         this.threshold = threshold;
         this.personBehaviour = personBehaviour;
@@ -18,13 +18,13 @@ public class WhenBalanceIsBelowThreshold extends PersonBehaviour {
 
     @Override
     public void tick() {
-        if (threshold.compareTo(getWorld().getBank().getBalance(getPerson().getIban())) > 0) return;
+        if (threshold.compareTo(getWorld().getBank().getBalance(getEconomicalSubject().getIban())) > 0) return;
 
         personBehaviour.tick();
     }
 
     private BigDecimal threshold;
 
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 
 }

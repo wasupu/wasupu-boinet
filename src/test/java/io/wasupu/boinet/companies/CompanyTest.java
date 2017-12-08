@@ -1,6 +1,8 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.companies;
 
 import com.google.common.testing.EqualsTester;
+import io.wasupu.boinet.*;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
@@ -58,20 +60,6 @@ public class CompanyTest {
             IBAN, company.getIban());
     }
 
-    @Test
-    public void shouldDoAnInitialDepositOfCapital() {
-        company.tick();
-
-        verify(bank).deposit(IBAN, Company.INITIAL_CAPITAL);
-    }
-
-    @Test
-    public void shouldNotRepeatAnInitialDepositOfCapital() {
-        company.tick();
-        company.tick();
-
-        verify(bank, times(1)).deposit(IBAN, Company.INITIAL_CAPITAL);
-    }
 
     @Test
     public void shouldCanBuyAProductToTheCompany() {
@@ -92,6 +80,7 @@ public class CompanyTest {
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(10000));
 
+        company.setIban(IBAN);
         company.hire(person);
         company.tick();
 
@@ -200,6 +189,7 @@ public class CompanyTest {
         when(person.getIban()).thenReturn(IBAN);
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1));
+        company.setIban(IBAN);
 
         company.hire(person);
         company.tick();

@@ -5,6 +5,7 @@ import com.github.javafaker.Name;
 import com.github.javafaker.PhoneNumber;
 import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.*;
+import io.wasupu.boinet.companies.Company;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;

@@ -2,12 +2,12 @@ package io.wasupu.boinet.population.behaviours.recurrent;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 
-public class EveryDayBehaviour extends PersonBehaviour {
+public class EveryDayBehaviour extends EconomicalSubjectBehaviour {
 
     public EveryDayBehaviour(World world, Person person,
-                             PersonBehaviour personBehaviour) {
+                             EconomicalSubjectBehaviour personBehaviour) {
         super(world,
             person);
         this.person = person;
@@ -22,5 +22,5 @@ public class EveryDayBehaviour extends PersonBehaviour {
 
     private Person person;
 
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 }

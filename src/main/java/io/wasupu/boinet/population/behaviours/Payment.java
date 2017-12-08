@@ -1,15 +1,13 @@
 package io.wasupu.boinet.population.behaviours;
 
-import io.wasupu.boinet.Company;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
 
 import java.math.BigDecimal;
 
-public class Payment extends PersonBehaviour {
+public class Payment extends EconomicalSubjectBehaviour {
 
     public Payment(World world,
                    Person person,
@@ -33,7 +31,7 @@ public class Payment extends PersonBehaviour {
 
     public void tick() {
         BigDecimal price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.apply(startPriceRange, endPriceRange);
-        getCompany().buyProduct(getPerson().getPan(), productType, price);
+        getCompany().buyProduct( ((Person)getEconomicalSubject()).getPan(), productType, price);
     }
 
     protected Company getCompany() {

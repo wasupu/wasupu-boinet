@@ -1,13 +1,10 @@
 package io.wasupu.boinet.population.behaviours.balance;
 
 import io.wasupu.boinet.Bank;
-import io.wasupu.boinet.Company;
-import io.wasupu.boinet.ProductType;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
-import io.wasupu.boinet.population.behaviours.recurrent.WeeklyBehaviour;
-import org.joda.time.DateTime;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,5 +119,5 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     private TriggeredWhenBalanceBetweenAThreshold triggeredWhenBalanceBetweenAThreshold;
 
     @Mock
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 }

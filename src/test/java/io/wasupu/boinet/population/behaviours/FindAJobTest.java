@@ -1,6 +1,6 @@
 package io.wasupu.boinet.population.behaviours;
 
-import io.wasupu.boinet.Company;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;

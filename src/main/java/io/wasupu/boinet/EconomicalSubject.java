@@ -1,7 +1,10 @@
 package io.wasupu.boinet;
 
 import com.github.javafaker.Faker;
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Collection;
 
 public abstract class EconomicalSubject {
 
@@ -16,11 +19,30 @@ public abstract class EconomicalSubject {
         world.listenTicks(this::tick);
     }
 
+    public void listenTicks(Runnable tickConsumer) {
+        tickConsumers = ImmutableList
+            .<Runnable>builder()
+            .addAll(tickConsumers)
+            .add(tickConsumer)
+            .build();
+    }
+
+    public void tick() {
+        executeBehaviours();
+        publishBalance();
+
+        increaseAge();
+    }
+
+    private void executeBehaviours() {
+        tickConsumers.forEach(Runnable::run);
+    }
+
+    protected abstract void publishBalance();
+
     public static void setFaker(Faker newFaker) {
         faker = newFaker;
     }
-
-    public abstract void tick();
 
     public String getIban() {
         return iban;
@@ -30,7 +52,7 @@ public abstract class EconomicalSubject {
         return age;
     }
 
-    public void increaseAge(){
+    public void increaseAge() {
         age++;
     }
 
@@ -88,4 +110,7 @@ public abstract class EconomicalSubject {
     private String longitude;
 
     private final Pair<Double, Double> coordinates;
+
+    private Collection<Runnable> tickConsumers = ImmutableList.of();
+
 }

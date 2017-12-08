@@ -2,18 +2,18 @@ package io.wasupu.boinet.population.behaviours.balance;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.PersonBehaviour;
+import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TriggeredWhenBalanceBetweenAThreshold extends PersonBehaviour {
+public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBehaviour {
 
     public TriggeredWhenBalanceBetweenAThreshold(World world,
                                                  Person person,
                                                  BigDecimal lowerThreshold,
                                                  BigDecimal upperThreshold,
-                                                 PersonBehaviour personBehaviour) {
+                                                 EconomicalSubjectBehaviour personBehaviour) {
         super(world, person);
 
         this.personBehaviour = personBehaviour;
@@ -38,7 +38,7 @@ public class TriggeredWhenBalanceBetweenAThreshold extends PersonBehaviour {
     }
 
     private BigDecimal getBalance() {
-        return getWorld().getBank().getBalance(getPerson().getIban());
+        return getWorld().getBank().getBalance(getEconomicalSubject().getIban());
     }
 
     private boolean iHaveMoreThan(BigDecimal expectedThreshold) {
@@ -48,7 +48,7 @@ public class TriggeredWhenBalanceBetweenAThreshold extends PersonBehaviour {
     private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
 
 
-    private PersonBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour personBehaviour;
 
     private BigDecimal lowerThreshold;
     private BigDecimal upperThreshold;
