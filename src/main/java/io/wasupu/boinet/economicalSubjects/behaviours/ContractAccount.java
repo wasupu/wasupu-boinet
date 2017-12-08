@@ -1,6 +1,6 @@
-package io.wasupu.boinet.population.behaviours;
+package io.wasupu.boinet.economicalSubjects.behaviours;
 
-import io.wasupu.boinet.EconomicalSubject;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.World;
 
 public class ContractAccount extends EconomicalSubjectBehaviour {

@@ -24,7 +24,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ImponderablePaymentBehaviour.class)
-public class ImponderablePaymentBehaviourTest {
+public class ImponderableMakeAPaymentBehaviourTest {
 
     @Test
     public void shouldNotPayTheImponderableIfNotOccurs() {

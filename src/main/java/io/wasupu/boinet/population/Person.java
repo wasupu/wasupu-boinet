@@ -3,7 +3,7 @@ package io.wasupu.boinet.population;
 import com.github.javafaker.Address;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.companies.Company;
-import io.wasupu.boinet.EconomicalSubject;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.World;
 
 import static java.lang.Boolean.FALSE;

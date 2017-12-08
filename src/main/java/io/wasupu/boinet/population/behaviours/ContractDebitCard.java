@@ -1,6 +1,7 @@
 package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
 
 public class ContractDebitCard extends EconomicalSubjectBehaviour {

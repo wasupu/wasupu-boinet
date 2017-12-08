@@ -1,8 +1,8 @@
-package io.wasupu.boinet.population.behaviours.recurrent;
+package io.wasupu.boinet.economicalSubjects.behaviours.recurrent;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 
 public class EveryDayBehaviour extends EconomicalSubjectBehaviour {
 

@@ -21,11 +21,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PaymentTest {
+public class MakeAPaymentTest {
 
     @Test
     public void shouldMakeAPaymentWithPriceRange() {
-        Payment payment = new Payment(getWorld(),
+        MakeAPayment payment = new MakeAPayment(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             60,
@@ -43,7 +43,7 @@ public class PaymentTest {
 
     @Test
     public void shouldMakeAPaymentWithFixedPrice() {
-        Payment payment = new Payment(getWorld(),
+        MakeAPayment payment = new MakeAPayment(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             new BigDecimal(60),

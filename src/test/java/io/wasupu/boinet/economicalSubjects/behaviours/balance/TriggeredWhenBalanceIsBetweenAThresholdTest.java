@@ -1,10 +1,10 @@
-package io.wasupu.boinet.population.behaviours.balance;
+package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
 import io.wasupu.boinet.Bank;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.EconomicalSubjectBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

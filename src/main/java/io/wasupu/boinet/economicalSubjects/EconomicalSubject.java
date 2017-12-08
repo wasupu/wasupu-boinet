@@ -1,7 +1,8 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.economicalSubjects;
 
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
+import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;

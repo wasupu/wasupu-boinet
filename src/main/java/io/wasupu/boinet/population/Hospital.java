@@ -2,13 +2,15 @@ package io.wasupu.boinet.population;
 
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
+import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.population.behaviours.*;
-import io.wasupu.boinet.population.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
-import io.wasupu.boinet.population.behaviours.balance.WhenBalanceExceedsThreshold;
-import io.wasupu.boinet.population.behaviours.recurrent.EveryDayBehaviour;
-import io.wasupu.boinet.population.behaviours.recurrent.MonthlyBehaviour;
-import io.wasupu.boinet.population.behaviours.recurrent.WeeklyBehaviour;
-import io.wasupu.boinet.population.behaviours.recurrent.YearlyBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
+import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDayBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.MonthlyBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.WeeklyBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.YearlyBehaviour;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -70,7 +72,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.ELECTRONIC_DEVICE,
                     300,
@@ -84,7 +86,7 @@ public class Hospital {
             new YearlyBehaviour(world,
                 newPerson,
                 207,//If you have money in 26 of july
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.HOLIDAYS,
                     2000,
@@ -98,7 +100,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.LUXURY,
                     4000,
@@ -112,7 +114,7 @@ public class Hospital {
             new YearlyBehaviour(world,
                 newPerson,
                 1 + new Random().nextInt(360),
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.NEW_CAR,
                     20000,
@@ -127,7 +129,7 @@ public class Hospital {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             get2to10MonthDay(),
-            new Payment(world,
+            new MakeAPayment(world,
                 newPerson,
                 ProductType.PUBLIC_TRANSPORT,
                 50,
@@ -141,7 +143,7 @@ public class Hospital {
             new WeeklyBehaviour(world,
                 newPerson,
                 1 + new Random().nextInt(6),
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.GAS,
                     60,
@@ -197,7 +199,7 @@ public class Hospital {
     void withEating(Person newPerson) {
         newPerson.listenTicks(new EveryDayBehaviour(world,
             newPerson,
-            new Payment(world, newPerson,
+            new MakeAPayment(world, newPerson,
                 ProductType.MEAL,
                 10,
                 25))::tick);
@@ -210,7 +212,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 28,
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.MORTGAGE,
                     generateRandomPrice.apply(300, 500),
@@ -221,7 +223,7 @@ public class Hospital {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             get2to10MonthDay(),
-            new Payment(world,
+            new MakeAPayment(world,
                 newPerson,
                 ProductType.POWER_SUPPLY,
                 generateRandomPrice.apply(60, 120),
@@ -232,7 +234,7 @@ public class Hospital {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             get2to10MonthDay(),
-            new Payment(world,
+            new MakeAPayment(world,
                 newPerson,
                 ProductType.WATER_SUPPLY,
                 generateRandomPrice.apply(20, 40),
@@ -247,7 +249,7 @@ public class Hospital {
             new WeeklyBehaviour(world,
                 newPerson,
                 6,
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson, ProductType.ENTERTAINMENT,
                     100,
                     500)))::tick);
@@ -261,7 +263,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
-                new Payment(world,
+                new MakeAPayment(world,
                     newPerson,
                     ProductType.ENTERTAINMENT,
                     generateRandomPrice.apply(10, 25),
@@ -276,7 +278,7 @@ public class Hospital {
                 new MonthlyBehaviour(world,
                     newPerson,
                     get10to25MonthDay(),
-                    new Payment(world,
+                    new MakeAPayment(world,
                         newPerson,
                         ProductType.INTERNET,
                         generateRandomPrice.apply(40, 100),

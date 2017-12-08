@@ -3,17 +3,18 @@ package io.wasupu.boinet.population.behaviours;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.ProductType;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 
-public class Payment extends EconomicalSubjectBehaviour {
+public class MakeAPayment extends EconomicalSubjectBehaviour {
 
-    public Payment(World world,
-                   Person person,
-                   ProductType productType,
-                   Integer startPriceRange,
-                   Integer endPriceRange) {
+    public MakeAPayment(World world,
+                        Person person,
+                        ProductType productType,
+                        Integer startPriceRange,
+                        Integer endPriceRange) {
         super(world, person);
 
         this.productType = productType;
@@ -21,7 +22,7 @@ public class Payment extends EconomicalSubjectBehaviour {
         this.endPriceRange = endPriceRange;
     }
 
-    public Payment(World world, Person person, ProductType productType, BigDecimal price, Company company) {
+    public MakeAPayment(World world, Person person, ProductType productType, BigDecimal price, Company company) {
         super(world, person);
 
         this.productType = productType;
