@@ -127,7 +127,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>io.wasupu.boinet.World</mainClass>
+                            <mainClass>io.wasupu.boinet.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
