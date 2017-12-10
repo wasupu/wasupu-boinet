@@ -2,22 +2,19 @@ package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
-import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class World {
@@ -102,11 +99,16 @@ public class World {
         currentDate = currentDate.plusDays(1);
     }
 
-    public Company findCompany() {
-        Random random = new Random();
+    public Company findBestCompanyToWork() {
+        return businessIncubator.findBestCompanyToWork(companies, bank);
+    }
 
-        int randomNumber = random.nextInt(companies.size());
-        return companies.get(randomNumber);
+    public Company findCompany() {
+        return businessIncubator.findCompany(companies);
+    }
+
+    private void newSupplier(Integer number) {
+        companies.add(businessIncubator.newCompany(this));
     }
 
     public void listenTicks(Runnable tickConsumer) {
@@ -149,33 +151,6 @@ public class World {
         return GPS;
     }
 
-    public Company findBestCompanyToWork() {
-        return companies
-            .stream()
-            .sorted(Comparator
-                .comparingDouble(this::getCompanyRatio)
-                .reversed())
-            .collect(toList())
-            .get(0);
-    }
-
-    private double getCompanyRatio(Company company) {
-        return bank.getBalance(company.getIban()).doubleValue() / (company.getNumberOfEmployees() + 1);
-    }
-
-    private void newSupplier(Integer number) {
-        Company company = new Company(createCompanyUniqueIdentifier(), this);
-
-        company.listenTicks(new ContractAccount(this, company)::tick);
-        company.listenTicks(new InitialCapital(this, company, new BigDecimal(60000))::tick);
-
-        companies.add(company);
-    }
-
-    private String createCompanyUniqueIdentifier() {
-        return UUID.randomUUID().toString();
-    }
-
     private List<Company> companies = new ArrayList<>();
 
     private Collection<Person> population = new ArrayList<>();
@@ -183,6 +158,7 @@ public class World {
     private Collection<Runnable> tickConsumers = ImmutableList.of();
 
     private Bank bank = new Bank(this);
+
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
     private DateTime currentDate;
@@ -191,15 +167,15 @@ public class World {
     private EventPublisher cardEventPublisher;
     private EventPublisher companyEventPublisher;
 
-
     private final Hospital hospital = new Hospital(this);
 
     private GPS GPS = new GPS();
 
+    private BusinessIncubator businessIncubator = new BusinessIncubator();
+
     private static final String PERSON_STREAM_ID = "personEventStream";
     private static final String COMPANY_STREAM_ID = "companyEventStream";
     private static final String CARD_STREAM_ID = "cardMovementEventStream";
-
 }
 
 

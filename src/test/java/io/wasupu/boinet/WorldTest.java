@@ -1,5 +1,6 @@
 package io.wasupu.boinet;
 
+import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({World.class, Hospital.class})
+@PrepareForTest({World.class, Hospital.class, BusinessIncubator.class})
 public class WorldTest {
 
     @Test
