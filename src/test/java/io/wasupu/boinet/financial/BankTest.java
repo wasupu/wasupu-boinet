@@ -89,7 +89,7 @@ public class BankTest {
 
         var amount = new BigDecimal("10");
 
-        bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verify(secondAccount).deposit(amount);
     }
@@ -104,7 +104,7 @@ public class BankTest {
 
         var amount = new BigDecimal("10");
 
-        bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verify(secondAccount, never()).deposit(any());
     }
@@ -128,6 +128,18 @@ public class BankTest {
             "iban", IBAN,
             "pan", PAN,
             "user", IDENTIFIER));
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_deposit_money_in_card() {
+        bank.contractAccount(IDENTIFIER);
+        bank.deposit(IBAN, new BigDecimal(10));
+
+        verify(eventPublisher, atLeastOnce()).publish(Map.of(
+            "eventType", "deposit",
+            "iban", IBAN,
+            "amount", new BigDecimal(10),
+            "currency", "EUR"));
     }
 
     @Before

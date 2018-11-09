@@ -39,7 +39,7 @@ public class CompanyTest {
         company.tick();
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
-        verify(bank).processPayment(PRICE,
+        verify(bank).processCardPayment(PRICE,
             PAN,
             IBAN,
             COMPANY_IDENTIFIER,
