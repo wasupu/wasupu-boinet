@@ -4,11 +4,11 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import com.github.javafaker.PhoneNumber;
 import com.google.common.testing.EqualsTester;
-import io.wasupu.boinet.*;
+import io.wasupu.boinet.GPS;
+import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.financial.Bank;
 import org.apache.commons.lang3.tuple.Pair;
-import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +20,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Map;
-import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(PowerMockRunner.class)
@@ -65,49 +61,6 @@ public class PersonTest {
         assertTrue("The person must be hired", person.isUnemployed());
     }
 
-    @Test
-    public void shouldPublishPersonStatusOnFirstTick() {
-        person.tick();
-
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
-    }
-
-    @Test
-    public void shouldPublishPersonAddressOnFirstTick() {
-        person.tick();
-
-        verify(eventPublisher).publish((Map<String, Object>) argThat(hasKey("address")));
-    }
-
-    @Test
-    public void shouldPublishPersonPanOnFirstTick() {
-        person.tick();
-
-        verify(eventPublisher).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("pan", PAN)));
-    }
-
-    @Test
-    public void shouldPublishPersonStatusAt30Ticks() {
-        IntStream.range(0, 31).forEach(i -> person.tick());
-
-        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("person", "personId")));
-        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("name", FULL_NAME)));
-        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("cellPhone", CELL_PHONE)));
-        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher, times(2)).publish((Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE)));
-    }
-
-    @Before
-    public void setupEventPublisher() {
-        when(world.getEventPersonPublisher()).thenReturn(eventPublisher);
-    }
-
     @Before
     public void setupPerson() {
         when(faker.name()).thenReturn(name);
@@ -137,9 +90,6 @@ public class PersonTest {
 
     @Mock
     private Bank bank;
-
-    @Mock
-    private EventPublisher eventPublisher;
 
     private static final String IDENTIFIER = "personId";
 

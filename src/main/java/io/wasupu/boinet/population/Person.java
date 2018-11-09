@@ -48,27 +48,6 @@ public class Person extends EconomicalSubject{
         return company;
     }
 
-    protected  void publishBalance() {
-        if (getAge() % 30 != 0) return;
-
-        getWorld().getEventPersonPublisher().publish(ImmutableMap
-            .<String, Object>builder()
-            .put("person", getIdentifier())
-            .put("name", name)
-            .put("cellPhone", cellPhone)
-            .put("pan", pan)
-            .put("address", ImmutableMap.of(
-                "full", fullAddress,
-                "zipCode", zipCode,
-                "geolocation", ImmutableMap.of(
-                    "latitude", getLatitude(),
-                    "longitude", getLongitude())))
-            .put("balance", getWorld().getBank().getBalance(getIban()))
-            .put("currency", "EUR")
-            .put("date", getWorld().getCurrentDateTime().toDate())
-            .put("eventType", "personBalance")
-            .build());
-    }
 
     private String fullAddress;
 

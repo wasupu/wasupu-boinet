@@ -30,7 +30,6 @@ public abstract class EconomicalSubject {
 
     public void tick() {
         executeBehaviours();
-        publishBalance();
 
         increaseAge();
     }
@@ -38,8 +37,6 @@ public abstract class EconomicalSubject {
     private void executeBehaviours() {
         tickConsumers.forEach(Runnable::run);
     }
-
-    protected abstract void publishBalance();
 
     public static void setFaker(Faker newFaker) {
         faker = newFaker;

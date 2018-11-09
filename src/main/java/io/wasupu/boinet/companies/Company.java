@@ -103,25 +103,6 @@ public class Company extends EconomicalSubject {
         return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
     }
 
-    protected void publishBalance() {
-        if (getAge() % 30 != 0) return;
-
-        getWorld().getEventCompanyPublisher().publish(ImmutableMap
-            .<String, Object>builder()
-            .put("company", getIdentifier())
-            .put("name", name)
-            .put("address", ImmutableMap.of(
-                "full", fullAddress,
-                "zipCode", zipCode,
-                "geolocation", ImmutableMap.of(
-                    "latitude", getLatitude(),
-                    "longitude", getLongitude())))
-            .put("balance", getWorld().getBank().getBalance(getIban()))
-            .put("currency", "EUR")
-            .put("date", getWorld().getCurrentDateTime().toDate())
-            .put("eventType", "companyBalance")
-            .build());
-    }
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 

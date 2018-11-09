@@ -1,11 +1,11 @@
 package io.wasupu.boinet.companies;
 
 import com.google.common.testing.EqualsTester;
-import io.wasupu.boinet.*;
+import io.wasupu.boinet.GPS;
+import io.wasupu.boinet.World;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
-import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,17 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompanyTest {
@@ -77,39 +73,6 @@ public class CompanyTest {
         verify(bank, never()).transfer(eq(IBAN), eq(OTHER_IBAN), any());
     }
 
-    @Test
-    public void shouldPublishCompanyInfoAt0Ticks() {
-        company.tick();
-
-        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
-        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE.toDate())));
-    }
-
-    @Test
-    public void shouldPublishCompanyInfoWithAddress() {
-        company.tick();
-
-        verify(eventPublisher).publish((Map<String, Object>) argThat(hasKey("address")));
-    }
-
-    @Test
-    public void shouldPublishCompanyInfoWithName() {
-        company.tick();
-
-        verify(eventPublisher).publish((Map<String, Object>) argThat(hasKey("name")));
-    }
-
-    @Test
-    public void shouldPublishCompanyInfoAt30Ticks() {
-        IntStream.range(0, 31).forEach(i -> company.tick());
-
-        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("company", "companyId")));
-        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("balance", new BigDecimal("12"))));
-        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("currency", "EUR")));
-        verify(eventPublisher, times(2)).publish( (Map<String, Object>) argThat(Matchers.<String, Object>hasEntry("date", CURRENT_DATE.toDate())));
-    }
 
     @Test
     public void shouldReviseTheSalaryOfAnEmployee() {
@@ -158,7 +121,7 @@ public class CompanyTest {
         company.tick();
         company.tick();
 
-        verify(bank, never()).transfer(any(), any(),any());
+        verify(bank, never()).transfer(any(), any(), any());
     }
 
     @Test
@@ -179,11 +142,6 @@ public class CompanyTest {
         when(gps.coordinatesAround(coordinates.getLeft(), coordinates.getRight())).thenReturn(otherCoordinates);
         when(gps.coordinates()).thenReturn(coordinates);
         when(world.getGPS()).thenReturn(gps);
-    }
-
-    @Before
-    public void setupEventPublisher() {
-        when(world.getEventCompanyPublisher()).thenReturn(eventPublisher);
     }
 
     @Before
@@ -218,10 +176,8 @@ public class CompanyTest {
 
     private static final String PAN = "12312312312";
 
-    private static final DateTime CURRENT_DATE = new DateTime(2017,1,1,0,0);
+    private static final DateTime CURRENT_DATE = new DateTime(2017, 1, 1, 0, 0);
 
-    @Mock
-    private EventPublisher eventPublisher;
 
     private static final BigDecimal PRICE = new BigDecimal(10);
 
