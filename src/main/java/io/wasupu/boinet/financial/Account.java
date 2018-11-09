@@ -33,7 +33,8 @@ public class Account {
                 "amount", amount,
                 "amount.currency", "EUR",
                 "balance", balance,
-                "balance.currency", "EUR"));
+                "balance.currency", "EUR",
+                "date", world.getCurrentDateTime().toDate()));
     }
 
     private BigDecimal amount = new BigDecimal(0);

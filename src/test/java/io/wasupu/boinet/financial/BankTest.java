@@ -12,6 +12,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
@@ -117,7 +118,8 @@ public class BankTest {
         verify(eventPublisher).publish(Map.of(
             "eventType", "newAccount",
             "iban", IBAN,
-            "user", IDENTIFIER));
+            "user", IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
     }
 
     @Test
@@ -128,10 +130,9 @@ public class BankTest {
             "eventType", "newDebitCard",
             "iban", IBAN,
             "pan", PAN,
-            "user", IDENTIFIER));
+            "user", IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
     }
-
-
 
     @Before
     public void setupAccount() throws Exception {
@@ -142,7 +143,7 @@ public class BankTest {
     @Before
     public void setupBank() {
         bank = new Bank(world);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime(new GregorianCalendar(2017, 10, 10).getTime()));
+        when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
     }
 
     @Before
@@ -178,4 +179,6 @@ public class BankTest {
 
     private static final String IDENTIFIER = "1234567";
     private static final String OTHER_IDENTIFIER = "321343";
+
+    private static final DateTime CURRENT_DATE = new DateTime(new GregorianCalendar(2017, 10, 10));
 }

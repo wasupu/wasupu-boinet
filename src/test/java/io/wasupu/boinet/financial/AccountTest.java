@@ -2,6 +2,7 @@ package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -46,15 +48,15 @@ public class AccountTest {
             "iban", IBAN,
             "amount", new BigDecimal(10),
             "amount.currency", "EUR",
-            "balance",
-            new BigDecimal(10),
-            "balance.currency",
-            "EUR"));
+            "balance", new BigDecimal(10),
+            "balance.currency", "EUR",
+            "date", CURRENT_DATE.toDate()));
     }
 
     @Before
     public void setupAccount() {
         account = new Account(IBAN, world);
+        when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
     }
 
     @Before
@@ -72,6 +74,8 @@ public class AccountTest {
 
     @Mock
     private World world;
+
+    private static final DateTime CURRENT_DATE = new DateTime(new GregorianCalendar(2017, 10, 10));
 }
 
 

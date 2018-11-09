@@ -78,7 +78,8 @@ public class Bank {
     private void publishContractAccountEvent(String userIdentifier, String newIban) {
         world.getEvenPublisher().publish(Map.of("eventType", "newAccount",
             "iban", newIban,
-            "user", userIdentifier));
+            "user", userIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
     }
 
     private void publishContractDebitCard(String identifier, String iban, String panAsString) {
@@ -86,7 +87,8 @@ public class Bank {
             "eventType", "newDebitCard",
             "iban", iban,
             "pan", panAsString,
-            "user", identifier));
+            "user", identifier,
+            "date", world.getCurrentDateTime().toDate()));
     }
 
     private void publishCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
