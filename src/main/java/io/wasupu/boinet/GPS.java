@@ -20,10 +20,10 @@ public class GPS {
                                                           Double startLongitude,
                                                           Double minRange,
                                                           Double maxRange) {
-        double distanceInDegrees = getDistanceInDegrees(minRange, maxRange);
-        double bearingInDegrees = random.nextDouble() * 360;
+        var distanceInDegrees = getDistanceInDegrees(minRange, maxRange);
+        var bearingInDegrees = random.nextDouble() * 360;
 
-        Point point = SpatialContext.GEO
+        var point = SpatialContext.GEO
             .getDistCalc()
             .pointOnBearing(SpatialContext.GEO.makePoint(startLatitude, startLongitude),
                 distanceInDegrees,

@@ -1,8 +1,8 @@
 package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
+import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static java.util.stream.IntStream.*;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class World {
@@ -37,17 +38,17 @@ public class World {
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
-        IntStream.range(0, numberOfCompanies)
+        range(0, numberOfCompanies)
             .forEach(this::newSupplier);
 
-        IntStream.range(0, numberOfPeople)
+        range(0, numberOfPeople)
             .forEach(hospital::newBorn);
     }
 
     public void start(Optional<Integer> numberOfTicks) {
         IntStream stream = numberOfTicks
-            .map(integer -> IntStream.range(0, integer))
-            .orElseGet(() -> IntStream.iterate(0, i -> i + 1));
+            .map(integer -> range(0, integer))
+            .orElseGet(() -> iterate(0, i -> i + 1));
 
         stream.forEach(tickNumber -> {
             logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");

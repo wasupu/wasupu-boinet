@@ -4,13 +4,13 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.ProductType;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
-import io.wasupu.boinet.population.behaviours.*;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDayBehaviour;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.MonthlyBehaviour;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.WeeklyBehaviour;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.YearlyBehaviour;
+import io.wasupu.boinet.population.behaviours.*;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -23,7 +23,7 @@ public class Hospital {
     }
 
     public Person newBorn(Integer number) {
-        Person newPerson = new Person(
+        var newPerson = new Person(
             createPersonUniqueIdentifier(),
             world);
 

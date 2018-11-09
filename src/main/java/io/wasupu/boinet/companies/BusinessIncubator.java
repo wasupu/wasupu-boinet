@@ -6,16 +6,19 @@ import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.financial.Bank;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
 public class BusinessIncubator {
 
     public Company findCompany(List<Company> companies) {
-        Random random = new Random();
+        var random = new Random();
 
-        int randomNumber = random.nextInt(companies.size());
+        var randomNumber = random.nextInt(companies.size());
         return companies.get(randomNumber);
     }
 
@@ -30,7 +33,7 @@ public class BusinessIncubator {
     }
 
     public Company newCompany(World world) {
-        Company company = new Company(createCompanyUniqueIdentifier(), world);
+        var company = new Company(createCompanyUniqueIdentifier(), world);
 
         company.listenTicks(new ContractAccount(world, company)::tick);
         company.listenTicks(new InitialCapital(world, company, new BigDecimal(60000))::tick);

@@ -6,7 +6,6 @@ import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -14,18 +13,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -37,16 +29,14 @@ public class WorldTest {
     public void shouldCreateBunchOfPeople() {
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
 
-        assertThat(world.getPopulation())
-            .isNotEmpty();
+        assertThat(world.getPopulation()).isNotEmpty();
     }
 
     @Test
     public void shouldCreateGivenNumberOfPeople() {
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
 
-        assertThat(world.getPopulation())
-            .hasSize(NUMBER_OF_PEOPLE);
+        assertThat(world.getPopulation()).hasSize(NUMBER_OF_PEOPLE);
     }
 
     @Test
@@ -61,16 +51,14 @@ public class WorldTest {
     public void shouldCreateBunchOfCompanies() {
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
 
-        assertThat(world.getCompanies())
-            .isNotEmpty();
+        assertThat(world.getCompanies()).isNotEmpty();
     }
 
     @Test
     public void shouldCreateGivenNumberOfCompanies() {
         world.init(NUMBER_OF_PEOPLE, NUMBER_OF_COMPANIES);
 
-        assertThat(world.getCompanies())
-            .hasSize(NUMBER_OF_COMPANIES);
+        assertThat(world.getCompanies()).hasSize(NUMBER_OF_COMPANIES);
     }
 
     @Test

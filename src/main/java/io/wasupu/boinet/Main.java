@@ -13,16 +13,16 @@ public class Main {
      *             --stream-service-namespace = Optional. Required if --stream-service-api-key is defined
      */
     public static void main(String[] args) {
-        Integer numberOfPeople = findArgument("--population", args)
+        var numberOfPeople = findArgument("--population", args)
             .map(Integer::new)
             .orElseThrow(() -> new IllegalArgumentException("--population argument required"));
-        Integer numberOfCompanies = findArgument("--companies", args)
+        var numberOfCompanies = findArgument("--companies", args)
             .map(Integer::new)
             .orElseThrow(() -> new IllegalArgumentException("--companies argument required"));
 
-        Optional<String> streamServiceApiKey = findArgument("--stream-service-api-key", args);
-        Optional<String> streamServiceNamespace = findArgument("--stream-service-namespace", args);
-        World world = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ? new World(streamServiceApiKey.get(), streamServiceNamespace.get()) : new World();
+        var streamServiceApiKey = findArgument("--stream-service-api-key", args);
+        var streamServiceNamespace = findArgument("--stream-service-namespace", args);
+        var world = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ? new World(streamServiceApiKey.get(), streamServiceNamespace.get()) : new World();
 
         world.init(numberOfPeople, numberOfCompanies);
         world.start(findArgument("--number-of-ticks", args).map(Integer::new));

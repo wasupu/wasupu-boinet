@@ -15,15 +15,17 @@ public class Bank {
     }
 
     public String contractAccount() {
-        String newIban = String.valueOf(iban);
+        var newIban = String.valueOf(iban);
         accounts.put(newIban, new Account(newIban));
         iban++;
+
+        //Publish the new account event
 
         return newIban;
     }
 
     public String contractDebitCard(String iban) {
-        String panAsString = String.valueOf(pan);
+        var panAsString = String.valueOf(pan);
         cards.put(panAsString, String.valueOf(iban));
         pan++;
 
@@ -31,13 +33,13 @@ public class Bank {
     }
 
     public void deposit(String iban, BigDecimal amount) {
-        Account account = accounts.get(iban);
+        var account = accounts.get(iban);
         account.deposit(amount);
     }
 
     public void processPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        String buyerIban = cards.get(pan);
-        Account fromAccount = accounts.get(buyerIban);
+        var buyerIban = cards.get(pan);
+        var fromAccount = accounts.get(buyerIban);
         if (fromAccount.getBalance().compareTo(amount) < 0) return;
 
         transfer(buyerIban, sellerAccount, amount);
@@ -53,10 +55,10 @@ public class Bank {
     }
 
     public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
-        Account fromAccount = accounts.get(ibanFrom);
+        var fromAccount = accounts.get(ibanFrom);
         if (fromAccount.getBalance().compareTo(amount) < 0) return;
 
-        Account toAccount = accounts.get(ibanTo);
+        var toAccount = accounts.get(ibanTo);
 
         fromAccount.withdraw(amount);
         toAccount.deposit(amount);

@@ -1,11 +1,9 @@
 package io.wasupu.boinet.companies;
 
 import com.github.javafaker.Address;
-import com.google.common.collect.ImmutableMap;
-import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
 
 import java.math.BigDecimal;

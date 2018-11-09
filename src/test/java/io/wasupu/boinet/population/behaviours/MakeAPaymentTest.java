@@ -1,8 +1,8 @@
 package io.wasupu.boinet.population.behaviours;
 
+import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.companies.ProductType;
-import io.wasupu.boinet.World;
 import io.wasupu.boinet.population.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,16 +16,14 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MakeAPaymentTest {
 
     @Test
     public void shouldMakeAPaymentWithPriceRange() {
-        MakeAPayment payment = new MakeAPayment(getWorld(),
+        var payment = new MakeAPayment(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             60,
@@ -43,7 +41,7 @@ public class MakeAPaymentTest {
 
     @Test
     public void shouldMakeAPaymentWithFixedPrice() {
-        MakeAPayment payment = new MakeAPayment(getWorld(),
+        var payment = new MakeAPayment(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             new BigDecimal(60),

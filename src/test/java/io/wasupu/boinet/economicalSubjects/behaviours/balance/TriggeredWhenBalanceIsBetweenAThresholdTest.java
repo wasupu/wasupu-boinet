@@ -1,10 +1,10 @@
 package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
-import io.wasupu.boinet.financial.Bank;
-import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
+import io.wasupu.boinet.financial.Bank;
+import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -87,14 +84,6 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
             new BigDecimal("1000"),
             new BigDecimal("6000"),
             personBehaviour);
-    }
-
-    private boolean priceBetween(BigDecimal bigDecimal, BigDecimal begin, BigDecimal end) {
-        return bigDecimal.compareTo(begin) >= 0 && bigDecimal.compareTo(end) <= 0;
-    }
-
-    private BigDecimal getLastRecordedPrice(List<BigDecimal> prices) {
-        return prices.get(pricesCaptor.getAllValues().size() - 1);
     }
 
     @Mock

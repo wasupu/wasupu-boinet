@@ -2,8 +2,6 @@ package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.EventPublisher;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.financial.Account;
-import io.wasupu.boinet.financial.Bank;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -29,7 +27,7 @@ public class BankTest {
     @Test
     public void shouldContractANewAccount() throws Exception {
         whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
-        String iban = bank.contractAccount();
+        var iban = bank.contractAccount();
 
         assertEquals("The iban must be 0", IBAN, iban);
         assertTrue("The bank must have the expected firstAccount", bank.existAccount(IBAN));
@@ -40,7 +38,7 @@ public class BankTest {
         whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
         bank.contractAccount();
 
-        String pan = bank.contractDebitCard(IBAN);
+        var pan = bank.contractDebitCard(IBAN);
 
         assertEquals("The pan must be 0", PAN, pan);
         assertEquals("The iban must for pan 0 must be 0", "0", bank.getIbanByPan(PAN));
@@ -67,10 +65,10 @@ public class BankTest {
             .withArguments(SECOND_IBAN)
             .thenReturn(secondAccount);
 
-        String firstIban = bank.contractAccount();
-        String secondIban = bank.contractAccount();
+        var firstIban = bank.contractAccount();
+        var secondIban = bank.contractAccount();
 
-        BigDecimal amount = new BigDecimal(10);
+        var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
 
         verify(firstAccount).withdraw(amount);
@@ -89,10 +87,10 @@ public class BankTest {
             .withArguments(SECOND_IBAN)
             .thenReturn(secondAccount);
 
-        String firstIban = bank.contractAccount();
-        String secondIban = bank.contractAccount();
+        var firstIban = bank.contractAccount();
+        var secondIban = bank.contractAccount();
 
-        BigDecimal amount = new BigDecimal(10);
+        var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
 
         verify(firstAccount, never()).withdraw(amount);
@@ -110,11 +108,11 @@ public class BankTest {
             .thenReturn(secondAccount);
 
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        String firstIban = bank.contractAccount();
-        String secondIban = bank.contractAccount();
-        String pan = bank.contractDebitCard(firstIban);
+        var firstIban = bank.contractAccount();
+        var secondIban = bank.contractAccount();
+        var pan = bank.contractDebitCard(firstIban);
 
-        BigDecimal amount = new BigDecimal("10");
+        var amount = new BigDecimal("10");
 
         bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
@@ -129,11 +127,11 @@ public class BankTest {
 
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
 
-        String firstIban = bank.contractAccount();
-        String secondIban = bank.contractAccount();
-        String pan = bank.contractDebitCard(firstIban);
+        var firstIban = bank.contractAccount();
+        var secondIban = bank.contractAccount();
+        var pan = bank.contractDebitCard(firstIban);
 
-        BigDecimal amount = new BigDecimal("10");
+        var amount = new BigDecimal("10");
 
         bank.processPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 

@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.lang.Thread.*;
+
 public class PollingResultVerifier<T> {
 
     public static <T> PollingResultVerifier<T> retry(Supplier<T> pollingFunction) {
@@ -45,7 +47,7 @@ public class PollingResultVerifier<T> {
             }
 
             try {
-                Thread.sleep(pollingTime);
+                sleep(pollingTime);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

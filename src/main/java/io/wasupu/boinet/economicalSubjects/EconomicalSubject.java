@@ -67,7 +67,7 @@ public abstract class EconomicalSubject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        EconomicalSubject economicalSubject = (EconomicalSubject) o;
+        var economicalSubject = (EconomicalSubject) o;
 
         return identifier.equals(economicalSubject.identifier);
     }

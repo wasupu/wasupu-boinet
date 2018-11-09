@@ -14,8 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.util.stream.IntStream;
 
+import static java.util.stream.IntStream.range;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,7 +64,7 @@ public class CompanyTest {
     public void shouldNotPayTheEmployeesOtherThan29th() {
         company.hire(person);
 
-        IntStream.range(1, 27)
+        range(1, 27)
             .forEach(day -> {
                 when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(day));
                 company.tick();
@@ -79,7 +79,7 @@ public class CompanyTest {
         company.tick();
         company.hire(person);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(16000));
-        BigDecimal salary = company.getEmployeeSalary(person);
+        var salary = company.getEmployeeSalary(person);
 
         company.requestSalaryRevision(person);
 
@@ -91,7 +91,7 @@ public class CompanyTest {
         company.tick();
         company.hire(person);
 
-        BigDecimal salary = company.getEmployeeSalary(person);
+        var salary = company.getEmployeeSalary(person);
         company.requestSalaryRevision(person);
 
         assertEquals("The employee not has change its salary", salary, company.getEmployeeSalary(person));

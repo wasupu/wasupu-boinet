@@ -1,7 +1,7 @@
 package io.wasupu.boinet.economicalSubjects.behaviours;
 
-import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 
 public class ContractAccount extends EconomicalSubjectBehaviour {
 

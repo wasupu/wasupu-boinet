@@ -1,10 +1,9 @@
 package io.wasupu.boinet.population;
 
 import com.github.javafaker.Address;
-import com.google.common.collect.ImmutableMap;
+import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
-import io.wasupu.boinet.World;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -47,7 +46,6 @@ public class Person extends EconomicalSubject{
     public Company getEmployer() {
         return company;
     }
-
 
     private String fullAddress;
 

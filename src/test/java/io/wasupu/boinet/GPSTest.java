@@ -11,14 +11,14 @@ public class GPSTest {
 
     @Test
     public void shouldReturnANotNullPairOfCoordinates() {
-        Pair<Double, Double> coordinates = gps.coordinates();
+        var coordinates = gps.coordinates();
         assertNotNull("The coordinates must be not null", coordinates);
     }
 
     @Test
     public void shouldReturnCoordinatesAroundACenterLocation() {
         range(0, 10000).forEach(i -> {
-            Pair<Double, Double> coordinates = gps.coordinatesAround(40.368305,-3.698323);
+            var coordinates = gps.coordinatesAround(40.368305,-3.698323);
 
             assertThat(coordinates.getLeft())
                 .as("The latitude must be in range")

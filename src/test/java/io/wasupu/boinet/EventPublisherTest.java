@@ -29,9 +29,9 @@ import static io.wasupu.boinet.PollingResultVerifier.retry;
 public class EventPublisherTest {
 
     @Test
-    public void shouldPublishABatchOfEvents() throws InterruptedException {
-        EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE)
+    public void shouldPublishABatchOfEvents()  {
+        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
 
@@ -46,9 +46,9 @@ public class EventPublisherTest {
     }
 
     @Test
-    public void shouldPublishABatchWithTheRightEvents() throws InterruptedException {
-        EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE)
+    public void shouldPublishABatchWithTheRightEvents() {
+        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
 
@@ -63,9 +63,9 @@ public class EventPublisherTest {
     }
 
     @Test
-    public void shouldPublishTwoBatchOfEvents() throws InterruptedException {
-        EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
+    public void shouldPublishTwoBatchOfEvents()  {
+        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
 
@@ -80,9 +80,9 @@ public class EventPublisherTest {
     }
 
     @Test
-    public void shouldPublishTheTwoRightBatchOfEvents() throws InterruptedException {
-        EventPublisher eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
-        Collection<Map<String, Object>> eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
+    public void shouldPublishTheTwoRightBatchOfEvents() {
+        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
 
@@ -108,15 +108,15 @@ public class EventPublisherTest {
 
     private Condition withNumberOfRecords(Integer expectedSize) {
         return Condition.custom(call -> {
-            Map<String, Object> postBody = getBodyAsMap(call);
+            var postBody = getBodyAsMap(call);
             return expectedSize.equals(((Collection<Map<String, Object>>) postBody.get("records")).size());
         });
     }
 
     private Condition withRecords(Collection<Map<String, Object>> expectedEvents) {
         return Condition.custom(call -> {
-            Map<String, Object> postBody = getBodyAsMap(call);
-            Collection<Map<String, Object>> records = (Collection<Map<String, Object>>) postBody.get("records");
+            var postBody = getBodyAsMap(call);
+            var records = (Collection<Map<String, Object>>) postBody.get("records");
             return expectedEvents
                 .stream()
                 .map(expectedEvent -> {
