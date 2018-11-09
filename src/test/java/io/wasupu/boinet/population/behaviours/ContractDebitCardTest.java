@@ -20,7 +20,8 @@ public class ContractDebitCardTest {
         when(person.getAge()).thenReturn(0L);
         when(world.getBank()).thenReturn(bank);
         when(person.getIban()).thenReturn(IBAN);
-        when(bank.contractDebitCard(IBAN)).thenReturn(PAN);
+        when(person.getIdentifier()).thenReturn(IDENTIFIER);
+        when(bank.contractDebitCard(IDENTIFIER,IBAN)).thenReturn(PAN);
 
         contractDebitCard.tick();
 
@@ -52,6 +53,8 @@ public class ContractDebitCardTest {
     private static final String PAN = "12312312312";
 
     private static final String IBAN = "2";
+
+    private static final String IDENTIFIER = "234214234";
 
     private ContractDebitCard contractDebitCard;
 

@@ -11,8 +11,10 @@ public class ContractDebitCard extends EconomicalSubjectBehaviour {
     }
 
     public void tick() {
-        if (getEconomicalSubject().getAge() != 0) return;
 
-        ((Person)getEconomicalSubject()).setPan(getWorld().getBank().contractDebitCard(getEconomicalSubject().getIban()));
+        var person = (Person) getEconomicalSubject();
+        if (person.getAge() != 0) return;
+
+        person.setPan(getWorld().getBank().contractDebitCard(person.getIdentifier(), person.getIban()));
     }
 }

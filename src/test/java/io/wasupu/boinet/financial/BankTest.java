@@ -37,7 +37,7 @@ public class BankTest {
     public void it_should_contract_debit_card_in_the_bank() {
         bank.contractAccount(IDENTIFIER);
 
-        var pan = bank.contractDebitCard(IBAN);
+        var pan = bank.contractDebitCard(IDENTIFIER, IBAN);
 
         assertEquals("The pan must be 0", PAN, pan);
         assertEquals("The iban must for pan 0 must be 0", "0", bank.getIbanByPan(PAN));
@@ -85,7 +85,7 @@ public class BankTest {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         var firstIban = bank.contractAccount(IDENTIFIER);
         var secondIban = bank.contractAccount(OTHER_IDENTIFIER);
-        var pan = bank.contractDebitCard(firstIban);
+        var pan = bank.contractDebitCard(IDENTIFIER, firstIban);
 
         var amount = new BigDecimal("10");
 
@@ -100,7 +100,7 @@ public class BankTest {
 
         var firstIban = bank.contractAccount(IDENTIFIER);
         var secondIban = bank.contractAccount(OTHER_IDENTIFIER);
-        var pan = bank.contractDebitCard(firstIban);
+        var pan = bank.contractDebitCard(IDENTIFIER, firstIban);
 
         var amount = new BigDecimal("10");
 
@@ -110,13 +110,24 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_an_event_when_create_an_account() {
+    public void it_should_publish_an_event_when_contract_an_account() {
         bank.contractAccount(IDENTIFIER);
 
         verify(eventPublisher).publish(Map.of(
             "eventType", "newAccount",
             "iban", IBAN,
-            "user", "1234567"));
+            "user", IDENTIFIER));
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_contract_a_debit_card() {
+        bank.contractDebitCard(IDENTIFIER, IBAN);
+
+        verify(eventPublisher).publish(Map.of(
+            "eventType", "newDebitCard",
+            "iban", IBAN,
+            "pan", PAN,
+            "user", IDENTIFIER));
     }
 
     @Before

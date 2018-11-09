@@ -20,15 +20,17 @@ public class Bank {
         accounts.put(newIban, new Account(newIban));
 
         iban++;
-        publishNewAccountEvent(userIdentifier, newIban);
+        publishContractAccountEvent(userIdentifier, newIban);
 
         return newIban;
     }
 
-    public String contractDebitCard(String iban) {
+    public String contractDebitCard(String identifier, String iban) {
         var panAsString = String.valueOf(pan);
         cards.put(panAsString, String.valueOf(iban));
         pan++;
+
+        publishContractDebitCard(identifier, iban, panAsString);
 
         return panAsString;
     }
@@ -69,10 +71,18 @@ public class Bank {
         return cards.get(pan);
     }
 
-    private void publishNewAccountEvent(String userIdentifier, String newIban) {
+    private void publishContractAccountEvent(String userIdentifier, String newIban) {
         world.getEvenPublisher().publish(Map.of("eventType", "newAccount",
             "iban", newIban,
             "user", userIdentifier));
+    }
+
+    private void publishContractDebitCard(String identifier, String iban, String panAsString) {
+        world.getEvenPublisher().publish(Map.of(
+            "eventType", "newDebitCard",
+            "iban", iban,
+            "pan", panAsString,
+            "user", identifier));
     }
 
     private void publishCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
