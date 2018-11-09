@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.Thread.sleep;
@@ -48,15 +49,15 @@ public class StreamEventPublisher implements EventPublisher {
         if (eventsBuffer.size() >= BATCH_SIZE) {
             buildRequest()
                 .async()
-                .post(Entity.entity(ImmutableMap.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
+                .post(Entity.entity(Map.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
                     @Override
                     public void completed(Response response) {
-                        logger.info(appendEntries(ImmutableMap.of("status", response.getStatus())), "eventPublisher");
+                        logger.info(appendEntries(Map.of("status", response.getStatus())), "eventPublisher");
                     }
 
                     @Override
                     public void failed(Throwable throwable) {
-                        logger.error(appendEntries(ImmutableMap.of("message", "post(). error posting to stream service. Cause: " + throwable.getCause())), "eventPublisher");
+                        logger.error(appendEntries(Map.of("message", "post(). error posting to stream service. Cause: " + throwable.getCause())), "eventPublisher");
                     }
                 });
             clearEventsBuffer();
@@ -64,7 +65,7 @@ public class StreamEventPublisher implements EventPublisher {
     }
 
     private void clearEventsBuffer() {
-        eventsBuffer = ImmutableList.of();
+        eventsBuffer = List.of();
     }
 
     private void bufferEvent(Map<String, Object> event) {
@@ -99,7 +100,7 @@ public class StreamEventPublisher implements EventPublisher {
 
     private static Logger logger = LoggerFactory.getLogger(StreamEventPublisher.class);
 
-    private Collection<Map<String, Object>> eventsBuffer = ImmutableList.of();
+    private Collection<Map<String, Object>> eventsBuffer = List.of();
 
     private static final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
 

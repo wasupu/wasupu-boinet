@@ -12,9 +12,9 @@ public class FindAJob extends EconomicalSubjectBehaviour {
 
     @Override
     public void tick() {
-        if (!((Person)getEconomicalSubject()).isUnemployed()) return;
+        if (!((Person) getEconomicalSubject()).isUnemployed()) return;
 
-        Company company = getWorld().findBestCompanyToWork();
-        company.hire((Person)getEconomicalSubject());
+        var company = getWorld().findBestCompanyToWork();
+        company.hire((Person) getEconomicalSubject());
     }
 }

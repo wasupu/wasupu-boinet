@@ -6,6 +6,7 @@ import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
+import java.util.List;
 
 public abstract class EconomicalSubject {
 
@@ -109,6 +110,6 @@ public abstract class EconomicalSubject {
 
     private final Pair<Double, Double> coordinates;
 
-    private Collection<Runnable> tickConsumers = ImmutableList.of();
+    private Collection<Runnable> tickConsumers = List.of();
 
 }

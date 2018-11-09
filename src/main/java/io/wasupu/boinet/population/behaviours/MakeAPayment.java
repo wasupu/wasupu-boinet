@@ -31,8 +31,8 @@ public class MakeAPayment extends EconomicalSubjectBehaviour {
     }
 
     public void tick() {
-        BigDecimal price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.apply(startPriceRange, endPriceRange);
-        getCompany().buyProduct( ((Person)getEconomicalSubject()).getPan(), productType, price);
+        var price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.apply(startPriceRange, endPriceRange);
+        getCompany().buyProduct(((Person) getEconomicalSubject()).getPan(), productType, price);
     }
 
     protected Company getCompany() {

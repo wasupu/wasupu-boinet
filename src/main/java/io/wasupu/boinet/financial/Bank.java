@@ -82,7 +82,7 @@ public class Bank {
             .put("amount", amount)
             .put("currency", "EUR")
             .put("details", details)
-            .put("geolocation", ImmutableMap.of(
+            .put("geolocation", Map.of(
                 "latitude", coordinates.getLeft().toString(),
                 "longitude", coordinates.getRight().toString()))
             .put("company", companyIdentifier)

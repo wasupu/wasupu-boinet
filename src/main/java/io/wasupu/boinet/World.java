@@ -13,10 +13,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.IntStream.iterate;
@@ -39,12 +36,12 @@ public class World {
     }
 
     public void start(Optional<Integer> numberOfTicks) {
-        IntStream stream = numberOfTicks
+        var stream = numberOfTicks
             .map(integer -> range(0, integer))
             .orElseGet(() -> iterate(0, i -> i + 1));
 
         stream.forEach(tickNumber -> {
-            logger.info(appendEntries(ImmutableMap.of("tick", tickNumber)), "Tick number");
+            logger.info(appendEntries(Map.of("tick", tickNumber)), "Tick number");
             tickConsumers.forEach(Runnable::run);
 
             addDayToCurrentDate();
@@ -103,7 +100,7 @@ public class World {
 
     private Collection<Person> population = new ArrayList<>();
 
-    private Collection<Runnable> tickConsumers = ImmutableList.of();
+    private Collection<Runnable> tickConsumers = List.of();
 
     private Bank bank = new Bank(this);
 

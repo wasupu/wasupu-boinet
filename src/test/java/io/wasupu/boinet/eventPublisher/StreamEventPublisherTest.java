@@ -102,7 +102,7 @@ public class StreamEventPublisherTest {
     }
 
     private Map<String, Object> buildTestEvent(Integer index) {
-        return ImmutableMap.of(
+        return Map.of(
             "event", index,
             "date", new Date());
     }

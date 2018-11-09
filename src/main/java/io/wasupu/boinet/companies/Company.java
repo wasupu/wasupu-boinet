@@ -60,9 +60,9 @@ public class Company extends EconomicalSubject {
     public void requestSalaryRevision(Person person) {
         if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal(6000)) < 0) return;
 
-        BigDecimal salary = employees.get(person);
+        var salary = employees.get(person);
 
-        BigDecimal newSalary = salary.add(salary.multiply(new BigDecimal(0.2)))
+        var newSalary = salary.add(salary.multiply(new BigDecimal(0.2)))
             .setScale(2, RoundingMode.CEILING);
 
         employees.put(person, newSalary);
@@ -82,7 +82,7 @@ public class Company extends EconomicalSubject {
         if (getAge() < 3) return;
         if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal("100000")) < 0) return;
 
-        BigDecimal bonus = getWorld().getBank().getBalance(getIban())
+        var bonus = getWorld().getBank().getBalance(getIban())
             .subtract(new BigDecimal("60000"))
             .divide(new BigDecimal(employees.size()), RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR);
 

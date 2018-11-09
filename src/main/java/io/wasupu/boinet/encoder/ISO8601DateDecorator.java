@@ -9,7 +9,7 @@ public class ISO8601DateDecorator implements JsonFactoryDecorator {
 
     @Override
     public MappingJsonFactory decorate(MappingJsonFactory factory) {
-        ObjectMapper codec = factory.getCodec();
+        var codec = factory.getCodec();
         codec.setDateFormat(new ISO8601DateFormat());
         return factory;
     }

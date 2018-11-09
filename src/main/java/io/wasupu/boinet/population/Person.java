@@ -16,7 +16,7 @@ public class Person extends EconomicalSubject{
 
         this.name = faker.name().fullName();
         this.cellPhone = faker.phoneNumber().cellPhone();
-        Address address = faker.address();
+        var address = faker.address();
         this.fullAddress = address.fullAddress();
         this.zipCode = address.zipCode();
     }
