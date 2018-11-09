@@ -9,17 +9,12 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class LogEventPublisher implements EventPublisher {
 
-    public LogEventPublisher(String streamId) {
-        this.streamId = streamId;
-    }
-
     @Override
     public void publish(Map<String, Object> event) {
-        logger.info(appendEntries(event), streamId);
+        logger.info(appendEntries(event), "");
     }
 
     private static Logger logger = LoggerFactory.getLogger(LogEventPublisher.class);
 
-    private String streamId;
 
 }

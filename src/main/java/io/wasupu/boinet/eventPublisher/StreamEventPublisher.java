@@ -43,8 +43,7 @@ public class StreamEventPublisher implements EventPublisher {
     }
 
     private void publishInStreamService(Map<String, Object> event) {
-        var formattedEvent = formatEvent(event);
-        bufferEvent(formattedEvent);
+        bufferEvent(formatEvent(event));
 
         if (eventsBuffer.size() >= BATCH_SIZE) {
             buildRequest()

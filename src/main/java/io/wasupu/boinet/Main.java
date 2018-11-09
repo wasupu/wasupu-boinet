@@ -28,7 +28,7 @@ public class Main {
 
         var eventPublisher = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ?
             new StreamEventPublisher(CARD_STREAM_ID, streamServiceApiKey.get(), streamServiceNamespace.get()) :
-            new LogEventPublisher(CARD_STREAM_ID);
+            new LogEventPublisher();
 
         var world = new World(eventPublisher);
         world.init(numberOfPeople, numberOfCompanies);
