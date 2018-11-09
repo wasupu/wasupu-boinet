@@ -53,6 +53,21 @@ public class AccountTest {
             "date", CURRENT_DATE.toDate()));
     }
 
+    @Test
+    public void it_should_publish_an_event_when_withdraw_money() {
+        account.deposit(new BigDecimal(100));
+        account.withdraw(new BigDecimal(10));
+
+        verify(eventPublisher, atLeastOnce()).publish(Map.of(
+            "eventType", "withdraw",
+            "iban", IBAN,
+            "amount", new BigDecimal(10),
+            "amount.currency", "EUR",
+            "balance", new BigDecimal(90),
+            "balance.currency", "EUR",
+            "date", CURRENT_DATE.toDate()));
+    }
+
     @Before
     public void setupAccount() {
         account = new Account(IBAN, world);

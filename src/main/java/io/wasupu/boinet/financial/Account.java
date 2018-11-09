@@ -18,6 +18,8 @@ public class Account {
 
     public void withdraw(BigDecimal amount) {
         this.amount = this.amount.subtract(amount);
+
+        publishAccountWithdraw(iban, amount, getBalance());
     }
 
     public void deposit(BigDecimal amount) {
@@ -36,6 +38,18 @@ public class Account {
                 "balance.currency", "EUR",
                 "date", world.getCurrentDateTime().toDate()));
     }
+
+    private void publishAccountWithdraw(String iban, BigDecimal amount, BigDecimal balance) {
+        world.getEvenPublisher().publish(
+            Map.of("eventType", "withdraw",
+                "iban", iban,
+                "amount", amount,
+                "amount.currency", "EUR",
+                "balance", balance,
+                "balance.currency", "EUR",
+                "date", world.getCurrentDateTime().toDate()));
+    }
+
 
     private BigDecimal amount = new BigDecimal(0);
 
