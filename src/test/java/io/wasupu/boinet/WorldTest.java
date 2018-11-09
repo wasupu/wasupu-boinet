@@ -106,7 +106,7 @@ public class WorldTest {
     }
 
     @Test
-    public void shouldReturnTheBestCompanyToWork() throws Exception {
+    public void shouldReturnTheBestCompanyToWork() {
         when(firstCompany.getNumberOfEmployees()).thenReturn(0);
         when(firstCompany.getIban()).thenReturn(IBAN);
 
@@ -125,7 +125,7 @@ public class WorldTest {
     }
 
     @Test
-    public void shouldReturnTheBestCompanyToWorkSecondCompany() throws Exception {
+    public void shouldReturnTheBestCompanyToWorkSecondCompany() {
         when(firstCompany.getIdentifier()).thenReturn("first");
         when(firstCompany.getNumberOfEmployees()).thenReturn(6);
         when(firstCompany.getIban()).thenReturn(IBAN);
@@ -146,7 +146,7 @@ public class WorldTest {
     }
 
     @Test
-    public void shouldReturnTheBestCompanyToWorkFirstCompanyWhenEquals() throws Exception {
+    public void shouldReturnTheBestCompanyToWorkFirstCompanyWhenEquals() {
         when(firstCompany.getNumberOfEmployees()).thenReturn(2);
         when(firstCompany.getIban()).thenReturn(IBAN);
 
