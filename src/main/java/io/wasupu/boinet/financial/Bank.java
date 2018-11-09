@@ -17,7 +17,7 @@ public class Bank {
     public String contractAccount(String userIdentifier) {
         var newIban = String.valueOf(iban);
 
-        accounts.put(newIban, new Account(newIban));
+        accounts.put(newIban, new Account(newIban, world));
         iban++;
 
         publishContractAccountEvent(userIdentifier, newIban);
@@ -38,7 +38,8 @@ public class Bank {
     public void deposit(String iban, BigDecimal amount) {
         var account = accounts.get(iban);
         account.deposit(amount);
-        publishAccountDeposit(iban, amount);
+
+
     }
 
     public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
@@ -73,13 +74,6 @@ public class Bank {
         return cards.get(pan);
     }
 
-    private void publishAccountDeposit(String iban, BigDecimal amount) {
-        world.getEvenPublisher().publish(
-            Map.of("eventType", "deposit",
-                "iban", iban,
-                "amount", amount,
-                "currency", "EUR"));
-    }
 
     private void publishContractAccountEvent(String userIdentifier, String newIban) {
         world.getEvenPublisher().publish(Map.of("eventType", "newAccount",

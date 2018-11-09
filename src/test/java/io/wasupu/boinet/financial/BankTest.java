@@ -46,6 +46,7 @@ public class BankTest {
     @Test
     public void it_should_deposit_money_in_the_bank() {
         bank.contractAccount(IDENTIFIER);
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal(10));
 
         bank.deposit(IBAN, new BigDecimal(10));
 
@@ -130,22 +131,12 @@ public class BankTest {
             "user", IDENTIFIER));
     }
 
-    @Test
-    public void it_should_publish_an_event_when_deposit_money_in_card() {
-        bank.contractAccount(IDENTIFIER);
-        bank.deposit(IBAN, new BigDecimal(10));
 
-        verify(eventPublisher, atLeastOnce()).publish(Map.of(
-            "eventType", "deposit",
-            "iban", IBAN,
-            "amount", new BigDecimal(10),
-            "currency", "EUR"));
-    }
 
     @Before
     public void setupAccount() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
-        whenNew(Account.class).withArguments(SECOND_IBAN).thenReturn(secondAccount);
+        whenNew(Account.class).withArguments(IBAN,world).thenReturn(firstAccount);
+        whenNew(Account.class).withArguments(SECOND_IBAN,world).thenReturn(secondAccount);
     }
 
     @Before
