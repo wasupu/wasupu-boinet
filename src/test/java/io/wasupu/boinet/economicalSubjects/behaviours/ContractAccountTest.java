@@ -19,7 +19,8 @@ public class ContractAccountTest {
     public void shouldContractAnAccountInFirstTick() {
         when(world.getBank()).thenReturn(bank);
         when(person.getAge()).thenReturn(0L);
-        when(bank.contractAccount()).thenReturn(IBAN);
+        when(person.getIdentifier()).thenReturn(IDENTIFIER);
+        when(bank.contractAccount(IDENTIFIER)).thenReturn(IBAN);
 
         contractAccount.tick();
 
@@ -50,6 +51,8 @@ public class ContractAccountTest {
     private Bank bank;
 
     private static final String IBAN = "2";
+
+    private static final String IDENTIFIER = "1234567";
 
     private ContractAccount contractAccount;
 }

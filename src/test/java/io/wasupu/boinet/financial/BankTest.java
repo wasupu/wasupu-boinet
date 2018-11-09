@@ -13,6 +13,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,18 +26,16 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class BankTest {
 
     @Test
-    public void shouldContractANewAccount() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
-        var iban = bank.contractAccount();
+    public void it_should_contract_a_new_account() {
+        var iban = bank.contractAccount(IDENTIFIER);
 
         assertEquals("The iban must be 0", IBAN, iban);
         assertTrue("The bank must have the expected firstAccount", bank.existAccount(IBAN));
     }
 
     @Test
-    public void shouldContractDebitCardInTheBank() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
-        bank.contractAccount();
+    public void it_should_contract_debit_card_in_the_bank() {
+        bank.contractAccount(IDENTIFIER);
 
         var pan = bank.contractDebitCard(IBAN);
 
@@ -45,9 +44,8 @@ public class BankTest {
     }
 
     @Test
-    public void shouldDepositMoneyInTheBank() throws Exception {
-        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
-        bank.contractAccount();
+    public void it_should_deposit_money_in_the_bank() {
+        bank.contractAccount(IDENTIFIER);
 
         bank.deposit(IBAN, new BigDecimal(10));
 
@@ -55,18 +53,11 @@ public class BankTest {
     }
 
     @Test
-    public void shouldTransferMoneyBetweenToAccounts() throws Exception {
+    public void it_should_transfer_money_between_to_accounts() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        whenNew(Account.class)
-            .withArguments(IBAN)
-            .thenReturn(firstAccount);
 
-        whenNew(Account.class)
-            .withArguments(SECOND_IBAN)
-            .thenReturn(secondAccount);
-
-        var firstIban = bank.contractAccount();
-        var secondIban = bank.contractAccount();
+        var firstIban = bank.contractAccount(IDENTIFIER);
+        var secondIban = bank.contractAccount(OTHER_IDENTIFIER);
 
         var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
@@ -76,19 +67,11 @@ public class BankTest {
     }
 
     @Test
-    public void shouldNotRedNumberWhenTransferMoneyBetweenToAccounts() throws Exception {
+    public void it_should_not_red_numbers_when_transfer_money_between_to_accounts() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("5"));
 
-        whenNew(Account.class)
-            .withArguments(IBAN)
-            .thenReturn(firstAccount);
-
-        whenNew(Account.class)
-            .withArguments(SECOND_IBAN)
-            .thenReturn(secondAccount);
-
-        var firstIban = bank.contractAccount();
-        var secondIban = bank.contractAccount();
+        var firstIban = bank.contractAccount(IDENTIFIER);
+        var secondIban = bank.contractAccount(OTHER_IDENTIFIER);
 
         var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
@@ -98,18 +81,10 @@ public class BankTest {
     }
 
     @Test
-    public void shouldProcessAPayment() throws Exception {
-        whenNew(Account.class)
-            .withArguments(IBAN)
-            .thenReturn(firstAccount);
-
-        whenNew(Account.class)
-            .withArguments(SECOND_IBAN)
-            .thenReturn(secondAccount);
-
+    public void it_should_process_a_payment() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var firstIban = bank.contractAccount();
-        var secondIban = bank.contractAccount();
+        var firstIban = bank.contractAccount(IDENTIFIER);
+        var secondIban = bank.contractAccount(OTHER_IDENTIFIER);
         var pan = bank.contractDebitCard(firstIban);
 
         var amount = new BigDecimal("10");
@@ -120,15 +95,11 @@ public class BankTest {
     }
 
     @Test
-    public void shouldNotAllowRedNumberWhenProcessAPayment() throws Exception {
-        whenNew(Account.class)
-            .withArguments(IBAN)
-            .thenReturn(firstAccount);
-
+    public void it_should_not_allow_red_number_when_process_a_payment() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
 
-        var firstIban = bank.contractAccount();
-        var secondIban = bank.contractAccount();
+        var firstIban = bank.contractAccount(IDENTIFIER);
+        var secondIban = bank.contractAccount(OTHER_IDENTIFIER);
         var pan = bank.contractDebitCard(firstIban);
 
         var amount = new BigDecimal("10");
@@ -138,10 +109,31 @@ public class BankTest {
         verify(secondAccount, never()).deposit(any());
     }
 
+    @Test
+    public void it_should_publish_an_event_when_create_an_account() {
+        bank.contractAccount(IDENTIFIER);
+
+        verify(eventPublisher).publish(Map.of(
+            "eventType", "newAccount",
+            "iban", IBAN,
+            "user", "1234567"));
+    }
+
+    @Before
+    public void setupAccount() throws Exception {
+        whenNew(Account.class).withArguments(IBAN).thenReturn(firstAccount);
+        whenNew(Account.class).withArguments(SECOND_IBAN).thenReturn(secondAccount);
+    }
+
+    @Before
+    public void setupBank() {
+        bank = new Bank(world);
+        when(world.getCurrentDateTime()).thenReturn(new DateTime(new GregorianCalendar(2017, 10, 10).getTime()));
+    }
 
     @Before
     public void setupEventPublisher() {
-        when(world.getEvenPublisher()).thenReturn(IEventPublisher);
+        when(world.getEvenPublisher()).thenReturn(eventPublisher);
     }
 
     private static final String IBAN = "0";
@@ -153,13 +145,6 @@ public class BankTest {
     private static final String COMPANY = "12";
 
     private Pair<Double, Double> coordinates = Pair.of(40.34, -3.4);
-
-    @Before
-    public void setupBank() {
-        bank = new Bank(world);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime(new GregorianCalendar(2017, 10, 10).getTime()));
-    }
-
 
     private Bank bank;
 
@@ -173,7 +158,10 @@ public class BankTest {
     private World world;
 
     @Mock
-    private EventPublisher IEventPublisher;
+    private EventPublisher eventPublisher;
 
     private static final String DETAILS = "meal";
+
+    private static final String IDENTIFIER = "1234567";
+    private static final String OTHER_IDENTIFIER = "321343";
 }

@@ -14,12 +14,13 @@ public class Bank {
         this.world = world;
     }
 
-    public String contractAccount() {
+    public String contractAccount(String userIdentifier) {
         var newIban = String.valueOf(iban);
-        accounts.put(newIban, new Account(newIban));
-        iban++;
 
-        //Publish the new account event
+        accounts.put(newIban, new Account(newIban));
+
+        iban++;
+        publishNewAccountEvent(userIdentifier, newIban);
 
         return newIban;
     }
@@ -68,8 +69,13 @@ public class Bank {
         return cards.get(pan);
     }
 
-    private void publishCardPayment(BigDecimal amount, String pan, String companyIndentifier, String details,
-                                    Pair<Double, Double> coordinates) {
+    private void publishNewAccountEvent(String userIdentifier, String newIban) {
+        world.getEvenPublisher().publish(Map.of("eventType", "newAccount",
+            "iban", newIban,
+            "user", userIdentifier));
+    }
+
+    private void publishCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
         world.getEvenPublisher().publish(ImmutableMap
             .<String, Object>builder()
             .put("pan", pan)
@@ -79,7 +85,7 @@ public class Bank {
             .put("geolocation", ImmutableMap.of(
                 "latitude", coordinates.getLeft().toString(),
                 "longitude", coordinates.getRight().toString()))
-            .put("company", companyIndentifier)
+            .put("company", companyIdentifier)
             .put("date", world.getCurrentDateTime().toDate())
             .build());
     }
@@ -93,7 +99,4 @@ public class Bank {
     private int pan = 0;
 
     private World world;
-
-
-
 }

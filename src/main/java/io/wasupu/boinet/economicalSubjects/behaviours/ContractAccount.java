@@ -12,6 +12,6 @@ public class ContractAccount extends EconomicalSubjectBehaviour {
     public void tick() {
         if (getEconomicalSubject().getAge() != 0) return;
 
-        getEconomicalSubject().setIban(getWorld().getBank().contractAccount());
+        getEconomicalSubject().setIban(getWorld().getBank().contractAccount(getEconomicalSubject().getIdentifier()));
     }
 }
