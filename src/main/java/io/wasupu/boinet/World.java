@@ -25,15 +25,7 @@ public class World {
     public World(String streamServiceApiKey, String streamServiceNamespace) {
         this();
 
-        personEventPublisher = new EventPublisher(PERSON_STREAM_ID,
-            streamServiceApiKey,
-            streamServiceNamespace);
-
         cardEventPublisher = new EventPublisher(CARD_STREAM_ID,
-            streamServiceApiKey,
-            streamServiceNamespace);
-
-        companyEventPublisher = new EventPublisher(COMPANY_STREAM_ID,
             streamServiceApiKey,
             streamServiceNamespace);
     }
@@ -41,9 +33,7 @@ public class World {
     public World() {
         currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
 
-        personEventPublisher = new EventPublisher(PERSON_STREAM_ID);
         cardEventPublisher = new EventPublisher(CARD_STREAM_ID);
-        companyEventPublisher = new EventPublisher(COMPANY_STREAM_ID);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -111,14 +101,6 @@ public class World {
         return cardEventPublisher;
     }
 
-    public EventPublisher getEventPersonPublisher() {
-        return personEventPublisher;
-    }
-
-    public EventPublisher getEventCompanyPublisher() {
-        return companyEventPublisher;
-    }
-
     public GPS getGPS() {
         return GPS;
     }
@@ -135,9 +117,7 @@ public class World {
 
     private DateTime currentDate;
 
-    private EventPublisher personEventPublisher;
     private EventPublisher cardEventPublisher;
-    private EventPublisher companyEventPublisher;
 
     private final Hospital hospital = new Hospital(this);
 
