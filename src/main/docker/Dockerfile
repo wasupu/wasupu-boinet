@@ -1,4 +1,4 @@
-FROM java:8u111-jre-alpine
+FROM openjdk:11.0.1-slim
 
 ADD maven/*.jar ./
 
