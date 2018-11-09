@@ -1,4 +1,4 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.eventPublisher;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.collect.ImmutableList;
@@ -13,28 +13,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Thread.*;
+import static java.lang.Thread.sleep;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
-public class EventPublisher {
+public class StreamEventPublisher implements EventPublisher {
 
-    public EventPublisher(String streamId) {
-        this.streamId = streamId;
-    }
-
-    public EventPublisher(String streamId, String streamServiceApiKey, String streamServiceNamespace) {
+    public StreamEventPublisher(String streamId, String streamServiceApiKey, String streamServiceNamespace) {
         this.streamServiceApiKey = streamServiceApiKey;
         this.streamServiceNamespace = streamServiceNamespace;
         this.streamId = streamId;
     }
 
+    @Override
     public void publish(Map<String, Object> event) {
-        if (streamServiceNamespace != null) {
-            logRelevantEvents(event);
-            publishInStreamService(event);
-        } else {
-            logger.info(appendEntries(event), streamId);
-        }
+        logRelevantEvents(event);
+        publishInStreamService(event);
     }
 
     private void logRelevantEvents(Map<String, Object> event) {
@@ -105,7 +98,7 @@ public class EventPublisher {
     private String streamServiceApiKey;
     private String streamServiceNamespace;
 
-    private static Logger logger = LoggerFactory.getLogger(EventPublisher.class);
+    private static Logger logger = LoggerFactory.getLogger(StreamEventPublisher.class);
 
     private Collection<Map<String, Object>> eventsBuffer = ImmutableList.of();
 

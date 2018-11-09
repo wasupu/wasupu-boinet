@@ -1,4 +1,4 @@
-package io.wasupu.boinet;
+package io.wasupu.boinet.eventPublisher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import com.xebialabs.restito.semantics.Call;
 import com.xebialabs.restito.semantics.Condition;
 import com.xebialabs.restito.server.StubServer;
+import io.wasupu.boinet.eventPublisher.StreamEventPublisher;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
@@ -26,11 +27,11 @@ import static com.xebialabs.restito.semantics.Condition.post;
 import static com.xebialabs.restito.semantics.Condition.withHeader;
 import static io.wasupu.boinet.PollingResultVerifier.retry;
 
-public class EventPublisherTest {
+public class StreamEventPublisherTest {
 
     @Test
     public void shouldPublishABatchOfEvents()  {
-        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -47,7 +48,7 @@ public class EventPublisherTest {
 
     @Test
     public void shouldPublishABatchWithTheRightEvents() {
-        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -64,7 +65,7 @@ public class EventPublisherTest {
 
     @Test
     public void shouldPublishTwoBatchOfEvents()  {
-        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -81,7 +82,7 @@ public class EventPublisherTest {
 
     @Test
     public void shouldPublishTheTwoRightBatchOfEvents() {
-        var eventPublisher = new EventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());

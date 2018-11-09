@@ -2,6 +2,7 @@ package io.wasupu.boinet;
 
 import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
@@ -175,7 +176,7 @@ public class WorldTest {
             .thenReturn(firstPerson, secondPerson);
 
         whenNew(Bank.class).withAnyArguments().thenReturn(bank);
-        world = new World("unusedApiKey", "unusedNamespace");
+        world = new World(eventPublisher);
     }
     @Mock(name = "firstPerson")
     private Person firstPerson;
@@ -188,6 +189,9 @@ public class WorldTest {
 
     @Mock(name = "secondCompany")
     private Company secondCompany;
+
+    @Mock
+    private EventPublisher eventPublisher;
 
     @Mock
     private Bank bank;

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
@@ -18,23 +19,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static java.util.stream.IntStream.*;
+import static java.util.stream.IntStream.iterate;
+import static java.util.stream.IntStream.range;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class World {
 
-    public World(String streamServiceApiKey, String streamServiceNamespace) {
-        this();
-
-        cardEventPublisher = new EventPublisher(CARD_STREAM_ID,
-            streamServiceApiKey,
-            streamServiceNamespace);
-    }
-
-    public World() {
-        currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
-
-        cardEventPublisher = new EventPublisher(CARD_STREAM_ID);
+    public World(EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+        this.currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -98,8 +91,8 @@ public class World {
         return currentDate;
     }
 
-    public EventPublisher getEventCardEventPublisher() {
-        return cardEventPublisher;
+    public EventPublisher getEvenPublisher() {
+        return eventPublisher;
     }
 
     public GPS getGPS() {
@@ -118,7 +111,7 @@ public class World {
 
     private DateTime currentDate;
 
-    private EventPublisher cardEventPublisher;
+    private EventPublisher eventPublisher;
 
     private final Hospital hospital = new Hospital(this);
 
@@ -126,7 +119,7 @@ public class World {
 
     private BusinessIncubator businessIncubator = new BusinessIncubator();
 
-    private static final String CARD_STREAM_ID = "cardMovementEventStream";
+
 }
 
 

@@ -70,7 +70,7 @@ public class Bank {
 
     private void publishCardPayment(BigDecimal amount, String pan, String companyIndentifier, String details,
                                     Pair<Double, Double> coordinates) {
-        world.getEventCardEventPublisher().publish(ImmutableMap
+        world.getEvenPublisher().publish(ImmutableMap
             .<String, Object>builder()
             .put("pan", pan)
             .put("amount", amount)

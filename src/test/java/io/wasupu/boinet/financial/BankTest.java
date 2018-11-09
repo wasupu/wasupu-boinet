@@ -1,6 +1,6 @@
 package io.wasupu.boinet.financial;
 
-import io.wasupu.boinet.EventPublisher;
+import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
@@ -141,7 +141,7 @@ public class BankTest {
 
     @Before
     public void setupEventPublisher() {
-        when(world.getEventCardEventPublisher()).thenReturn(eventPublisher);
+        when(world.getEvenPublisher()).thenReturn(IEventPublisher);
     }
 
     private static final String IBAN = "0";
@@ -173,7 +173,7 @@ public class BankTest {
     private World world;
 
     @Mock
-    private EventPublisher eventPublisher;
+    private EventPublisher IEventPublisher;
 
     private static final String DETAILS = "meal";
 }
