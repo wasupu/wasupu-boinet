@@ -125,8 +125,6 @@ public class World {
 
     private BusinessIncubator businessIncubator = new BusinessIncubator();
 
-    private static final String PERSON_STREAM_ID = "personEventStream";
-    private static final String COMPANY_STREAM_ID = "companyEventStream";
     private static final String CARD_STREAM_ID = "cardMovementEventStream";
 }
 
