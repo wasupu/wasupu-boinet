@@ -43,12 +43,21 @@ public class Bank {
     public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
         var mortgageIdentifierAsString = String.valueOf(mortgageIdentifier);
 
-        mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, amount, iban));
+        mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, amount, iban,world));
         mortgageIdentifier++;
 
-        publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString,amount);
+        publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString, amount);
 
         return mortgageIdentifierAsString;
+    }
+
+    public void payMortgage(String mortgageIdentifier, BigDecimal amortization) {
+        var mortgage = mortgages.get(mortgageIdentifier);
+
+        var account = accounts.get(mortgage.getIban());
+
+        account.withdraw(amortization);
+        mortgage.amortize(amortization);
     }
 
     public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {

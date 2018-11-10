@@ -23,25 +23,25 @@ import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(ImponderablePaymentBehaviour.class)
-public class ImponderableMakeAPaymentBehaviourTest {
+@PrepareForTest(PayAnImponderable.class)
+public class PayAnImponderableTest {
 
     @Test
-    public void shouldNotPayTheImponderableIfNotOccurs() {
+    public void it_should_not_pay_the_imponderable_if_not_occurs() {
         when(random.nextDouble()).thenReturn(0.2);
 
-        imponderablePaymentBehaviour.tick();
+        payAnImponderable.tick();
 
         verify(getCompany(), never()).buyProduct(eq(getPAN()), eq(ProductType.CAR_FAULT), pricesCaptor.capture());
     }
 
     @Test
-    public void shouldOccursOnlyInAProbability() {
+    public void it_should_occurs_only_in_a_probability() {
         when(getWorld().findCompany()).thenReturn(getCompany());
         when(getPerson().getPan()).thenReturn(getPAN());
         when(random.nextDouble()).thenReturn(0.01);
 
-        imponderablePaymentBehaviour.tick();
+        payAnImponderable.tick();
 
         verify(getCompany(), atLeastOnce()).buyProduct(eq(getPAN()), eq(ProductType.CAR_FAULT), pricesCaptor.capture());
 
@@ -62,12 +62,12 @@ public class ImponderableMakeAPaymentBehaviourTest {
     @Before
     public void setImponderablePaymentBehaviour() throws Exception {
         whenNew(Random.class).withAnyArguments().thenReturn(random);
-        imponderablePaymentBehaviour = new ImponderablePaymentBehaviour(getWorld(),
+        payAnImponderable = new PayAnImponderable(getWorld(),
             getPerson(),
             ProductType.CAR_FAULT, 100, 1000, 3.0);
     }
 
-    private ImponderablePaymentBehaviour imponderablePaymentBehaviour;
+    private PayAnImponderable payAnImponderable;
 
     public Person getPerson() {
         return person;

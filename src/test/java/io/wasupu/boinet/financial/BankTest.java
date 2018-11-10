@@ -105,6 +105,22 @@ public class BankTest {
     }
 
     @Test
+    public void it_should_process_a_mortgage_payment() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        when(mortgage.getIban()).thenReturn(IBAN);
+
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGATE_AMOUNT);
+
+        var amount = new BigDecimal("10");
+
+        bank.payMortgage(mortgageId, amount);
+
+        verify(firstAccount).withdraw(amount);
+        verify(mortgage).amortize(amount);
+    }
+
+    @Test
     public void it_should_not_allow_red_number_when_process_a_payment() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
 
@@ -162,6 +178,11 @@ public class BankTest {
     }
 
     @Before
+    public void setupMortgage() throws Exception {
+        whenNew(Mortgage.class).withArguments("0", MORTGATE_AMOUNT, IBAN, world).thenReturn(mortgage);
+    }
+
+    @Before
     public void setupBank() {
         bank = new Bank(world);
         when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
@@ -191,6 +212,9 @@ public class BankTest {
 
     @Mock
     private Account secondAccount;
+
+    @Mock
+    private Mortgage mortgage;
 
     @Mock
     private World world;

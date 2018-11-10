@@ -8,14 +8,14 @@ import io.wasupu.boinet.population.Person;
 
 import java.util.Random;
 
-public class ImponderablePaymentBehaviour extends EconomicalSubjectBehaviour {
+public class PayAnImponderable extends EconomicalSubjectBehaviour {
 
-    public ImponderablePaymentBehaviour(World world,
-                                        Person person,
-                                        ProductType productType,
-                                        Integer startPriceRange,
-                                        Integer endPriceRange,
-                                        double probability) {
+    public PayAnImponderable(World world,
+                             Person person,
+                             ProductType productType,
+                             Integer startPriceRange,
+                             Integer endPriceRange,
+                             double probability) {
         super(world, person);
         this.productType = productType;
         this.startPriceRange = startPriceRange;
@@ -27,15 +27,15 @@ public class ImponderablePaymentBehaviour extends EconomicalSubjectBehaviour {
     public void tick() {
         if (!fulfillsTheProbability()) return;
 
-        getCompany().buyProduct( ((Person)getEconomicalSubject()).getPan(), productType, generateRandomPrice.apply(startPriceRange, endPriceRange));
+        getCompany().buyProduct(((Person) getEconomicalSubject()).getPan(), productType, generateRandomPrice.apply(startPriceRange, endPriceRange));
     }
 
-    private boolean fulfillsTheProbability(){
+    private boolean fulfillsTheProbability() {
         return getRandomValue() <= probability;
     }
 
     private double getRandomValue() {
-        return new Random().nextDouble()*100;
+        return new Random().nextDouble() * 100;
     }
 
     private Company getCompany() {

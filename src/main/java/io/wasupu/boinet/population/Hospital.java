@@ -72,7 +72,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson,
                     ProductType.ELECTRONIC_DEVICE,
                     300,
@@ -86,7 +86,7 @@ public class Hospital {
             new YearlyBehaviour(world,
                 newPerson,
                 207,//If you have money in 26 of july
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson,
                     ProductType.HOLIDAYS,
                     2000,
@@ -100,7 +100,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson,
                     ProductType.LUXURY,
                     4000,
@@ -114,7 +114,7 @@ public class Hospital {
             new YearlyBehaviour(world,
                 newPerson,
                 1 + new Random().nextInt(360),
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson,
                     ProductType.NEW_CAR,
                     20000,
@@ -129,7 +129,7 @@ public class Hospital {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             get2to10MonthDay(),
-            new MakeAPaymentWithCard(world,
+            new PayWithCard(world,
                 newPerson,
                 ProductType.PUBLIC_TRANSPORT,
                 50,
@@ -143,7 +143,7 @@ public class Hospital {
             new WeeklyBehaviour(world,
                 newPerson,
                 1 + new Random().nextInt(6),
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson,
                     ProductType.GAS,
                     60,
@@ -151,21 +151,21 @@ public class Hospital {
     }
 
     private void withCarFaults(Person newPerson) {
-        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+        newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             100,
             300,
             getProbability(0.001, 0.1))::tick);
 
-        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+        newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             300,
             800,
             getProbability(0.001, 0.5))::tick);
 
-        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+        newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             800,
@@ -174,21 +174,21 @@ public class Hospital {
     }
 
     private void withMedicalCosts(Person newPerson) {
-        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+        newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             50,
             100,
             getProbability(0.01, 0.5))::tick);
 
-        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+        newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             100,
             500,
             getProbability(0.001, 0.05))::tick);
 
-        newPerson.listenTicks(new ImponderablePaymentBehaviour(world,
+        newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             3000,
@@ -199,7 +199,7 @@ public class Hospital {
     void withEating(Person newPerson) {
         newPerson.listenTicks(new EveryDayBehaviour(world,
             newPerson,
-            new MakeAPaymentWithCard(world, newPerson,
+            new PayWithCard(world, newPerson,
                 ProductType.MEAL,
                 10,
                 25))::tick);
@@ -214,18 +214,16 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 28,
-                new MakeAPaymentWithCard(world,
+                new PayMortgage(world,
                     newPerson,
-                    ProductType.MORTGAGE,
-                    generateRandomPrice.apply(300, 500),
-                    world.findCompany())))::tick);
+                    generateRandomPrice.apply(300, 500))))::tick);
     }
 
     void withPowerSupply(Person newPerson) {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             get2to10MonthDay(),
-            new MakeAPaymentWithCard(world,
+            new PayWithCard(world,
                 newPerson,
                 ProductType.POWER_SUPPLY,
                 generateRandomPrice.apply(60, 120),
@@ -236,7 +234,7 @@ public class Hospital {
         newPerson.listenTicks(new MonthlyBehaviour(world,
             newPerson,
             get2to10MonthDay(),
-            new MakeAPaymentWithCard(world,
+            new PayWithCard(world,
                 newPerson,
                 ProductType.WATER_SUPPLY,
                 generateRandomPrice.apply(20, 40),
@@ -251,7 +249,7 @@ public class Hospital {
             new WeeklyBehaviour(world,
                 newPerson,
                 6,
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson, ProductType.ENTERTAINMENT,
                     100,
                     500)))::tick);
@@ -265,7 +263,7 @@ public class Hospital {
             new MonthlyBehaviour(world,
                 newPerson,
                 get10to25MonthDay(),
-                new MakeAPaymentWithCard(world,
+                new PayWithCard(world,
                     newPerson,
                     ProductType.ENTERTAINMENT,
                     generateRandomPrice.apply(10, 25),
@@ -280,7 +278,7 @@ public class Hospital {
                 new MonthlyBehaviour(world,
                     newPerson,
                     get10to25MonthDay(),
-                    new MakeAPaymentWithCard(world,
+                    new PayWithCard(world,
                         newPerson,
                         ProductType.INTERNET,
                         generateRandomPrice.apply(40, 100),

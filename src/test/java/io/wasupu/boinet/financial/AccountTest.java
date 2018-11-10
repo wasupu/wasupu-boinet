@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class AccountTest {
 
     @Test
-    public void shouldDepositMoneyIntoAccount() {
+    public void it_should_deposit_money_into_account() {
         account.deposit(new BigDecimal(10));
 
         assertEquals("The balance of the account is not the expected",
@@ -31,7 +31,7 @@ public class AccountTest {
     }
 
     @Test
-    public void shouldWithdrawMoneyFromAccount() {
+    public void it_should_withdraw_money_from_account() {
         account.deposit(new BigDecimal(10));
         account.withdraw(new BigDecimal(3));
         assertEquals("The balance of the account is not the expected",

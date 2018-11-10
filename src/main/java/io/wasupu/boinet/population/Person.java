@@ -42,6 +42,10 @@ public class Person extends EconomicalSubject{
         return pan;
     }
 
+    public String getMortgageIdentifier() {
+        return mortgageIdentifier;
+    }
+
     public void setPan(String pan) {
         this.pan = pan;
     }

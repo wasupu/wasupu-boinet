@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class FindAJobTest {
 
     @Test
-    public void shouldFindAJobWhenIsUnemployed() {
+    public void it_should_find_a_job_when_is_unemployed() {
         when(person.isUnemployed()).thenReturn(true);
         when(world.findBestCompanyToWork()).thenReturn(company);
 
@@ -26,7 +26,7 @@ public class FindAJobTest {
     }
 
     @Test
-    public void shouldNotFindAJobWhenIsEmployed() {
+    public void it_should_not_find_a_job_when_is_employed() {
         when(person.isUnemployed()).thenReturn(false);
         findAJob.tick();
 

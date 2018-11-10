@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class ContractDebitCardTest {
 
     @Test
-    public void shouldContractADebitCardInFirstTick() {
+    public void it_should_contract_a_debit_card_in_first_tick() {
         when(person.getAge()).thenReturn(0L);
         when(world.getBank()).thenReturn(bank);
         when(person.getIban()).thenReturn(IBAN);
@@ -29,7 +29,7 @@ public class ContractDebitCardTest {
     }
 
     @Test
-    public void shouldNotContractAgainDebitCardIfHasOne() {
+    public void it_should_not_contract_again_debit_card_if_has_one() {
         when(person.getAge()).thenReturn(1L);
 
         contractDebitCard.tick();
