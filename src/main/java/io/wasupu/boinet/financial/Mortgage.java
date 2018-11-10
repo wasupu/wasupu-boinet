@@ -3,6 +3,7 @@ package io.wasupu.boinet.financial;
 import io.wasupu.boinet.World;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class Mortgage {
 
@@ -23,9 +24,21 @@ public class Mortgage {
 
     public void amortize(BigDecimal amount) {
         amortizedAmount = amortizedAmount.add(amount);
+
+        world.getEvenPublisher().publish(Map.of(
+            "eventType", "mortgageAmortization",
+            "mortgageIdentifier", mortgageIdentifier,
+            "iban", iban,
+            "originalAmount", originalAmount,
+            "originalAmount.currency", "EUR",
+            "amortizedAmount", amount,
+            "amortizedAmount.currency", "EUR",
+            "totalAmortizedAmount", amortizedAmount,
+            "totalAmortizedAmount.currency", "EUR",
+            "date", world.getCurrentDateTime().toDate()));
     }
 
-    private BigDecimal originalAmount = new BigDecimal(0);
+    private BigDecimal originalAmount;
 
     private BigDecimal amortizedAmount = new BigDecimal(0);
 

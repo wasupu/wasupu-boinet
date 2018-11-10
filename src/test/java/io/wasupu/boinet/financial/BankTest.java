@@ -185,12 +185,12 @@ public class BankTest {
     @Before
     public void setupBank() {
         bank = new Bank(world);
-        when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
     }
 
     @Before
-    public void setupEventPublisher() {
+    public void setupWorld() {
         when(world.getEvenPublisher()).thenReturn(eventPublisher);
+        when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
     }
 
     private static final String IBAN = "0";
