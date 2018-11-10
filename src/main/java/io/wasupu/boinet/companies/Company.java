@@ -35,8 +35,10 @@ public class Company extends EconomicalSubject {
             getIban(),
             getIdentifier(),
             productType.toString().toLowerCase(),
-            getWorld().getGPS().coordinatesAround(getCoordinates().getLeft(),
-                getCoordinates().getRight()));
+            getWorld().getGPS()
+                .coordinatesAround(
+                    getCoordinates().getLeft(),
+                    getCoordinates().getRight()));
     }
 
     BigDecimal getEmployeeSalary(Person person) {

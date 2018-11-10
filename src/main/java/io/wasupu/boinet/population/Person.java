@@ -1,6 +1,5 @@
 package io.wasupu.boinet.population;
 
-import com.github.javafaker.Address;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
@@ -35,6 +34,10 @@ public class Person extends EconomicalSubject{
         employed = FALSE;
     }
 
+    public void setMortgageIdentifier(String mortgageIdentifier) {
+        this.mortgageIdentifier = mortgageIdentifier;
+    }
+
     public String getPan() {
         return pan;
     }
@@ -60,4 +63,6 @@ public class Person extends EconomicalSubject{
     private final String cellPhone;
 
     private Company company;
+
+    private String mortgageIdentifier;
 }

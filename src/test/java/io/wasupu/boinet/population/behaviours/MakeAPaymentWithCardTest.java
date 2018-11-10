@@ -19,11 +19,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MakeAPaymentTest {
+public class MakeAPaymentWithCardTest {
 
     @Test
     public void shouldMakeAPaymentWithPriceRange() {
-        var payment = new MakeAPayment(getWorld(),
+        var payment = new MakeAPaymentWithCard(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             60,
@@ -41,7 +41,7 @@ public class MakeAPaymentTest {
 
     @Test
     public void shouldMakeAPaymentWithFixedPrice() {
-        var payment = new MakeAPayment(getWorld(),
+        var payment = new MakeAPaymentWithCard(getWorld(),
             getPerson(),
             ProductType.ENTERTAINMENT,
             new BigDecimal(60),

@@ -8,13 +8,13 @@ import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 
-public class MakeAPayment extends EconomicalSubjectBehaviour {
+public class MakeAPaymentWithCard extends EconomicalSubjectBehaviour {
 
-    public MakeAPayment(World world,
-                        Person person,
-                        ProductType productType,
-                        Integer startPriceRange,
-                        Integer endPriceRange) {
+    public MakeAPaymentWithCard(World world,
+                                Person person,
+                                ProductType productType,
+                                Integer startPriceRange,
+                                Integer endPriceRange) {
         super(world, person);
 
         this.productType = productType;
@@ -22,7 +22,11 @@ public class MakeAPayment extends EconomicalSubjectBehaviour {
         this.endPriceRange = endPriceRange;
     }
 
-    public MakeAPayment(World world, Person person, ProductType productType, BigDecimal price, Company company) {
+    public MakeAPaymentWithCard(World world,
+                                Person person,
+                                ProductType productType,
+                                BigDecimal price,
+                                Company company) {
         super(world, person);
 
         this.productType = productType;
@@ -32,6 +36,7 @@ public class MakeAPayment extends EconomicalSubjectBehaviour {
 
     public void tick() {
         var price = (fixedPrice != null) ? fixedPrice : generateRandomPrice.apply(startPriceRange, endPriceRange);
+
         getCompany().buyProduct(((Person) getEconomicalSubject()).getPan(), productType, price);
     }
 

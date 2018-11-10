@@ -1,7 +1,6 @@
 package io.wasupu.boinet;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 import static java.util.stream.IntStream.iterate;
 import static java.util.stream.IntStream.range;

@@ -25,12 +25,12 @@ public class Bank {
         return newIban;
     }
 
-    public String contractDebitCard(String identifier, String iban) {
+    public String contractDebitCard(String userIdentifier, String iban) {
         var panAsString = String.valueOf(pan);
         cards.put(panAsString, String.valueOf(iban));
         pan++;
 
-        publishContractDebitCard(identifier, iban, panAsString);
+        publishContractDebitCard(userIdentifier, iban, panAsString);
 
         return panAsString;
     }
@@ -38,8 +38,17 @@ public class Bank {
     public void deposit(String iban, BigDecimal amount) {
         var account = accounts.get(iban);
         account.deposit(amount);
+    }
 
+    public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
+        var mortgageIdentifierAsString = String.valueOf(mortgageIdentifier);
 
+        mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, amount, iban));
+        mortgageIdentifier++;
+
+        publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString,amount);
+
+        return mortgageIdentifierAsString;
     }
 
     public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
@@ -74,7 +83,6 @@ public class Bank {
         return cards.get(pan);
     }
 
-
     private void publishContractAccountEvent(String userIdentifier, String newIban) {
         world.getEvenPublisher().publish(Map.of("eventType", "newAccount",
             "iban", newIban,
@@ -87,6 +95,16 @@ public class Bank {
             "eventType", "newDebitCard",
             "iban", iban,
             "pan", panAsString,
+            "user", identifier,
+            "date", world.getCurrentDateTime().toDate()));
+    }
+
+    private void publishContractMortgage(String identifier, String iban, String mortgageIdentifier, BigDecimal amount) {
+        world.getEvenPublisher().publish(Map.of(
+            "eventType", "newMortgage",
+            "iban", iban,
+            "mortgageAmount", amount,
+            "mortgageIdentifier", mortgageIdentifier,
             "user", identifier,
             "date", world.getCurrentDateTime().toDate()));
     }
@@ -110,9 +128,13 @@ public class Bank {
 
     private Map<String, String> cards = new HashMap<>();
 
+    private Map<String, Mortgage> mortgages = new HashMap<>();
+
     private int iban = 0;
 
     private int pan = 0;
+
+    private int mortgageIdentifier = 0;
 
     private World world;
 }
