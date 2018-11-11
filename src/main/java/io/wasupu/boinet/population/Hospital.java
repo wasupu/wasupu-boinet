@@ -216,7 +216,7 @@ public class Hospital {
                 28,
                 new PayMortgage(world,
                     newPerson,
-                    generateRandomPrice.apply(100, 400)))));
+                    generateRandomPrice.apply(500, 800)))));
     }
 
     void withPowerSupply(Person newPerson) {
