@@ -8,16 +8,21 @@ public class WeeklyBehaviour extends EconomicalSubjectBehaviour {
 
     public WeeklyBehaviour(World world,
                            Person person,
-                           Integer day, EconomicalSubjectBehaviour personBehaviour) {
+                           Integer day, EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world, person);
         this.day = day;
-        this.personBehaviour = personBehaviour;
+        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
     }
 
     public void tick() {
         if (!isDayInTheWeek()) return;
 
-        personBehaviour.tick();
+        economicalSubjectBehaviour.tick();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return economicalSubjectBehaviour.getIdentifier();
     }
 
     private boolean isDayInTheWeek() {
@@ -26,5 +31,5 @@ public class WeeklyBehaviour extends EconomicalSubjectBehaviour {
 
     private int day;
 
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 }

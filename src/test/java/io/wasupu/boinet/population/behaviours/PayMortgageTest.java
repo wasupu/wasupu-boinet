@@ -27,10 +27,41 @@ public class PayMortgageTest {
 
         when(getPerson().getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
         when(world.getBank()).thenReturn(bank);
+        when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(true);
 
         payment.tick();
 
-        verify(bank, atLeastOnce()).payMortgage(MORTGAGE_IDENTIFIER, new BigDecimal(60));
+        verify(bank).payMortgage(MORTGAGE_IDENTIFIER, new BigDecimal(60));
+    }
+
+    @Test
+    public void it_should_cancel_the_mortgage_if_is_pay(){
+        var payment = new PayMortgage(getWorld(),
+            getPerson(),
+            new BigDecimal(60));
+
+        when(getPerson().getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
+        when(world.getBank()).thenReturn(bank);
+        when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(true);
+
+        payment.tick();
+
+        verify(bank).cancelMortgage(MORTGAGE_IDENTIFIER);
+    }
+
+    @Test
+    public void it_should_unregister_the_behaviour(){
+        var payment = new PayMortgage(getWorld(),
+            getPerson(),
+            new BigDecimal(60));
+
+        when(getPerson().getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
+        when(world.getBank()).thenReturn(bank);
+        when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(true);
+
+        payment.tick();
+
+        verify(person).omitTicks(payment);
     }
 
     private Person getPerson() {
@@ -51,6 +82,4 @@ public class PayMortgageTest {
     private Bank bank;
 
     private static String MORTGAGE_IDENTIFIER = "0";
-
-
 }

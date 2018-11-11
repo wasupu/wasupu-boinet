@@ -16,6 +16,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -41,15 +42,6 @@ public class BankTest {
 
         assertEquals("The pan must be 0", PAN, pan);
         assertEquals("The iban must be 0 for pan 0", "0", bank.getIbanByPan(PAN));
-    }
-
-    @Test
-    public void it_should_contract_a_mortgage_in_the_bank() {
-        bank.contractAccount(USER_IDENTIFIER);
-
-        var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGATE_AMOUNT);
-
-        assertEquals("The mortgage identifier must be 0", MORTGAGE_IDENTFIER, mortgageIdentifier);
     }
 
     @Test
@@ -105,9 +97,35 @@ public class BankTest {
     }
 
     @Test
+    public void it_should_not_allow_red_number_when_process_a_payment() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
+
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        var pan = bank.contractDebitCard(USER_IDENTIFIER, firstIban);
+
+        var amount = new BigDecimal("10");
+
+        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+
+        verify(secondAccount, never()).deposit(any());
+    }
+
+    @Test
+    public void it_should_contract_a_mortgage_in_the_bank() {
+        bank.contractAccount(USER_IDENTIFIER);
+
+        var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGATE_AMOUNT);
+
+        assertEquals("The mortgage identifier must be 0", MORTGAGE_IDENTFIER, mortgageIdentifier);
+    }
+
+    @Test
     public void it_should_process_a_mortgage_payment() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         when(mortgage.getIban()).thenReturn(IBAN);
+        when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
+        when(mortgage.getOriginalAmount()).thenReturn(MORTGATE_AMOUNT);
 
         var firstIban = bank.contractAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGATE_AMOUNT);
@@ -121,18 +139,42 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_not_allow_red_number_when_process_a_payment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
+    public void it_should_process_a_mortgage_payment_when_payment_is_greater_than_the_rest_of_mortgage() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3000"));
+        when(mortgage.getIban()).thenReturn(IBAN);
+        when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
+        when(mortgage.getOriginalAmount()).thenReturn(MORTGATE_AMOUNT);
 
         var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
-        var pan = bank.contractDebitCard(USER_IDENTIFIER, firstIban);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGATE_AMOUNT);
 
-        var amount = new BigDecimal("10");
+        var amount = new BigDecimal("2000");
 
-        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.payMortgage(mortgageId, amount);
 
-        verify(secondAccount, never()).deposit(any());
+        verify(firstAccount).withdraw(new BigDecimal(1000));
+        verify(mortgage).amortize(new BigDecimal(1000));
+    }
+
+    @Test
+    public void it_should_return_true_a_mortgage_is_amortized() {
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGATE_AMOUNT);
+        when(mortgage.isAmortized()).thenReturn(true);
+
+        var amortized = bank.isMortgageAmortized(mortgageId);
+
+        assertTrue("When create a mortage is not amortized", amortized);
+    }
+
+    @Test
+    public void it_should_cancel_a_mortgage() {
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGATE_AMOUNT);
+
+        bank.cancelMortgage(mortgageId);
+
+        assertFalse("The mortgage must not exist", bank.existMortgage(mortgageId));
     }
 
     @Test
@@ -171,6 +213,19 @@ public class BankTest {
             "date", CURRENT_DATE.toDate()));
     }
 
+    @Test
+    public void it_should_publish_an_event_when_cancel_an_mortgage() {
+        String mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGATE_AMOUNT);
+        bank.cancelMortgage(mortgageIdentifier);
+
+        verify(eventPublisher).publish(Map.of(
+            "eventType", "cancelMortgage",
+            "mortgageIdentifier", MORTGAGE_IDENTFIER,
+            "iban", IBAN,
+            "user", USER_IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
+    }
+
     @Before
     public void setupAccount() throws Exception {
         whenNew(Account.class).withArguments(IBAN, world).thenReturn(firstAccount);
@@ -179,7 +234,9 @@ public class BankTest {
 
     @Before
     public void setupMortgage() throws Exception {
-        whenNew(Mortgage.class).withArguments("0", MORTGATE_AMOUNT, IBAN, world).thenReturn(mortgage);
+        whenNew(Mortgage.class).withArguments("0", USER_IDENTIFIER, MORTGATE_AMOUNT, IBAN, world).thenReturn(mortgage);
+        when(mortgage.getUserIdentifier()).thenReturn(USER_IDENTIFIER);
+        when(mortgage.getIban()).thenReturn(IBAN);
     }
 
     @Before

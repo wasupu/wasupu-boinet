@@ -62,5 +62,5 @@ public class ContractMortgageTest {
 
     private ContractMortgage contractMortgage;
 
-    private BigDecimal amount = new BigDecimal(300000);
+    private BigDecimal amount = new BigDecimal(300);
 }

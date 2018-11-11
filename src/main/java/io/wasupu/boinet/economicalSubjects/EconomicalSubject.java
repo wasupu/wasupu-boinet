@@ -3,8 +3,10 @@ package io.wasupu.boinet.economicalSubjects;
 import com.github.javafaker.Faker;
 import com.google.common.collect.ImmutableList;
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,12 +23,26 @@ public abstract class EconomicalSubject {
         world.listenTicks(this::tick);
     }
 
-    public void listenTicks(Runnable tickConsumer) {
+    public void omitTicks(EconomicalSubjectBehaviour tickConsumer) {
+        var ticksToRemove = new ArrayList<>(tickConsumers);
+        ticksToRemove.removeIf(tickConsumerElement-> tickConsumerElement.getIdentifier().equals(tickConsumer.getIdentifier()));
+
         tickConsumers = ImmutableList
-            .<Runnable>builder()
+            .<EconomicalSubjectBehaviour>builder()
+            .addAll(ticksToRemove)
+            .build();
+    }
+
+    public void listenTicks(EconomicalSubjectBehaviour tickConsumer) {
+        tickConsumers = ImmutableList
+            .<EconomicalSubjectBehaviour>builder()
             .addAll(tickConsumers)
             .add(tickConsumer)
             .build();
+    }
+
+    public Boolean existsBehaviour(EconomicalSubjectBehaviour economicalSubjectBehaviour) {
+        return tickConsumers.contains(economicalSubjectBehaviour);
     }
 
     public void tick() {
@@ -36,7 +52,7 @@ public abstract class EconomicalSubject {
     }
 
     private void executeBehaviours() {
-        tickConsumers.forEach(Runnable::run);
+        tickConsumers.forEach(EconomicalSubjectBehaviour::tick);
     }
 
     public static void setFaker(Faker newFaker) {
@@ -110,6 +126,5 @@ public abstract class EconomicalSubject {
 
     private final Pair<Double, Double> coordinates;
 
-    private Collection<Runnable> tickConsumers = List.of();
-
+    private Collection<EconomicalSubjectBehaviour> tickConsumers = List.of();
 }

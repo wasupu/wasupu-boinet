@@ -11,21 +11,26 @@ public class WhenBalanceExceedsThreshold extends EconomicalSubjectBehaviour {
     public WhenBalanceExceedsThreshold(World world,
                                        Person person,
                                        BigDecimal threshold,
-                                       EconomicalSubjectBehaviour personBehaviour) {
+                                       EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world, person);
         this.threshold = threshold;
-        this.personBehaviour = personBehaviour;
+        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
     }
 
     @Override
     public void tick() {
         if (threshold.compareTo(getWorld().getBank().getBalance(getEconomicalSubject().getIban())) > 0) return;
 
-        personBehaviour.tick();
+        economicalSubjectBehaviour.tick();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return economicalSubjectBehaviour.getIdentifier();
     }
 
     private BigDecimal threshold;
 
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 
 }

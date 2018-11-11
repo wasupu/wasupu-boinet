@@ -19,5 +19,5 @@ public class ContractMortgage extends EconomicalSubjectBehaviour {
         person.setMortgageIdentifier(getWorld().getBank().contractMortgage(person.getIdentifier(), person.getIban(), amount));
     }
 
-    private BigDecimal amount = new BigDecimal(300000);
+    private BigDecimal amount = new BigDecimal(300);
 }

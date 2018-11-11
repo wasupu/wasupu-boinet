@@ -13,12 +13,17 @@ public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBeha
                                                  Person person,
                                                  BigDecimal lowerThreshold,
                                                  BigDecimal upperThreshold,
-                                                 EconomicalSubjectBehaviour personBehaviour) {
+                                                 EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world, person);
 
-        this.personBehaviour = personBehaviour;
+        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
         this.lowerThreshold = lowerThreshold;
         this.upperThreshold = upperThreshold;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return economicalSubjectBehaviour.getIdentifier();
     }
 
     public void tick() {
@@ -30,7 +35,7 @@ public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBeha
         if (!iWasGoingToCountryside.get() && !iHaveMoreThan(upperThreshold)) return;
 
         iWasGoingToCountryside.set(true);
-        personBehaviour.tick();
+        economicalSubjectBehaviour.tick();
     }
 
     private boolean iHaveLessThan(BigDecimal expectedThreshold) {
@@ -48,7 +53,7 @@ public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBeha
     private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
 
 
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 
     private BigDecimal lowerThreshold;
     private BigDecimal upperThreshold;

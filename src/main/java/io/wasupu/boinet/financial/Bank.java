@@ -43,7 +43,7 @@ public class Bank {
     public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
         var mortgageIdentifierAsString = String.valueOf(mortgageIdentifier);
 
-        mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, amount, iban,world));
+        mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, userIdentifier, amount, iban, world));
         mortgageIdentifier++;
 
         publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString, amount);
@@ -54,10 +54,32 @@ public class Bank {
     public void payMortgage(String mortgageIdentifier, BigDecimal amortization) {
         var mortgage = mortgages.get(mortgageIdentifier);
 
+        var mortgageAmortization = amortization;
+
+        var pendingAmount = mortgage.getOriginalAmount().subtract(mortgage.getAmortizedAmount());
+
+        if (pendingAmount.compareTo(amortization) < 1) {
+            mortgageAmortization = pendingAmount;
+        }
+
         var account = accounts.get(mortgage.getIban());
 
-        account.withdraw(amortization);
-        mortgage.amortize(amortization);
+        account.withdraw(mortgageAmortization);
+        mortgage.amortize(mortgageAmortization);
+    }
+
+    public Boolean isMortgageAmortized(String mortgageIdentifier) {
+        return mortgages.get(mortgageIdentifier).isAmortized();
+    }
+
+    public void cancelMortgage(String mortgageIdentifier) {
+        var mortgage = mortgages.remove(mortgageIdentifier);
+
+        publishCancelMortgage(mortgage.getUserIdentifier(), mortgage.getIban(), mortgageIdentifier);
+    }
+
+    public Boolean existMortgage(String mortgageIdentifier) {
+        return mortgages.containsKey(mortgageIdentifier);
     }
 
     public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
@@ -131,6 +153,15 @@ public class Bank {
             .put("company", companyIdentifier)
             .put("date", world.getCurrentDateTime().toDate())
             .build());
+    }
+
+    private void publishCancelMortgage(String userIdentifier, String iban, String mortgageIdentifier) {
+        world.getEvenPublisher().publish(Map.of(
+            "eventType", "cancelMortgage",
+            "iban", iban,
+            "mortgageIdentifier", mortgageIdentifier,
+            "user", userIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
     }
 
     private Map<String, Account> accounts = new HashMap<>();

@@ -9,20 +9,24 @@ public class MonthlyBehaviour extends EconomicalSubjectBehaviour {
     public MonthlyBehaviour(World world,
                             Person person,
                             Integer day,
-                            EconomicalSubjectBehaviour personBehaviour) {
+                            EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world,
             person);
 
         this.day = day;
-        this.personBehaviour = personBehaviour;
+        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
     }
 
     public void tick() {
         if (!isDayOfMonth(day)) return;
 
-        personBehaviour.tick();
+        economicalSubjectBehaviour.tick();
     }
 
+    @Override
+    public String getIdentifier() {
+        return economicalSubjectBehaviour.getIdentifier();
+    }
 
     private boolean isDayOfMonth(Integer dayOfMonth) {
         return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
@@ -30,5 +34,5 @@ public class MonthlyBehaviour extends EconomicalSubjectBehaviour {
 
     private Integer day;
 
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 }

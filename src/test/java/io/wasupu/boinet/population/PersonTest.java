@@ -32,20 +32,16 @@ public class PersonTest {
     @Test
     public void testEquals() {
         new EqualsTester().
-            addEqualityGroup(new Person("person1",
-                    world),
-                new Person("person1",
-                    world)).
+            addEqualityGroup(new Person("person1", world),
+                new Person("person1", world)).
 
-            addEqualityGroup(new Person("person2",
-                    world),
-                new Person("person2",
-                    world)).
+            addEqualityGroup(new Person("person2", world),
+                new Person("person2", world)).
             testEquals();
     }
 
     @Test
-    public void shouldNotBeUnemployedAfterYouAreHired() {
+    public void it_should_not_be_unemployed_after_you_are_hired() {
         person.youAreHired(company);
 
         assertNotNull("Must be not null", person.isUnemployed());
@@ -53,7 +49,7 @@ public class PersonTest {
     }
 
     @Test
-    public void shouldBeUnemployedAfterYouAreFired() {
+    public void it_should_be_unemployed_after_you_are_fired() {
         person.youAreHired(company);
         person.youAreFired();
 

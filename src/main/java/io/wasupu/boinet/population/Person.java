@@ -9,8 +9,7 @@ import static java.lang.Boolean.TRUE;
 
 public class Person extends EconomicalSubject{
 
-    public Person(String identifier,
-                  World world) {
+    public Person(String identifier, World world) {
         super(identifier,world);
 
         this.name = faker.name().fullName();

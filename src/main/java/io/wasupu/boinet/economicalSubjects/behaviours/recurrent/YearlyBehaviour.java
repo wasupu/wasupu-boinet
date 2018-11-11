@@ -9,23 +9,28 @@ public class YearlyBehaviour extends EconomicalSubjectBehaviour {
     public YearlyBehaviour(World world,
                            Person person,
                            Integer day,
-                           EconomicalSubjectBehaviour personBehaviour) {
+                           EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world, person);
         this.day = day;
-        this.personBehaviour = personBehaviour;
+        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return economicalSubjectBehaviour.getIdentifier();
     }
 
     public void tick() {
         if (!isDayOfTheYear()) return;
 
-        personBehaviour.tick();
+        economicalSubjectBehaviour.tick();
     }
 
     private boolean isDayOfTheYear() {
         return getWorld().getCurrentDateTime().getDayOfYear() == day;
     }
 
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 
     private int day;
 }

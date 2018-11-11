@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class RequestSalaryRevisionYearlyTest {
 
     @Test
-    public void shouldRequestSalaryRevisionEveryYear() {
+    public void it_should_request_salary_revision_every_year() {
         when(world.getCurrentDateTime()).thenReturn(new DateTime(2017,1,6,0,0));
         when(person.getEmployer()).thenReturn(company);
         when(person.getAge()).thenReturn(2l);
@@ -28,7 +28,7 @@ public class RequestSalaryRevisionYearlyTest {
     }
 
     @Test
-    public void shouldNotRequestSalaryRevisionTheRestOfDays() {
+    public void should_not_request_salary_revision_the_rest_of_days() {
         when(person.getAge()).thenReturn(2l);
         when(world.getCurrentDateTime()).thenReturn(new DateTime(2017,1,9,0,0));
         when(person.isUnemployed()).thenReturn(false);
@@ -39,7 +39,7 @@ public class RequestSalaryRevisionYearlyTest {
     }
 
     @Test
-    public void shouldNotRequestSalaryRevisionIfItUnemployed(){
+    public void it_should_not_request_salary_revision_if_it_unemployed(){
         when(person.getAge()).thenReturn(2l);
         when(person.isUnemployed()).thenReturn(true);
 

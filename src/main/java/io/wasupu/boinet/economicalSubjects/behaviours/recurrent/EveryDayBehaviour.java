@@ -7,20 +7,25 @@ import io.wasupu.boinet.population.Person;
 public class EveryDayBehaviour extends EconomicalSubjectBehaviour {
 
     public EveryDayBehaviour(World world, Person person,
-                             EconomicalSubjectBehaviour personBehaviour) {
+                             EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world,
             person);
         this.person = person;
-        this.personBehaviour = personBehaviour;
+        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
     }
 
     public void tick() {
         if (person.getAge() < 2) return;
 
-        personBehaviour.tick();
+        economicalSubjectBehaviour.tick();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return economicalSubjectBehaviour.getIdentifier();
     }
 
     private Person person;
 
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 }

@@ -15,7 +15,16 @@ public class PayMortgage extends EconomicalSubjectBehaviour {
     }
 
     public void tick() {
-        getWorld().getBank().payMortgage(((Person) getEconomicalSubject()).getMortgageIdentifier(), amortization);
+        var bank = getWorld().getBank();
+        var person = (Person) getEconomicalSubject();
+        var mortgageId = person.getMortgageIdentifier();
+
+        bank.payMortgage(mortgageId, amortization);
+
+        if (bank.isMortgageAmortized(mortgageId)){
+            bank.cancelMortgage(mortgageId);
+            person.omitTicks(this);
+        }
     }
 
     private BigDecimal amortization;

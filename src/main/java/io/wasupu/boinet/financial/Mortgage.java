@@ -7,11 +7,12 @@ import java.util.Map;
 
 public class Mortgage {
 
-    public Mortgage(String mortgageIdentifier, BigDecimal originalAmount, String iban, World world) {
+    public Mortgage(String mortgageIdentifier, String userIdentifier, BigDecimal originalAmount, String iban, World world) {
         this.mortgageIdentifier = mortgageIdentifier;
         this.originalAmount = originalAmount;
         this.iban = iban;
         this.world = world;
+        this.userIdentifier = userIdentifier;
     }
 
     public String getIban() {
@@ -20,6 +21,18 @@ public class Mortgage {
 
     public BigDecimal getAmortizedAmount() {
         return amortizedAmount;
+    }
+
+    public BigDecimal getOriginalAmount(){
+        return originalAmount;
+    }
+
+    public Boolean isAmortized() {
+        return originalAmount.compareTo(amortizedAmount) == 0;
+    }
+
+    public String getUserIdentifier(){
+        return userIdentifier;
     }
 
     public void amortize(BigDecimal amount) {
@@ -47,4 +60,6 @@ public class Mortgage {
     private String iban;
 
     private World world;
+
+    private String userIdentifier;
 }

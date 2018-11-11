@@ -27,9 +27,9 @@ public class Hospital {
             createPersonUniqueIdentifier(),
             world);
 
-        newPerson.listenTicks(new ContractAccount(world, newPerson)::tick);
-        newPerson.listenTicks(new ContractDebitCard(world, newPerson)::tick);
-        newPerson.listenTicks(new InitialCapital(world, newPerson, new BigDecimal(3000))::tick);
+        newPerson.listenTicks(new ContractAccount(world, newPerson));
+        newPerson.listenTicks(new ContractDebitCard(world, newPerson));
+        newPerson.listenTicks(new InitialCapital(world, newPerson, new BigDecimal(3000)));
 
         withJob(newPerson);
         withEating(newPerson);
@@ -76,7 +76,7 @@ public class Hospital {
                     newPerson,
                     ProductType.ELECTRONIC_DEVICE,
                     300,
-                    2000)))::tick);
+                    2000))));
     }
 
     private void withHolidaysOnceInAYear(Person newPerson) {
@@ -90,7 +90,7 @@ public class Hospital {
                     newPerson,
                     ProductType.HOLIDAYS,
                     2000,
-                    4000)))::tick);
+                    4000))));
     }
 
     private void withLuxuryProductPayment(Person newPerson) {
@@ -104,7 +104,7 @@ public class Hospital {
                     newPerson,
                     ProductType.LUXURY,
                     4000,
-                    6000)))::tick);
+                    6000))));
     }
 
     private void withNewCar(Person newPerson) {
@@ -118,11 +118,11 @@ public class Hospital {
                     newPerson,
                     ProductType.NEW_CAR,
                     20000,
-                    30000)))::tick);
+                    30000))));
     }
 
     private void withJob(Person newPerson) {
-        newPerson.listenTicks(new FindAJob(world, newPerson)::tick);
+        newPerson.listenTicks(new FindAJob(world, newPerson));
     }
 
     private void withPublicTransport(Person newPerson) {
@@ -133,7 +133,7 @@ public class Hospital {
                 newPerson,
                 ProductType.PUBLIC_TRANSPORT,
                 50,
-                70))::tick);
+                70)));
     }
 
     private void withGasForCar(Person newPerson) {
@@ -147,7 +147,7 @@ public class Hospital {
                     newPerson,
                     ProductType.GAS,
                     60,
-                    100)))::tick);
+                    100))));
     }
 
     private void withCarFaults(Person newPerson) {
@@ -156,21 +156,21 @@ public class Hospital {
             ProductType.CAR_FAULT,
             100,
             300,
-            getProbability(0.001, 0.1))::tick);
+            getProbability(0.001, 0.1)));
 
         newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             300,
             800,
-            getProbability(0.001, 0.5))::tick);
+            getProbability(0.001, 0.5)));
 
         newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             800,
             2000,
-            getProbability(0.001, 0.01))::tick);
+            getProbability(0.001, 0.01)));
     }
 
     private void withMedicalCosts(Person newPerson) {
@@ -179,21 +179,21 @@ public class Hospital {
             ProductType.MEDICAL_COSTS,
             50,
             100,
-            getProbability(0.01, 0.5))::tick);
+            getProbability(0.01, 0.5)));
 
         newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             100,
             500,
-            getProbability(0.001, 0.05))::tick);
+            getProbability(0.001, 0.05)));
 
         newPerson.listenTicks(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             3000,
             5000,
-            getProbability(0.00001, 0.001))::tick);
+            getProbability(0.00001, 0.001)));
     }
 
     void withEating(Person newPerson) {
@@ -202,11 +202,11 @@ public class Hospital {
             new PayWithCard(world, newPerson,
                 ProductType.MEAL,
                 10,
-                25))::tick);
+                25)));
     }
 
     void withMortgage(Person newPerson) {
-        newPerson.listenTicks(new ContractMortgage(world,newPerson)::tick);
+        newPerson.listenTicks(new ContractMortgage(world, newPerson));
 
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
@@ -216,7 +216,7 @@ public class Hospital {
                 28,
                 new PayMortgage(world,
                     newPerson,
-                    generateRandomPrice.apply(300, 500))))::tick);
+                    generateRandomPrice.apply(100, 400)))));
     }
 
     void withPowerSupply(Person newPerson) {
@@ -227,7 +227,7 @@ public class Hospital {
                 newPerson,
                 ProductType.POWER_SUPPLY,
                 generateRandomPrice.apply(60, 120),
-                world.findCompany()))::tick);
+                world.findCompany())));
     }
 
     void withWaterSupply(Person newPerson) {
@@ -238,7 +238,7 @@ public class Hospital {
                 newPerson,
                 ProductType.WATER_SUPPLY,
                 generateRandomPrice.apply(20, 40),
-                world.findCompany()))::tick);
+                world.findCompany())));
     }
 
     void withCountryside(Person newPerson) {
@@ -252,7 +252,7 @@ public class Hospital {
                 new PayWithCard(world,
                     newPerson, ProductType.ENTERTAINMENT,
                     100,
-                    500)))::tick);
+                    500))));
     }
 
     void withCableTV(Person newPerson) {
@@ -267,7 +267,7 @@ public class Hospital {
                     newPerson,
                     ProductType.ENTERTAINMENT,
                     generateRandomPrice.apply(10, 25),
-                    world.findCompany())))::tick);
+                    world.findCompany()))));
     }
 
     void withInternetConnection(Person newPerson) {
@@ -282,13 +282,13 @@ public class Hospital {
                         newPerson,
                         ProductType.INTERNET,
                         generateRandomPrice.apply(40, 100),
-                        world.findCompany())))::tick);
+                        world.findCompany()))));
     }
 
     void withSalaryRevision(Person newPerson) {
         newPerson.listenTicks(new RequestSalaryRevisionYearly(world,
             newPerson,
-            random.nextInt(365))::tick);
+            random.nextInt(365)));
     }
 
     private int get2to10MonthDay() {
