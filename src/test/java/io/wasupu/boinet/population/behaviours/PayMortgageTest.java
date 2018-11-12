@@ -3,6 +3,7 @@ package io.wasupu.boinet.population.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -15,17 +16,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MortgateAmortizationTest {
+public class PayMortgageTest {
 
     @Test
     public void it_should_pay_a_mortgage() {
-        var payment = new PayMortgage(getWorld(),
-            getPerson(),
-            new BigDecimal(60));
-
-        when(getPerson().getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
-        when(world.getBank()).thenReturn(bank);
-        when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(true);
+        when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(false);
 
         payment.tick();
 
@@ -33,13 +28,7 @@ public class MortgateAmortizationTest {
     }
 
     @Test
-    public void it_should_cancel_the_mortgage_if_is_pay(){
-        var payment = new PayMortgage(getWorld(),
-            getPerson(),
-            new BigDecimal(60));
-
-        when(getPerson().getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
-        when(world.getBank()).thenReturn(bank);
+    public void it_should_cancel_the_mortgage_if_is_pay() {
         when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(true);
 
         payment.tick();
@@ -48,13 +37,7 @@ public class MortgateAmortizationTest {
     }
 
     @Test
-    public void it_should_unregister_the_behaviour(){
-        var payment = new PayMortgage(getWorld(),
-            getPerson(),
-            new BigDecimal(60));
-
-        when(getPerson().getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
-        when(world.getBank()).thenReturn(bank);
+    public void it_should_unregister_the_behaviour() {
         when(bank.isMortgageAmortized(MORTGAGE_IDENTIFIER)).thenReturn(true);
 
         payment.tick();
@@ -62,12 +45,19 @@ public class MortgateAmortizationTest {
         verify(person).removeBehaviour(payment);
     }
 
-    private Person getPerson() {
-        return person;
+    @Before
+    public void setupPerson() {
+        when(person.getMortgageIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
     }
 
-    private World getWorld() {
-        return world;
+    @Before
+    public void setupBank() {
+        when(world.getBank()).thenReturn(bank);
+    }
+
+    @Before
+    public void setupMortgage(){
+        payment = new PayMortgage(world, person, new BigDecimal(60));
     }
 
     @Mock
@@ -78,6 +68,8 @@ public class MortgateAmortizationTest {
 
     @Mock
     private Bank bank;
+
+    private PayMortgage payment;
 
     private static String MORTGAGE_IDENTIFIER = "0";
 }

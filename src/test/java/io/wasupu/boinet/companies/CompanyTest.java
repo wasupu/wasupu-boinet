@@ -42,7 +42,7 @@ public class CompanyTest {
         company.tick();
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
-        verify(bank).processCardPayment(PRICE,
+        verify(bank).payWithCard(PRICE,
             PAN,
             IBAN,
             COMPANY_IDENTIFIER,

@@ -1,8 +1,11 @@
 package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
+import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -95,7 +98,7 @@ public class BankTest {
 
         var amount = new BigDecimal("10");
 
-        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.payWithCard(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verify(secondAccount).deposit(amount);
     }
@@ -109,7 +112,7 @@ public class BankTest {
 
         var amount = new BigDecimal("10");
 
-        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.payWithCard(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verifyPublishedEvent(Map.of(
             "eventType", "acceptPayment",
@@ -133,7 +136,7 @@ public class BankTest {
 
         var amount = new BigDecimal("10");
 
-        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.payWithCard(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verify(secondAccount, never()).deposit(any());
     }
@@ -148,7 +151,7 @@ public class BankTest {
 
         var amount = new BigDecimal("10");
 
-        bank.processCardPayment(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
+        bank.payWithCard(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
         verifyPublishedEvent(Map.of(
             "eventType", "declinePayment",
@@ -168,7 +171,7 @@ public class BankTest {
 
         var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
 
-        assertEquals("The mortgage identifier must be 0", MORTGAGE_IDENTFIER, mortgageIdentifier);
+        assertEquals("The mortgage identifier must be 0", MORTGAGE_IDENTIFIER, mortgageIdentifier);
     }
 
     @Test
@@ -211,7 +214,7 @@ public class BankTest {
     public void it_should_not_pay_mortgage_installment_when_no_funds() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
-        when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTFIER);
+        when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
         when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
@@ -230,7 +233,7 @@ public class BankTest {
     public void it_should_publish_event_when_not_paying_mortgage_installment() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
-        when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTFIER);
+        when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
 
         var amortizedAmount = new BigDecimal(0);
         when(mortgage.getAmortizedAmount()).thenReturn(amortizedAmount);
@@ -293,6 +296,47 @@ public class BankTest {
     }
 
     @Test
+    public void it_should_accept_a_receipt() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+
+        when(person.getIban()).thenReturn(personIban);
+        when(company.getIban()).thenReturn(companyIban);
+        when(company.getIdentifier()).thenReturn(COMPANY);
+
+        var receiptAmount = new BigDecimal("10");
+
+        bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
+
+        verify(secondAccount).deposit(receiptAmount);
+        verify(firstAccount).withdraw(receiptAmount);
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_accept_a_receipt() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+
+        when(person.getIban()).thenReturn(personIban);
+        when(company.getIban()).thenReturn(companyIban);
+        when(company.getIdentifier()).thenReturn(COMPANY);
+
+        var receiptAmount = new BigDecimal("10");
+
+        bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "acceptReceipt",
+            "receiptId", RECEIPT_ID,
+            "details", RECEIPT_DETAILS,
+            "amount", convertMoneyToJson(receiptAmount),
+            "company", COMPANY,
+            "date", CURRENT_DATE.toDate()));
+    }
+
+    @Test
     public void it_should_publish_an_event_when_contract_an_account() {
         bank.contractAccount(USER_IDENTIFIER);
 
@@ -322,7 +366,7 @@ public class BankTest {
         verifyPublishedEvent(Map.of(
             "eventType", "contractMortgage",
             "mortgageAmount", convertMoneyToJson(MORTGAGE_AMOUNT),
-            "mortgageIdentifier", MORTGAGE_IDENTFIER,
+            "mortgageIdentifier", MORTGAGE_IDENTIFIER,
             "iban", IBAN,
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
@@ -335,7 +379,7 @@ public class BankTest {
 
         verifyPublishedEvent(Map.of(
             "eventType", "cancelMortgage",
-            "mortgageIdentifier", MORTGAGE_IDENTFIER,
+            "mortgageIdentifier", MORTGAGE_IDENTIFIER,
             "iban", IBAN,
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
@@ -394,7 +438,7 @@ public class BankTest {
 
     private static final String PAN = "0";
 
-    private static final String MORTGAGE_IDENTFIER = "0";
+    private static final String MORTGAGE_IDENTIFIER = "0";
 
     private static final String COMPANY = "12";
 
@@ -417,10 +461,18 @@ public class BankTest {
     @Mock
     private EventPublisher eventPublisher;
 
+    @Mock
+    private Person person;
+
+    @Mock
+    private Company company;
+
     @Captor
     private ArgumentCaptor<Map<String, Object>> eventCaptor;
 
     private static final String DETAILS = "meal";
+
+    private static final String RECEIPT_DETAILS = "power_supply";
 
     private static final String USER_IDENTIFIER = "1234567";
     private static final String OTHER_USER_IDENTIFIER = "321343";
@@ -428,4 +480,6 @@ public class BankTest {
     private static final DateTime CURRENT_DATE = new DateTime(new GregorianCalendar(2017, 10, 10));
 
     private BigDecimal MORTGAGE_AMOUNT = new BigDecimal(1000);
+
+    private String RECEIPT_ID = "98767";
 }

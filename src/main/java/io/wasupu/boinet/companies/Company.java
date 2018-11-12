@@ -29,7 +29,7 @@ public class Company extends EconomicalSubject {
     }
 
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
-        getWorld().getBank().processCardPayment(price,
+        getWorld().getBank().payWithCard(price,
             pan,
             getIban(),
             getIdentifier(),

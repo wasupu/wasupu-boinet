@@ -1,6 +1,8 @@
 package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
@@ -61,7 +63,7 @@ public class Bank {
         return panAsString;
     }
 
-    public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
+    public void payWithCard(BigDecimal amount, String pan, String sellerIban, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
         var buyerIban = cards.get(pan);
         var fromAccount = accounts.get(buyerIban);
 
@@ -70,8 +72,24 @@ public class Bank {
             return;
         }
 
-        transfer(buyerIban, sellerAccount, amount);
+        transfer(buyerIban, sellerIban, amount);
         publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
+    }
+
+    public void payReceipt(String receiptId, ReceiptType receiptType, BigDecimal receiptAmount, Person person, Company company) {
+        transfer(person.getIban(), company.getIban(), receiptAmount);
+
+        publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(),receiptType);
+    }
+
+    private void publishReceiptPayment(String receiptId, BigDecimal amount, String companyIdentifier, ReceiptType receiptType) {
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "acceptReceipt",
+            "receiptId", receiptId,
+            "amount", convertMoneyToJson(amount),
+            "details", receiptType.toString().toLowerCase(),
+            "company", companyIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
     }
 
     public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
@@ -160,9 +178,7 @@ public class Bank {
         world.getEventPublisher().publish(Map.of(
             "eventType", "acceptPayment",
             "pan", pan,
-            "amount", Map.of(
-                "value", amount,
-                "currency", "EUR"),
+            "amount", convertMoneyToJson(amount),
             "details", details,
             "geolocation", Map.of(
                 "latitude", coordinates.getLeft(),
@@ -175,9 +191,7 @@ public class Bank {
         world.getEventPublisher().publish(Map.of(
             "eventType", "declinePayment",
             "pan", pan,
-            "amount", Map.of(
-                "value", amount,
-                "currency", "EUR"),
+            "amount", convertMoneyToJson(amount),
             "details", details,
             "geolocation", Map.of(
                 "latitude", coordinates.getLeft(),

@@ -2,6 +2,7 @@ package io.wasupu.boinet.population;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.ProductType;
+import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
@@ -215,21 +216,23 @@ public class Hospital {
     void withPowerSupply(Person newPerson) {
         newPerson.addBehaviour(new Monthly(world, newPerson,
             get2to10MonthDay(),
-            new PayWithCard(world,
+            new PayAReceipt(world,
                 newPerson,
-                ProductType.POWER_SUPPLY,
-                generateRandomPrice.apply(60, 120),
-                world.findCompany())));
+                world.findCompany(),
+                UUID.randomUUID().toString(),
+                ReceiptType.POWER_SUPPLY,
+                generateRandomPrice.apply(60, 120))));
     }
 
     void withWaterSupply(Person newPerson) {
         newPerson.addBehaviour(new Monthly(world, newPerson,
             get2to10MonthDay(),
-            new PayWithCard(world,
+            new PayAReceipt(world,
                 newPerson,
-                ProductType.WATER_SUPPLY,
-                generateRandomPrice.apply(20, 40),
-                world.findCompany())));
+                world.findCompany(),
+                UUID.randomUUID().toString(),
+                ReceiptType.WATER_SUPPLY,
+                generateRandomPrice.apply(20, 40))));
     }
 
     void withCountryside(Person newPerson) {
