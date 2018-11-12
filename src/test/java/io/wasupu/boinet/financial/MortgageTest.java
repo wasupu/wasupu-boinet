@@ -28,7 +28,7 @@ public class MortgageTest {
         var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
         var amount = new BigDecimal(10);
 
-        mortgage.amortize(amount);
+        mortgage.repay(amount);
 
         assertEquals("The amortized capital is not the expected", amount, mortgage.getAmortizedAmount());
     }
@@ -38,7 +38,7 @@ public class MortgageTest {
         var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
         var amount = new BigDecimal(10);
 
-        mortgage.amortize(amount);
+        mortgage.repay(amount);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
             "eventType", "mortgageAmortization",
@@ -58,7 +58,7 @@ public class MortgageTest {
         var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
         var amount = new BigDecimal(2300);
 
-        mortgage.amortize(amount);
+        mortgage.repay(amount);
 
         assertTrue("When original capital is pay the mortgage is amortized", mortgage.isAmortized());
     }
@@ -73,7 +73,7 @@ public class MortgageTest {
 
     @Before
     public void setupWorld() {
-        when(world.getEvenPublisher()).thenReturn(eventPublisher);
+        when(world.getEventPublisher()).thenReturn(eventPublisher);
         when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
     }
 

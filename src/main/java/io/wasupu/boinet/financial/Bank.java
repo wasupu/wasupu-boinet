@@ -25,10 +25,6 @@ public class Bank {
         return newIban;
     }
 
-    String getIbanByPan(String pan) {
-        return cards.get(pan);
-    }
-
     public void deposit(String iban, BigDecimal amount) {
         var account = accounts.get(iban);
         account.deposit(amount);
@@ -66,7 +62,10 @@ public class Bank {
         var buyerIban = cards.get(pan);
         var fromAccount = accounts.get(buyerIban);
 
-        if (fromAccount.getBalance().compareTo(amount) < 0) return;
+        if (fromAccount.getBalance().compareTo(amount) < 0) {
+            publishDeclineCardPayment(amount, pan, companyIdentifier, details, coordinates);
+            return;
+        }
 
         transfer(buyerIban, sellerAccount, amount);
         publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
@@ -83,11 +82,10 @@ public class Bank {
         return mortgageIdentifierAsString;
     }
 
-    public void payMortgage(String mortgageIdentifier, BigDecimal amortization) {
+    public void repayMortgage(String mortgageIdentifier, BigDecimal amortization) {
         var mortgage = mortgages.get(mortgageIdentifier);
 
         var mortgageAmortization = amortization;
-
         var pendingAmount = mortgage.getOriginalAmount().subtract(mortgage.getAmortizedAmount());
 
         if (pendingAmount.compareTo(amortization) < 1) {
@@ -97,7 +95,7 @@ public class Bank {
         var account = accounts.get(mortgage.getIban());
 
         account.withdraw(mortgageAmortization);
-        mortgage.amortize(mortgageAmortization);
+        mortgage.repay(mortgageAmortization);
     }
 
     public Boolean isMortgageAmortized(String mortgageIdentifier) {
@@ -114,16 +112,21 @@ public class Bank {
         return mortgages.containsKey(mortgageIdentifier);
     }
 
+    String getIbanByPan(String pan) {
+        return cards.get(pan);
+    }
+
     private void publishContractAccountEvent(String userIdentifier, String newIban) {
-        world.getEvenPublisher().publish(Map.of("eventType", "newAccount",
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "contractAccount",
             "iban", newIban,
             "user", userIdentifier,
             "date", world.getCurrentDateTime().toDate()));
     }
 
     private void publishContractDebitCard(String identifier, String iban, String panAsString) {
-        world.getEvenPublisher().publish(Map.of(
-            "eventType", "newDebitCard",
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "contractDebitCard",
             "iban", iban,
             "pan", panAsString,
             "user", identifier,
@@ -131,8 +134,8 @@ public class Bank {
     }
 
     private void publishContractMortgage(String identifier, String iban, String mortgageIdentifier, BigDecimal amount) {
-        world.getEvenPublisher().publish(Map.of(
-            "eventType", "newMortgage",
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "contractMortgage",
             "iban", iban,
             "mortgageAmount", amount,
             "mortgageIdentifier", mortgageIdentifier,
@@ -141,22 +144,37 @@ public class Bank {
     }
 
     private void publishCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        world.getEvenPublisher().publish(ImmutableMap
-            .<String, Object>builder()
-            .put("pan", pan)
-            .put("amount", amount)
-            .put("currency", "EUR")
-            .put("details", details)
-            .put("geolocation", Map.of(
-                "latitude", coordinates.getLeft().toString(),
-                "longitude", coordinates.getRight().toString()))
-            .put("company", companyIdentifier)
-            .put("date", world.getCurrentDateTime().toDate())
-            .build());
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "acceptPayment",
+            "pan", pan,
+            "amount", Map.of(
+                "value", amount,
+                "currency", "EUR"),
+            "details", details,
+            "geolocation", Map.of(
+                "latitude", coordinates.getLeft(),
+                "longitude", coordinates.getRight()),
+            "company", companyIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
+    }
+
+    private void publishDeclineCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "declinePayment",
+            "pan", pan,
+            "amount", Map.of(
+                "value", amount,
+                "currency", "EUR"),
+            "details", details,
+            "geolocation", Map.of(
+                "latitude", coordinates.getLeft(),
+                "longitude", coordinates.getRight()),
+            "company", companyIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
     }
 
     private void publishCancelMortgage(String userIdentifier, String iban, String mortgageIdentifier) {
-        world.getEvenPublisher().publish(Map.of(
+        world.getEventPublisher().publish(Map.of(
             "eventType", "cancelMortgage",
             "iban", iban,
             "mortgageIdentifier", mortgageIdentifier,

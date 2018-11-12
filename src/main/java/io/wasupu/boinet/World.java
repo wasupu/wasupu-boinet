@@ -71,14 +71,6 @@ public class World {
             .build();
     }
 
-    public Collection<Person> getPopulation() {
-        return population;
-    }
-
-    public Collection<Company> getCompanies() {
-        return companies;
-    }
-
     public Bank getBank() {
         return bank;
     }
@@ -87,12 +79,20 @@ public class World {
         return currentDate;
     }
 
-    public EventPublisher getEvenPublisher() {
+    public EventPublisher getEventPublisher() {
         return eventPublisher;
     }
 
     public GPS getGPS() {
         return GPS;
+    }
+
+    Collection<Person> getPopulation() {
+        return population;
+    }
+
+    Collection<Company> getCompanies() {
+        return companies;
     }
 
     private List<Company> companies = new ArrayList<>();

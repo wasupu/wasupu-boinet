@@ -76,7 +76,7 @@ public class AccountTest {
 
     @Before
     public void setupEventPublisher() {
-        when(world.getEvenPublisher()).thenReturn(eventPublisher);
+        when(world.getEventPublisher()).thenReturn(eventPublisher);
     }
 
 

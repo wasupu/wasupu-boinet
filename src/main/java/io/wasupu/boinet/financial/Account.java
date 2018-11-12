@@ -29,7 +29,7 @@ public class Account {
     }
 
     private void publishAccountDeposit(String iban, BigDecimal amount, BigDecimal balance) {
-        world.getEvenPublisher().publish(
+        world.getEventPublisher().publish(
             Map.of("eventType", "deposit",
                 "iban", iban,
                 "amount", amount,
@@ -40,7 +40,7 @@ public class Account {
     }
 
     private void publishAccountWithdraw(String iban, BigDecimal amount, BigDecimal balance) {
-        world.getEvenPublisher().publish(
+        world.getEventPublisher().publish(
             Map.of("eventType", "withdraw",
                 "iban", iban,
                 "amount", amount,

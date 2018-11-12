@@ -6,9 +6,9 @@ import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 
-public class PayMortgage extends EconomicalSubjectBehaviour {
+public class RepayMortgage extends EconomicalSubjectBehaviour {
 
-    public PayMortgage(World world, Person person, BigDecimal amortization) {
+    public RepayMortgage(World world, Person person, BigDecimal amortization) {
         super(world, person);
 
         this.amortization = amortization;
@@ -19,9 +19,9 @@ public class PayMortgage extends EconomicalSubjectBehaviour {
         var person = (Person) getEconomicalSubject();
         var mortgageId = person.getMortgageIdentifier();
 
-        bank.payMortgage(mortgageId, amortization);
+        bank.repayMortgage(mortgageId, amortization);
 
-        if (bank.isMortgageAmortized(mortgageId)){
+        if (bank.isMortgageAmortized(mortgageId)) {
             bank.cancelMortgage(mortgageId);
             person.removeBehaviour(this);
         }

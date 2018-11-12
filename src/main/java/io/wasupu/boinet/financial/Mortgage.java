@@ -35,10 +35,10 @@ public class Mortgage {
         return userIdentifier;
     }
 
-    public void amortize(BigDecimal amount) {
+    public void repay(BigDecimal amount) {
         amortizedAmount = amortizedAmount.add(amount);
 
-        world.getEvenPublisher().publish(Map.of(
+        world.getEventPublisher().publish(Map.of(
             "eventType", "mortgageAmortization",
             "mortgageIdentifier", mortgageIdentifier,
             "iban", iban,

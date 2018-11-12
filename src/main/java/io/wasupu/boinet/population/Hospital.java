@@ -42,13 +42,13 @@ public class Hospital {
         withNewCar(newPerson);
         withElectronicProductPayment(newPerson);
 
-        if (isInPercentage(90)) {
+        if (withProbability(90)) {
             withMortgage(newPerson);
         }
 
         withInternetConnection(newPerson);
 
-        if (isInPercentage(80)) {
+        if (withProbability(80)) {
             withCarFaults(newPerson);
             withGasForCar(newPerson);
         } else {
@@ -58,7 +58,7 @@ public class Hospital {
         return newPerson;
     }
 
-    private boolean isInPercentage(Integer percentage) {
+    private boolean withProbability(Integer percentage) {
         return getProbability(0.0, 100.0) < percentage;
     }
 
@@ -205,7 +205,7 @@ public class Hospital {
             new Monthly(world,
                 newPerson,
                 28,
-                new PayMortgage(world,
+                new RepayMortgage(world,
                     newPerson,
                     generateRandomPrice.apply(500, 800)))));
     }
