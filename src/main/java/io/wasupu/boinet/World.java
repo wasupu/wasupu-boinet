@@ -26,11 +26,8 @@ public class World {
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
-        range(0, numberOfCompanies)
-            .forEach(this::newSupplier);
-
-        range(0, numberOfPeople)
-            .forEach(hospital::newBorn);
+        range(0, numberOfCompanies).forEach(this::newSupplier);
+        range(0, numberOfPeople).forEach(this::newBorn);
     }
 
     public void start(Optional<Integer> numberOfTicks) {
@@ -60,6 +57,10 @@ public class World {
 
     private void newSupplier(Integer number) {
         companies.add(businessIncubator.newCompany(this));
+    }
+
+    private void newBorn(Integer number) {
+        population.add(hospital.newBorn());
     }
 
     public void listenTicks(Runnable tickConsumer) {

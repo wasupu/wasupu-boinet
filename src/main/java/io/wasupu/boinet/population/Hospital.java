@@ -22,12 +22,12 @@ public class Hospital {
         this.world = world;
     }
 
-    public Person newBorn(Integer number) {
+    public Person newBorn() {
         var newPerson = new Person(createPersonUniqueIdentifier(), world);
 
-        newPerson.listenTicks(new ContractAccount(world, newPerson));
-        newPerson.listenTicks(new ContractDebitCard(world, newPerson));
-        newPerson.listenTicks(new InitialCapital(world, newPerson, new BigDecimal(3000)));
+        newPerson.addBehaviour(new ContractAccount(world, newPerson));
+        newPerson.addBehaviour(new ContractDebitCard(world, newPerson));
+        newPerson.addBehaviour(new InitialCapital(world, newPerson, new BigDecimal(3000)));
 
         withJob(newPerson);
         withEating(newPerson);
@@ -55,7 +55,6 @@ public class Hospital {
             withPublicTransport(newPerson);
         }
 
-        world.getPopulation().add(newPerson);
         return newPerson;
     }
 
@@ -64,20 +63,22 @@ public class Hospital {
     }
 
     private void withElectronicProductPayment(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
-            newPerson,
-            new BigDecimal("8000"),
-            new Monthly(world, newPerson,
-                get10to25MonthDay(),
-                new PayWithCard(world,
+        newPerson.addBehaviour(
+            new WhenBalanceExceedsThreshold(world,
+                newPerson,
+                new BigDecimal("8000"),
+                new Monthly(world,
                     newPerson,
-                    ProductType.ELECTRONIC_DEVICE,
-                    300,
-                    2000))));
+                    get10to25MonthDay(),
+                    new PayWithCard(world,
+                        newPerson,
+                        ProductType.ELECTRONIC_DEVICE,
+                        300,
+                        2000))));
     }
 
     private void withHolidaysOnceInAYear(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+        newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("10000"),
             new Yearly(world, newPerson,
@@ -90,7 +91,7 @@ public class Hospital {
     }
 
     private void withLuxuryProductPayment(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+        newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("20000"),
             new Monthly(world, newPerson,
@@ -103,7 +104,7 @@ public class Hospital {
     }
 
     private void withNewCar(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
+        newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("40000"),
             new Yearly(world, newPerson,
@@ -116,11 +117,11 @@ public class Hospital {
     }
 
     private void withJob(Person newPerson) {
-        newPerson.listenTicks(new FindAJob(world, newPerson));
+        newPerson.addBehaviour(new FindAJob(world, newPerson));
     }
 
     private void withPublicTransport(Person newPerson) {
-        newPerson.listenTicks(new Monthly(world, newPerson,
+        newPerson.addBehaviour(new Monthly(world, newPerson,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -130,7 +131,7 @@ public class Hospital {
     }
 
     private void withGasForCar(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world, newPerson,
+        newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world, newPerson,
             new BigDecimal("300"),
             new Weekly(world,
                 newPerson,
@@ -143,21 +144,21 @@ public class Hospital {
     }
 
     private void withCarFaults(Person newPerson) {
-        newPerson.listenTicks(new PayAnImponderable(world,
+        newPerson.addBehaviour(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             100,
             300,
             getProbability(0.001, 0.1)));
 
-        newPerson.listenTicks(new PayAnImponderable(world,
+        newPerson.addBehaviour(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             300,
             800,
             getProbability(0.001, 0.5)));
 
-        newPerson.listenTicks(new PayAnImponderable(world,
+        newPerson.addBehaviour(new PayAnImponderable(world,
             newPerson,
             ProductType.CAR_FAULT,
             800,
@@ -166,21 +167,21 @@ public class Hospital {
     }
 
     private void withMedicalCosts(Person newPerson) {
-        newPerson.listenTicks(new PayAnImponderable(world,
+        newPerson.addBehaviour(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             50,
             100,
             getProbability(0.01, 0.5)));
 
-        newPerson.listenTicks(new PayAnImponderable(world,
+        newPerson.addBehaviour(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             100,
             500,
             getProbability(0.001, 0.05)));
 
-        newPerson.listenTicks(new PayAnImponderable(world,
+        newPerson.addBehaviour(new PayAnImponderable(world,
             newPerson,
             ProductType.MEDICAL_COSTS,
             3000,
@@ -189,7 +190,7 @@ public class Hospital {
     }
 
     void withEating(Person newPerson) {
-        newPerson.listenTicks(new EveryDay(world, newPerson,
+        newPerson.addBehaviour(new EveryDay(world, newPerson,
             new PayWithCard(world, newPerson,
                 ProductType.MEAL,
                 10,
@@ -197,9 +198,9 @@ public class Hospital {
     }
 
     void withMortgage(Person newPerson) {
-        newPerson.listenTicks(new ContractMortgage(world, newPerson));
+        newPerson.addBehaviour(new ContractMortgage(world, newPerson));
 
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world, newPerson,
+        newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world, newPerson,
             new BigDecimal("50"),
             new Monthly(world,
                 newPerson,
@@ -210,7 +211,7 @@ public class Hospital {
     }
 
     void withPowerSupply(Person newPerson) {
-        newPerson.listenTicks(new Monthly(world, newPerson,
+        newPerson.addBehaviour(new Monthly(world, newPerson,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -220,7 +221,7 @@ public class Hospital {
     }
 
     void withWaterSupply(Person newPerson) {
-        newPerson.listenTicks(new Monthly(world, newPerson,
+        newPerson.addBehaviour(new Monthly(world, newPerson,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -230,7 +231,7 @@ public class Hospital {
     }
 
     void withCountryside(Person newPerson) {
-        newPerson.listenTicks(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
+        newPerson.addBehaviour(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
             new Weekly(world,
@@ -243,7 +244,7 @@ public class Hospital {
     }
 
     void withCableTV(Person newPerson) {
-        newPerson.listenTicks(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
+        newPerson.addBehaviour(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
             new BigDecimal("1000"),
             new BigDecimal("2000"),
             new Monthly(world, newPerson,
@@ -256,7 +257,7 @@ public class Hospital {
     }
 
     void withInternetConnection(Person newPerson) {
-        newPerson.listenTicks(
+        newPerson.addBehaviour(
             new WhenBalanceExceedsThreshold(world, newPerson,
                 new BigDecimal("1000"),
                 new Monthly(world, newPerson,
@@ -269,7 +270,7 @@ public class Hospital {
     }
 
     void withSalaryRevision(Person newPerson) {
-        newPerson.listenTicks(new RequestSalaryRevisionYearly(world,
+        newPerson.addBehaviour(new RequestSalaryRevisionYearly(world,
             newPerson,
             random.nextInt(365)));
     }

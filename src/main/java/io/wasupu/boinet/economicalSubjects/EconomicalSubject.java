@@ -27,26 +27,26 @@ public abstract class EconomicalSubject {
         world.listenTicks(this::tick);
     }
 
-    public void omitTicks(EconomicalSubjectBehaviour tickConsumer) {
-        var ticksToRemove = new ArrayList<>(tickConsumers);
+    public void removeBehaviour(EconomicalSubjectBehaviour tickConsumer) {
+        var ticksToRemove = new ArrayList<>(behaviours);
         ticksToRemove.removeIf(tickConsumerElement-> tickConsumerElement.getIdentifier().equals(tickConsumer.getIdentifier()));
 
-        tickConsumers = ImmutableList
+        behaviours = ImmutableList
             .<EconomicalSubjectBehaviour>builder()
             .addAll(ticksToRemove)
             .build();
     }
 
-    public void listenTicks(EconomicalSubjectBehaviour tickConsumer) {
-        tickConsumers = ImmutableList
+    public void addBehaviour(EconomicalSubjectBehaviour tickConsumer) {
+        behaviours = ImmutableList
             .<EconomicalSubjectBehaviour>builder()
-            .addAll(tickConsumers)
+            .addAll(behaviours)
             .add(tickConsumer)
             .build();
     }
 
     public Boolean existsBehaviour(EconomicalSubjectBehaviour economicalSubjectBehaviour) {
-        return tickConsumers.contains(economicalSubjectBehaviour);
+        return behaviours.contains(economicalSubjectBehaviour);
     }
 
     public void tick() {
@@ -56,7 +56,7 @@ public abstract class EconomicalSubject {
     }
 
     private void executeBehaviours() {
-        tickConsumers.forEach(EconomicalSubjectBehaviour::tick);
+        behaviours.forEach(EconomicalSubjectBehaviour::tick);
     }
 
     public static void setFaker(Faker newFaker) {
@@ -134,5 +134,5 @@ public abstract class EconomicalSubject {
 
     private final Pair<Double, Double> coordinates;
 
-    private Collection<EconomicalSubjectBehaviour> tickConsumers = List.of();
+    private Collection<EconomicalSubjectBehaviour> behaviours = List.of();
 }

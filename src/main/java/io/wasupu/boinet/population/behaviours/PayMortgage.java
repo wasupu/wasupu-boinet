@@ -23,7 +23,7 @@ public class PayMortgage extends EconomicalSubjectBehaviour {
 
         if (bank.isMortgageAmortized(mortgageId)){
             bank.cancelMortgage(mortgageId);
-            person.omitTicks(this);
+            person.removeBehaviour(this);
         }
     }
 

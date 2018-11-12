@@ -1,8 +1,6 @@
 package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.companies.Company;
-import io.wasupu.boinet.companies.ProductType;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.junit.Test;
@@ -61,7 +59,7 @@ public class PayMortgageTest {
 
         payment.tick();
 
-        verify(person).omitTicks(payment);
+        verify(person).removeBehaviour(payment);
     }
 
     private Person getPerson() {

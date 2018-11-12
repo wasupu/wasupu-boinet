@@ -19,7 +19,7 @@ public class EconomicalSubjectTest {
 
     @Test
     public void it_should_add_a_new_behaviour_to_subject() {
-        economicalSubject.listenTicks(economicalSubjectBehaviour);
+        economicalSubject.addBehaviour(economicalSubjectBehaviour);
 
         assertTrue("The behaviour must to exists", economicalSubject.existsBehaviour(economicalSubjectBehaviour));
     }
@@ -27,9 +27,9 @@ public class EconomicalSubjectTest {
     @Test
     public void it_should_omit_behaviour_from_subject() {
         when(economicalSubjectBehaviour.getIdentifier()).thenReturn(ECONOMICAL_SUBJECT_BEHAVIOUR_IDENTIFIER);
-        economicalSubject.listenTicks(economicalSubjectBehaviour);
+        economicalSubject.addBehaviour(economicalSubjectBehaviour);
 
-        economicalSubject.omitTicks(economicalSubjectBehaviour);
+        economicalSubject.removeBehaviour(economicalSubjectBehaviour);
 
         assertFalse("The behaviour must to exists", economicalSubject.existsBehaviour(economicalSubjectBehaviour));
     }

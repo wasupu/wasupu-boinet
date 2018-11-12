@@ -35,8 +35,8 @@ public class BusinessIncubator {
     public Company newCompany(World world) {
         var company = new Company(createCompanyUniqueIdentifier(), world);
 
-        company.listenTicks(new ContractAccount(world, company));
-        company.listenTicks(new InitialCapital(world, company, new BigDecimal(60000)));
+        company.addBehaviour(new ContractAccount(world, company));
+        company.addBehaviour(new InitialCapital(world, company, new BigDecimal(60000)));
 
         return company;
     }
