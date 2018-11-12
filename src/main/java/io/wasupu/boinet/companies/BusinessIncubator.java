@@ -4,6 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.financial.Bank;
+import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -35,6 +36,7 @@ public class BusinessIncubator {
     public Company newCompany(World world) {
         var company = new Company(createCompanyUniqueIdentifier(), world);
 
+        company.addBehaviour(new RegisterInBank(world, company));
         company.addBehaviour(new ContractAccount(world, company));
         company.addBehaviour(new InitialCapital(world, company, new BigDecimal(60000)));
 

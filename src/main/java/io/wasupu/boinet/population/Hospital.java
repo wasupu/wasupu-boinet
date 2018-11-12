@@ -4,6 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.ProductType;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
+import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDay;
