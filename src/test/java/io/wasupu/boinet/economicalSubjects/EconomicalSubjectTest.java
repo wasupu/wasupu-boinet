@@ -42,7 +42,12 @@ public class EconomicalSubjectTest {
 
     @Before
     public void setupEconomicalSubject() {
-        economicalSubject = new EconomicalSubject(ECONOMICAL_SUBJECT_IDENTIFIER, world) {};
+        economicalSubject = new EconomicalSubject(ECONOMICAL_SUBJECT_IDENTIFIER, world) {
+            @Override
+            public EconomicalSubjectType getType() {
+                return null;
+            }
+        };
     }
 
     private EconomicalSubject economicalSubject;

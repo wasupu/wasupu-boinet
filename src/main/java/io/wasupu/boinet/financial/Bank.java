@@ -120,6 +120,7 @@ public class Bank {
     public void registerUser(EconomicalSubject subject) {
         world.getEventPublisher().publish(Map.of(
             "eventType", "registerUser",
+            "type", subject.getType().toString(),
             "user", subject.getIdentifier(),
             "date", world.getCurrentDateTime().toDate()));
     }

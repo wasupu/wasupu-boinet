@@ -29,7 +29,7 @@ public abstract class EconomicalSubject {
 
     public void removeBehaviour(EconomicalSubjectBehaviour tickConsumer) {
         var ticksToRemove = new ArrayList<>(behaviours);
-        ticksToRemove.removeIf(tickConsumerElement-> tickConsumerElement.getIdentifier().equals(tickConsumer.getIdentifier()));
+        ticksToRemove.removeIf(tickConsumerElement -> tickConsumerElement.getIdentifier().equals(tickConsumer.getIdentifier()));
 
         behaviours = ImmutableList
             .<EconomicalSubjectBehaviour>builder()
@@ -55,9 +55,7 @@ public abstract class EconomicalSubject {
         increaseAge();
     }
 
-    private void executeBehaviours() {
-        behaviours.forEach(EconomicalSubjectBehaviour::tick);
-    }
+    public abstract EconomicalSubjectType getType();
 
     public static void setFaker(Faker newFaker) {
         faker = newFaker;
@@ -69,6 +67,10 @@ public abstract class EconomicalSubject {
 
     public Long getAge() {
         return age;
+    }
+
+    private void executeBehaviours() {
+        behaviours.forEach(EconomicalSubjectBehaviour::tick);
     }
 
     public void increaseAge() {

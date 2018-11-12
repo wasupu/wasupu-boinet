@@ -2,6 +2,7 @@ package io.wasupu.boinet.companies;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubjectType;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
 
@@ -9,6 +10,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.COMPANY;
 
 public class Company extends EconomicalSubject {
 
@@ -64,6 +67,11 @@ public class Company extends EconomicalSubject {
             .setScale(2, RoundingMode.CEILING);
 
         employees.put(person, newSalary);
+    }
+
+    @Override
+    public EconomicalSubjectType getType() {
+        return COMPANY;
     }
 
     private BigDecimal generateSalary() {

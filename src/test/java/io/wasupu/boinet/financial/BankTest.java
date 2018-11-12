@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.PERSON;
 import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -341,15 +342,17 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_person_registration_event() {
-        var person = mock(EconomicalSubject.class);
-        when(person.getIdentifier()).thenReturn(USER_IDENTIFIER);
+    public void it_should_publish_user_registration_event() {
+        var subject = mock(EconomicalSubject.class);
+        when(subject.getIdentifier()).thenReturn(USER_IDENTIFIER);
+        when(subject.getType()).thenReturn(PERSON);
 
-        bank.registerUser(person);
+        bank.registerUser(subject);
 
         verifyPublishedEvent(Map.of(
             "eventType", "registerUser",
             "user", USER_IDENTIFIER,
+            "type", PERSON.toString(),
             "date", CURRENT_DATE.toDate()));
     }
 

@@ -7,6 +7,7 @@ import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 
+import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.COMPANY;
+import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.PERSON;
 import static java.util.stream.IntStream.range;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -135,6 +138,11 @@ public class CompanyTest {
         company.tick();
 
         verify(person).youAreFired();
+    }
+
+    @Test
+    public void it_should_return_company_subject_type() {
+        assertEquals("Returned subject type must be COMPANY", COMPANY, company.getType());
     }
 
     @Before

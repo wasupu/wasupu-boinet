@@ -7,6 +7,7 @@ import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.GPS;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubjectType;
 import io.wasupu.boinet.financial.Bank;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
@@ -21,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.PERSON;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +57,11 @@ public class PersonTest {
 
         assertNotNull("Must be not null", person.isUnemployed());
         assertTrue("The person must be hired", person.isUnemployed());
+    }
+
+    @Test
+    public void it_should_return_person_subject_type() {
+        assertEquals("Returned subject type must be PERSON", PERSON, person.getType());
     }
 
     @Before
