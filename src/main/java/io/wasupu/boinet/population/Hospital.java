@@ -25,6 +25,7 @@ public class Hospital {
     public Person newBorn() {
         var newPerson = new Person(createPersonUniqueIdentifier(), world);
 
+        newPerson.addBehaviour(new RegisterInBank(world, newPerson));
         newPerson.addBehaviour(new ContractAccount(world, newPerson));
         newPerson.addBehaviour(new ContractDebitCard(world, newPerson));
         newPerson.addBehaviour(new InitialCapital(world, newPerson, new BigDecimal(3000)));

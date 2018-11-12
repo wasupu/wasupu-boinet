@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class ContractAccountTest {
 
     @Test
-    public void shouldContractAnAccountInFirstTick() {
+    public void it_should_contract_an_account_in_first_tick() {
         when(world.getBank()).thenReturn(bank);
         when(person.getAge()).thenReturn(0L);
         when(person.getIdentifier()).thenReturn(IDENTIFIER);
@@ -28,7 +28,7 @@ public class ContractAccountTest {
     }
 
     @Test
-    public void shouldNotContractAgainAnAccountIfHasOneInOtherTick() {
+    public void it_should_not_contract_again_an_account_if_has_one_in_other_tick() {
         when(person.getAge()).thenReturn(1L);
 
         contractAccount.tick();

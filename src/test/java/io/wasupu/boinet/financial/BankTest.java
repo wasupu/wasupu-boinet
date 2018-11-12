@@ -1,6 +1,7 @@
 package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
@@ -19,9 +20,7 @@ import java.util.Map;
 
 import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -337,6 +336,19 @@ public class BankTest {
             "eventType", "cancelMortgage",
             "mortgageIdentifier", MORTGAGE_IDENTFIER,
             "iban", IBAN,
+            "user", USER_IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
+    }
+
+    @Test
+    public void it_should_publish_person_registration_event() {
+        var person = mock(EconomicalSubject.class);
+        when(person.getIdentifier()).thenReturn(USER_IDENTIFIER);
+
+        bank.registerUser(person);
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "registerUser",
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
     }

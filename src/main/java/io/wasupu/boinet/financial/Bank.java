@@ -1,6 +1,8 @@
 package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
+import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
@@ -113,6 +115,13 @@ public class Bank {
 
     public Boolean existMortgage(String mortgageIdentifier) {
         return mortgages.containsKey(mortgageIdentifier);
+    }
+
+    public void registerUser(EconomicalSubject subject) {
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "registerUser",
+            "user", subject.getIdentifier(),
+            "date", world.getCurrentDateTime().toDate()));
     }
 
     String getIbanByPan(String pan) {
