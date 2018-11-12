@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EveryDayBehaviourTest {
+public class EveryDayTest {
 
     @Test
     public void shouldEatEveryTickAfterTwoTicks() {
@@ -28,10 +28,10 @@ public class EveryDayBehaviourTest {
 
     @Before
     public void setUpEveryDayRecurrentPayment() {
-        eatEveryDay = new EveryDayBehaviour(world, person, personBehaviour);
+        eatEveryDay = new EveryDay(world, person, personBehaviour);
     }
 
-    private EveryDayBehaviour eatEveryDay;
+    private EveryDay eatEveryDay;
 
     @Mock
     private EconomicalSubjectBehaviour personBehaviour;

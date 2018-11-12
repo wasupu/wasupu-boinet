@@ -4,18 +4,21 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
 
-public class EveryDayBehaviour extends EconomicalSubjectBehaviour {
+public class Monthly extends EconomicalSubjectBehaviour {
 
-    public EveryDayBehaviour(World world, Person person,
-                             EconomicalSubjectBehaviour economicalSubjectBehaviour) {
+    public Monthly(World world,
+                   Person person,
+                   Integer day,
+                   EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world,
             person);
-        this.person = person;
+
+        this.day = day;
         this.economicalSubjectBehaviour = economicalSubjectBehaviour;
     }
 
     public void tick() {
-        if (person.getAge() < 2) return;
+        if (!isDayOfMonth(day)) return;
 
         economicalSubjectBehaviour.tick();
     }
@@ -25,7 +28,11 @@ public class EveryDayBehaviour extends EconomicalSubjectBehaviour {
         return economicalSubjectBehaviour.getIdentifier();
     }
 
-    private Person person;
+    private boolean isDayOfMonth(Integer dayOfMonth) {
+        return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
+    }
+
+    private Integer day;
 
     private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 }

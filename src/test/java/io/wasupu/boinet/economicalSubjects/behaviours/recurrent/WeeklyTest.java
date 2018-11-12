@@ -13,40 +13,37 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MonthlyBehaviourTest {
+public class WeeklyTest {
 
     @Test
-    public void shouldPayOnDay25th() {
-        when(world.getCurrentDateTime()).thenReturn(fixedDateTime.withDayOfMonth(25));
+    public void shouldPayOnDayInWeek() {
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
-        monthlyRecurrentPayment.tick();
+        weekendRecurrentPayment.tick();
 
-        verify(personBehaviour, atLeastOnce()).tick();
+        verify(personBehaviour).tick();
     }
 
     @Test
-    public void shouldNotPayOnDifferentDayThan25th() {
-        when(world.getCurrentDateTime()).thenReturn(fixedDateTime.withDayOfMonth(3));
-
-        monthlyRecurrentPayment.tick();
+    public void shouldNotPayOnDifferentDayThan6() {
+        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(5));
+        weekendRecurrentPayment.tick();
 
         verify(personBehaviour, never()).tick();
     }
 
     @Before
     public void setupMonthlyRecurrentPayment() {
-        monthlyRecurrentPayment = new MonthlyBehaviour(world,
+        weekendRecurrentPayment = new Weekly(world,
             person,
-            25,
+            6,
             personBehaviour);
     }
 
+    private Weekly weekendRecurrentPayment;
+
     @Mock
     private EconomicalSubjectBehaviour personBehaviour;
-
-    private MonthlyBehaviour monthlyRecurrentPayment;
-
-    private DateTime fixedDateTime = new DateTime(2017, 1, 1, 1, 1);
 
     @Mock
     private Person person;

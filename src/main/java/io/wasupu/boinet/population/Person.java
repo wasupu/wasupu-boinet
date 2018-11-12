@@ -14,9 +14,6 @@ public class Person extends EconomicalSubject{
 
         this.name = faker.name().fullName();
         this.cellPhone = faker.phoneNumber().cellPhone();
-        var address = faker.address();
-        this.fullAddress = address.fullAddress();
-        this.zipCode = address.zipCode();
     }
 
     public Boolean isUnemployed() {
@@ -52,10 +49,6 @@ public class Person extends EconomicalSubject{
     public Company getEmployer() {
         return company;
     }
-
-    private String fullAddress;
-
-    private String zipCode;
 
     private String pan;
 

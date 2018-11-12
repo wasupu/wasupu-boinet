@@ -4,11 +4,11 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
 
-public class WeeklyBehaviour extends EconomicalSubjectBehaviour {
+public class Weekly extends EconomicalSubjectBehaviour {
 
-    public WeeklyBehaviour(World world,
-                           Person person,
-                           Integer day, EconomicalSubjectBehaviour economicalSubjectBehaviour) {
+    public Weekly(World world,
+                  Person person,
+                  Integer day, EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world, person);
         this.day = day;
         this.economicalSubjectBehaviour = economicalSubjectBehaviour;

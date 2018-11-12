@@ -4,12 +4,12 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
 
-public class YearlyBehaviour extends EconomicalSubjectBehaviour {
+public class Yearly extends EconomicalSubjectBehaviour {
 
-    public YearlyBehaviour(World world,
-                           Person person,
-                           Integer day,
-                           EconomicalSubjectBehaviour economicalSubjectBehaviour) {
+    public Yearly(World world,
+                  Person person,
+                  Integer day,
+                  EconomicalSubjectBehaviour economicalSubjectBehaviour) {
         super(world, person);
         this.day = day;
         this.economicalSubjectBehaviour = economicalSubjectBehaviour;

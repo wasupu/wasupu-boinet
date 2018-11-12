@@ -16,6 +16,10 @@ public abstract class EconomicalSubject {
         this.identifier = identifier;
         this.world = world;
 
+        var address = faker.address();
+        this.fullAddress = address.fullAddress();
+        this.zipCode = address.zipCode();
+
         coordinates = this.getWorld().getGPS().coordinates();
         this.latitude = coordinates.getLeft().toString();
         this.longitude = coordinates.getRight().toString();
@@ -123,6 +127,10 @@ public abstract class EconomicalSubject {
     private String latitude;
 
     private String longitude;
+
+    private String fullAddress;
+
+    private String zipCode;
 
     private final Pair<Double, Double> coordinates;
 

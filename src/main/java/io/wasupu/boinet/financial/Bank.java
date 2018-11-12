@@ -25,6 +25,33 @@ public class Bank {
         return newIban;
     }
 
+    String getIbanByPan(String pan) {
+        return cards.get(pan);
+    }
+
+    public void deposit(String iban, BigDecimal amount) {
+        var account = accounts.get(iban);
+        account.deposit(amount);
+    }
+
+    public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
+        var fromAccount = accounts.get(ibanFrom);
+        if (fromAccount.getBalance().compareTo(amount) < 0) return;
+
+        var toAccount = accounts.get(ibanTo);
+
+        fromAccount.withdraw(amount);
+        toAccount.deposit(amount);
+    }
+
+    public BigDecimal getBalance(String iban) {
+        return accounts.get(iban).getBalance();
+    }
+
+    public boolean existAccount(String iban) {
+        return accounts.containsKey(iban);
+    }
+
     public String contractDebitCard(String userIdentifier, String iban) {
         var panAsString = String.valueOf(pan);
         cards.put(panAsString, String.valueOf(iban));
@@ -35,9 +62,14 @@ public class Bank {
         return panAsString;
     }
 
-    public void deposit(String iban, BigDecimal amount) {
-        var account = accounts.get(iban);
-        account.deposit(amount);
+    public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
+        var buyerIban = cards.get(pan);
+        var fromAccount = accounts.get(buyerIban);
+
+        if (fromAccount.getBalance().compareTo(amount) < 0) return;
+
+        transfer(buyerIban, sellerAccount, amount);
+        publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
     }
 
     public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
@@ -80,38 +112,6 @@ public class Bank {
 
     public Boolean existMortgage(String mortgageIdentifier) {
         return mortgages.containsKey(mortgageIdentifier);
-    }
-
-    public void processCardPayment(BigDecimal amount, String pan, String sellerAccount, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        var buyerIban = cards.get(pan);
-        var fromAccount = accounts.get(buyerIban);
-
-        if (fromAccount.getBalance().compareTo(amount) < 0) return;
-
-        transfer(buyerIban, sellerAccount, amount);
-        publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
-    }
-
-    public BigDecimal getBalance(String iban) {
-        return accounts.get(iban).getBalance();
-    }
-
-    public boolean existAccount(String iban) {
-        return accounts.containsKey(iban);
-    }
-
-    public void transfer(String ibanFrom, String ibanTo, BigDecimal amount) {
-        var fromAccount = accounts.get(ibanFrom);
-        if (fromAccount.getBalance().compareTo(amount) < 0) return;
-
-        var toAccount = accounts.get(ibanTo);
-
-        fromAccount.withdraw(amount);
-        toAccount.deposit(amount);
-    }
-
-    String getIbanByPan(String pan) {
-        return cards.get(pan);
     }
 
     private void publishContractAccountEvent(String userIdentifier, String newIban) {

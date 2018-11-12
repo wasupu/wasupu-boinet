@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class YearlyBehaviourTest {
+public class YearlyTest {
 
     @Test
     public void shouldTriggerInConcreteDayOfYear() {
@@ -35,13 +35,13 @@ public class YearlyBehaviourTest {
 
     @Before
     public void setupMonthlyRecurrentPayment() {
-        yearlyBehaviour = new YearlyBehaviour(world,
+        yearlyBehaviour = new Yearly(world,
             person,
             60,
             personBehaviour);
     }
 
-    private YearlyBehaviour yearlyBehaviour;
+    private Yearly yearlyBehaviour;
 
     @Mock
     private World world;

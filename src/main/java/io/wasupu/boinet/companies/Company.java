@@ -1,6 +1,5 @@
 package io.wasupu.boinet.companies;
 
-import com.github.javafaker.Address;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.population.Person;
@@ -17,9 +16,6 @@ public class Company extends EconomicalSubject {
         super(identifier, world);
 
         this.name = faker.company().name();
-        Address addressFaker = faker.address();
-        this.fullAddress = addressFaker.fullAddress();
-        this.zipCode = addressFaker.zipCode();
     }
 
     public void tick() {
@@ -108,7 +104,4 @@ public class Company extends EconomicalSubject {
 
     private String name;
 
-    private String zipCode;
-
-    private String fullAddress;
 }

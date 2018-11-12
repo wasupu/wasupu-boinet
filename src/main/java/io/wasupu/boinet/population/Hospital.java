@@ -6,10 +6,10 @@ import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDayBehaviour;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.MonthlyBehaviour;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.WeeklyBehaviour;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.YearlyBehaviour;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDay;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Monthly;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Weekly;
+import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Yearly;
 import io.wasupu.boinet.population.behaviours.*;
 
 import java.math.BigDecimal;
@@ -23,9 +23,7 @@ public class Hospital {
     }
 
     public Person newBorn(Integer number) {
-        var newPerson = new Person(
-            createPersonUniqueIdentifier(),
-            world);
+        var newPerson = new Person(createPersonUniqueIdentifier(), world);
 
         newPerson.listenTicks(new ContractAccount(world, newPerson));
         newPerson.listenTicks(new ContractDebitCard(world, newPerson));
@@ -69,8 +67,7 @@ public class Hospital {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("8000"),
-            new MonthlyBehaviour(world,
-                newPerson,
+            new Monthly(world, newPerson,
                 get10to25MonthDay(),
                 new PayWithCard(world,
                     newPerson,
@@ -83,8 +80,7 @@ public class Hospital {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("10000"),
-            new YearlyBehaviour(world,
-                newPerson,
+            new Yearly(world, newPerson,
                 207,//If you have money in 26 of july
                 new PayWithCard(world,
                     newPerson,
@@ -97,8 +93,7 @@ public class Hospital {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("20000"),
-            new MonthlyBehaviour(world,
-                newPerson,
+            new Monthly(world, newPerson,
                 get10to25MonthDay(),
                 new PayWithCard(world,
                     newPerson,
@@ -111,8 +106,7 @@ public class Hospital {
         newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("40000"),
-            new YearlyBehaviour(world,
-                newPerson,
+            new Yearly(world, newPerson,
                 1 + new Random().nextInt(360),
                 new PayWithCard(world,
                     newPerson,
@@ -126,8 +120,7 @@ public class Hospital {
     }
 
     private void withPublicTransport(Person newPerson) {
-        newPerson.listenTicks(new MonthlyBehaviour(world,
-            newPerson,
+        newPerson.listenTicks(new Monthly(world, newPerson,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -137,10 +130,9 @@ public class Hospital {
     }
 
     private void withGasForCar(Person newPerson) {
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
-            newPerson,
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world, newPerson,
             new BigDecimal("300"),
-            new WeeklyBehaviour(world,
+            new Weekly(world,
                 newPerson,
                 1 + new Random().nextInt(6),
                 new PayWithCard(world,
@@ -197,8 +189,7 @@ public class Hospital {
     }
 
     void withEating(Person newPerson) {
-        newPerson.listenTicks(new EveryDayBehaviour(world,
-            newPerson,
+        newPerson.listenTicks(new EveryDay(world, newPerson,
             new PayWithCard(world, newPerson,
                 ProductType.MEAL,
                 10,
@@ -208,10 +199,9 @@ public class Hospital {
     void withMortgage(Person newPerson) {
         newPerson.listenTicks(new ContractMortgage(world, newPerson));
 
-        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world,
-            newPerson,
+        newPerson.listenTicks(new WhenBalanceExceedsThreshold(world, newPerson,
             new BigDecimal("50"),
-            new MonthlyBehaviour(world,
+            new Monthly(world,
                 newPerson,
                 28,
                 new PayMortgage(world,
@@ -220,8 +210,7 @@ public class Hospital {
     }
 
     void withPowerSupply(Person newPerson) {
-        newPerson.listenTicks(new MonthlyBehaviour(world,
-            newPerson,
+        newPerson.listenTicks(new Monthly(world, newPerson,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -231,8 +220,7 @@ public class Hospital {
     }
 
     void withWaterSupply(Person newPerson) {
-        newPerson.listenTicks(new MonthlyBehaviour(world,
-            newPerson,
+        newPerson.listenTicks(new Monthly(world, newPerson,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -242,11 +230,10 @@ public class Hospital {
     }
 
     void withCountryside(Person newPerson) {
-        newPerson.listenTicks(new TriggeredWhenBalanceBetweenAThreshold(world,
-            newPerson,
+        newPerson.listenTicks(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new WeeklyBehaviour(world,
+            new Weekly(world,
                 newPerson,
                 6,
                 new PayWithCard(world,
@@ -256,12 +243,10 @@ public class Hospital {
     }
 
     void withCableTV(Person newPerson) {
-        newPerson.listenTicks(new TriggeredWhenBalanceBetweenAThreshold(world,
-            newPerson,
+        newPerson.listenTicks(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
             new BigDecimal("1000"),
             new BigDecimal("2000"),
-            new MonthlyBehaviour(world,
-                newPerson,
+            new Monthly(world, newPerson,
                 get10to25MonthDay(),
                 new PayWithCard(world,
                     newPerson,
@@ -272,11 +257,9 @@ public class Hospital {
 
     void withInternetConnection(Person newPerson) {
         newPerson.listenTicks(
-            new WhenBalanceExceedsThreshold(world,
-                newPerson,
+            new WhenBalanceExceedsThreshold(world, newPerson,
                 new BigDecimal("1000"),
-                new MonthlyBehaviour(world,
-                    newPerson,
+                new Monthly(world, newPerson,
                     get10to25MonthDay(),
                     new PayWithCard(world,
                         newPerson,
