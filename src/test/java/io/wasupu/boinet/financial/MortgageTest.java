@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import static io.wasupu.boinet.financial.Money.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,28 +29,26 @@ public class MortgageTest {
         var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
         var amount = new BigDecimal(10);
 
-        mortgage.repay(amount);
+        mortgage.amortize(amount);
 
         assertEquals("The amortized capital is not the expected", amount, mortgage.getAmortizedAmount());
     }
 
     @Test
     public void it_should_publish_an_event_when_amortize_amount() {
-        var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
+        var totalAmount = new BigDecimal(2300);
+        var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, totalAmount, IBAN, world);
         var amount = new BigDecimal(10);
 
-        mortgage.repay(amount);
+        mortgage.amortize(amount);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
             "eventType", "mortgageAmortization",
             "mortgageIdentifier", MORTGAGE_IDENTIFIER,
             "iban", IBAN,
-            "originalAmount", new BigDecimal(2300),
-            "originalAmount.currency", "EUR",
-            "amortizedAmount", new BigDecimal(10),
-            "amortizedAmount.currency", "EUR",
-            "totalAmortizedAmount", new BigDecimal(10),
-            "totalAmortizedAmount.currency", "EUR",
+            "totalAmount", convertMoneyToJson(totalAmount),
+            "amortizedAmount", convertMoneyToJson(new BigDecimal(10)),
+            "totalAmortizedAmount", convertMoneyToJson(new BigDecimal(10)),
             "date", CURRENT_DATE.toDate()));
     }
 
@@ -58,7 +57,7 @@ public class MortgageTest {
         var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
         var amount = new BigDecimal(2300);
 
-        mortgage.repay(amount);
+        mortgage.amortize(amount);
 
         assertTrue("When original capital is pay the mortgage is amortized", mortgage.isAmortized());
     }

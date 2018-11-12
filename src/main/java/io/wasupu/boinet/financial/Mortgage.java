@@ -5,11 +5,13 @@ import io.wasupu.boinet.World;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
+
 public class Mortgage {
 
-    public Mortgage(String mortgageIdentifier, String userIdentifier, BigDecimal originalAmount, String iban, World world) {
+    public Mortgage(String mortgageIdentifier, String userIdentifier, BigDecimal totalAmount, String iban, World world) {
         this.mortgageIdentifier = mortgageIdentifier;
-        this.originalAmount = originalAmount;
+        this.totalAmount = totalAmount;
         this.iban = iban;
         this.world = world;
         this.userIdentifier = userIdentifier;
@@ -23,35 +25,32 @@ public class Mortgage {
         return amortizedAmount;
     }
 
-    public BigDecimal getOriginalAmount(){
-        return originalAmount;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
     public Boolean isAmortized() {
-        return originalAmount.compareTo(amortizedAmount) == 0;
+        return totalAmount.compareTo(amortizedAmount) == 0;
     }
 
-    public String getUserIdentifier(){
+    public String getUserIdentifier() {
         return userIdentifier;
     }
 
-    public void repay(BigDecimal amount) {
+    public void amortize(BigDecimal amount) {
         amortizedAmount = amortizedAmount.add(amount);
 
         world.getEventPublisher().publish(Map.of(
             "eventType", "mortgageAmortization",
             "mortgageIdentifier", mortgageIdentifier,
             "iban", iban,
-            "originalAmount", originalAmount,
-            "originalAmount.currency", "EUR",
-            "amortizedAmount", amount,
-            "amortizedAmount.currency", "EUR",
-            "totalAmortizedAmount", amortizedAmount,
-            "totalAmortizedAmount.currency", "EUR",
+            "totalAmount", convertMoneyToJson(totalAmount),
+            "amortizedAmount", convertMoneyToJson(amount),
+            "totalAmortizedAmount", convertMoneyToJson(amortizedAmount),
             "date", world.getCurrentDateTime().toDate()));
     }
 
-    private BigDecimal originalAmount;
+    private BigDecimal totalAmount;
 
     private BigDecimal amortizedAmount = new BigDecimal(0);
 

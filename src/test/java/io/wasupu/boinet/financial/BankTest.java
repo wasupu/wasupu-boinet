@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -113,23 +114,13 @@ public class BankTest {
         verifyPublishedEvent(Map.of(
             "eventType", "acceptPayment",
             "pan", IBAN,
-            "amount", Map.of(
-                "value", amount,
-                "currency", "EUR"),
+            "amount", convertMoneyToJson(amount),
             "details", DETAILS,
             "geolocation", Map.of(
                 "latitude", coordinates.getLeft(),
                 "longitude", coordinates.getRight()),
             "company", COMPANY,
             "date", CURRENT_DATE.toDate()));
-    }
-
-    private void verifyPublishedEvent(Map<String, Object> expectedEvent) {
-        verify(eventPublisher, atLeastOnce()).publish(eventCaptor.capture());
-
-        assertThat(eventCaptor.getAllValues())
-            .as("The expected event has not been published")
-            .contains(expectedEvent);
     }
 
     @Test
@@ -162,9 +153,7 @@ public class BankTest {
         verifyPublishedEvent(Map.of(
             "eventType", "declinePayment",
             "pan", IBAN,
-            "amount", Map.of(
-                "value", amount,
-                "currency", "EUR"),
+            "amount", convertMoneyToJson(amount),
             "details", DETAILS,
             "geolocation", Map.of(
                 "latitude", coordinates.getLeft(),
@@ -187,7 +176,7 @@ public class BankTest {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
-        when(mortgage.getOriginalAmount()).thenReturn(MORTGAGE_AMOUNT);
+        when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
         var firstIban = bank.contractAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
@@ -197,7 +186,7 @@ public class BankTest {
         bank.repayMortgage(mortgageId, amount);
 
         verify(firstAccount).withdraw(amount);
-        verify(mortgage).repay(amount);
+        verify(mortgage).amortize(amount);
     }
 
     @Test
@@ -205,7 +194,7 @@ public class BankTest {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("3000"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
-        when(mortgage.getOriginalAmount()).thenReturn(MORTGAGE_AMOUNT);
+        when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
         var firstIban = bank.contractAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
@@ -215,7 +204,7 @@ public class BankTest {
         bank.repayMortgage(mortgageId, amount);
 
         verify(firstAccount).withdraw(new BigDecimal(1000));
-        verify(mortgage).repay(new BigDecimal(1000));
+        verify(mortgage).amortize(new BigDecimal(1000));
     }
 
     @Test
@@ -268,7 +257,7 @@ public class BankTest {
 
         verifyPublishedEvent(Map.of(
             "eventType", "contractMortgage",
-            "mortgageAmount", MORTGAGE_AMOUNT,
+            "mortgageAmount", convertMoneyToJson(MORTGAGE_AMOUNT),
             "mortgageIdentifier", MORTGAGE_IDENTFIER,
             "iban", IBAN,
             "user", USER_IDENTIFIER,
@@ -310,6 +299,14 @@ public class BankTest {
     public void setupWorld() {
         when(world.getEventPublisher()).thenReturn(eventPublisher);
         when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
+    }
+
+    private void verifyPublishedEvent(Map<String, Object> expectedEvent) {
+        verify(eventPublisher, atLeastOnce()).publish(eventCaptor.capture());
+
+        assertThat(eventCaptor.getAllValues())
+            .as("The expected event has not been published")
+            .contains(expectedEvent);
     }
 
     private static final String IBAN = "0";

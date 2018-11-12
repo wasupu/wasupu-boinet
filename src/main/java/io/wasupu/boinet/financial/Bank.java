@@ -1,12 +1,13 @@
 package io.wasupu.boinet.financial;
 
-import com.google.common.collect.ImmutableMap;
 import io.wasupu.boinet.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.wasupu.boinet.financial.Money.*;
 
 public class Bank {
 
@@ -86,7 +87,7 @@ public class Bank {
         var mortgage = mortgages.get(mortgageIdentifier);
 
         var mortgageAmortization = amortization;
-        var pendingAmount = mortgage.getOriginalAmount().subtract(mortgage.getAmortizedAmount());
+        var pendingAmount = mortgage.getTotalAmount().subtract(mortgage.getAmortizedAmount());
 
         if (pendingAmount.compareTo(amortization) < 1) {
             mortgageAmortization = pendingAmount;
@@ -95,7 +96,7 @@ public class Bank {
         var account = accounts.get(mortgage.getIban());
 
         account.withdraw(mortgageAmortization);
-        mortgage.repay(mortgageAmortization);
+        mortgage.amortize(mortgageAmortization);
     }
 
     public Boolean isMortgageAmortized(String mortgageIdentifier) {
@@ -137,7 +138,7 @@ public class Bank {
         world.getEventPublisher().publish(Map.of(
             "eventType", "contractMortgage",
             "iban", iban,
-            "mortgageAmount", amount,
+            "mortgageAmount", convertMoneyToJson(amount),
             "mortgageIdentifier", mortgageIdentifier,
             "user", identifier,
             "date", world.getCurrentDateTime().toDate()));

@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -41,30 +42,32 @@ public class AccountTest {
 
     @Test
     public void it_should_publish_an_event_when_deposit_money() {
-        account.deposit(new BigDecimal(10));
+        var amount = new BigDecimal(10);
+        var expectedBalance = new BigDecimal(10);
+
+        account.deposit(amount);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
             "eventType", "deposit",
             "iban", IBAN,
-            "amount", new BigDecimal(10),
-            "amount.currency", "EUR",
-            "balance", new BigDecimal(10),
-            "balance.currency", "EUR",
+            "amount", convertMoneyToJson(amount),
+            "balance", convertMoneyToJson(expectedBalance),
             "date", CURRENT_DATE.toDate()));
     }
 
     @Test
     public void it_should_publish_an_event_when_withdraw_money() {
+        var amount = new BigDecimal(10);
         account.deposit(new BigDecimal(100));
-        account.withdraw(new BigDecimal(10));
+        account.withdraw(amount);
+
+        var expectedBalance = new BigDecimal(90);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
             "eventType", "withdraw",
             "iban", IBAN,
-            "amount", new BigDecimal(10),
-            "amount.currency", "EUR",
-            "balance", new BigDecimal(90),
-            "balance.currency", "EUR",
+            "amount", convertMoneyToJson(amount),
+            "balance", convertMoneyToJson(expectedBalance),
             "date", CURRENT_DATE.toDate()));
     }
 
