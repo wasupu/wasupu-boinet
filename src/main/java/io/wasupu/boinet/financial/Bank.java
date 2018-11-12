@@ -83,20 +83,22 @@ public class Bank {
         return mortgageIdentifierAsString;
     }
 
-    public void repayMortgage(String mortgageIdentifier, BigDecimal amortization) {
+    public void payMortgage(String mortgageIdentifier, BigDecimal amount) {
         var mortgage = mortgages.get(mortgageIdentifier);
 
-        var mortgageAmortization = amortization;
         var pendingAmount = mortgage.getTotalAmount().subtract(mortgage.getAmortizedAmount());
-
-        if (pendingAmount.compareTo(amortization) < 1) {
-            mortgageAmortization = pendingAmount;
-        }
-
         var account = accounts.get(mortgage.getIban());
 
-        account.withdraw(mortgageAmortization);
-        mortgage.amortize(mortgageAmortization);
+        var installmentAmount = pendingAmount.compareTo(amount) < 0 ? pendingAmount : amount;
+
+        if (account.getBalance().compareTo(installmentAmount) < 0) {
+            publishDeclineMortgageInstallment(mortgage, installmentAmount);
+
+            return;
+        }
+
+        account.withdraw(installmentAmount);
+        mortgage.amortize(installmentAmount);
     }
 
     public Boolean isMortgageAmortized(String mortgageIdentifier) {
@@ -180,6 +182,17 @@ public class Bank {
             "iban", iban,
             "mortgageIdentifier", mortgageIdentifier,
             "user", userIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
+    }
+
+    private void publishDeclineMortgageInstallment(Mortgage mortgage, BigDecimal installmentAmount) {
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "declineMortgageInstallment",
+            "mortgageIdentifier", mortgage.getIdentifier(),
+            "iban", mortgage.getIban(),
+            "totalAmount", convertMoneyToJson(mortgage.getTotalAmount()),
+            "installmentAmount", convertMoneyToJson(installmentAmount),
+            "totalAmortizedAmount", convertMoneyToJson(mortgage.getAmortizedAmount()),
             "date", world.getCurrentDateTime().toDate()));
     }
 

@@ -172,7 +172,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_process_a_mortgage_payment() {
+    public void it_should_pay_mortgage_installment() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
@@ -181,16 +181,16 @@ public class BankTest {
         var firstIban = bank.contractAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
-        var amount = new BigDecimal("10");
+        var installmentAmount = new BigDecimal("10");
 
-        bank.repayMortgage(mortgageId, amount);
+        bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount).withdraw(amount);
-        verify(mortgage).amortize(amount);
+        verify(firstAccount).withdraw(installmentAmount);
+        verify(mortgage).amortize(installmentAmount);
     }
 
     @Test
-    public void it_should_process_a_mortgage_payment_when_payment_is_greater_than_the_rest_of_mortgage() {
+    public void it_should_pay_remaining_amount_when_installment_amount_is_greater_than_the_rest_of_mortgage() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("3000"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
@@ -201,10 +201,74 @@ public class BankTest {
 
         var amount = new BigDecimal("2000");
 
-        bank.repayMortgage(mortgageId, amount);
+        bank.payMortgage(mortgageId, amount);
 
         verify(firstAccount).withdraw(new BigDecimal(1000));
         verify(mortgage).amortize(new BigDecimal(1000));
+    }
+
+    @Test
+    public void it_should_not_pay_mortgage_installment_when_no_funds() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
+        when(mortgage.getIban()).thenReturn(IBAN);
+        when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTFIER);
+        when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
+        when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
+
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
+
+        var installmentAmount = new BigDecimal("100");
+
+        bank.payMortgage(mortgageId, installmentAmount);
+
+        verify(firstAccount, never()).withdraw(installmentAmount);
+        verify(mortgage, never()).amortize(installmentAmount);
+    }
+
+    @Test
+    public void it_should_publish_event_when_not_paying_mortgage_installment() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
+        when(mortgage.getIban()).thenReturn(IBAN);
+        when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTFIER);
+
+        var amortizedAmount = new BigDecimal(0);
+        when(mortgage.getAmortizedAmount()).thenReturn(amortizedAmount);
+        when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
+
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
+
+        var installmentAmount = new BigDecimal("100");
+
+        bank.payMortgage(mortgageId, installmentAmount);
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "declineMortgageInstallment",
+            "mortgageIdentifier", mortgageId,
+            "iban", IBAN,
+            "totalAmount", convertMoneyToJson(MORTGAGE_AMOUNT),
+            "installmentAmount", convertMoneyToJson(installmentAmount),
+            "totalAmortizedAmount", convertMoneyToJson(amortizedAmount),
+            "date", CURRENT_DATE.toDate()));
+    }
+
+    @Test
+    public void it_should_pay_mortgage_installment_when_enough_funds_for_last_installment() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
+        when(mortgage.getIban()).thenReturn(IBAN);
+        when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal("950"));
+        when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
+
+        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
+
+        var installmentAmount = new BigDecimal("100");
+
+        bank.payMortgage(mortgageId, installmentAmount);
+
+        verify(firstAccount).withdraw(new BigDecimal("50"));
+        verify(mortgage).amortize(new BigDecimal("50"));
     }
 
     @Test

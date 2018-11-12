@@ -24,6 +24,10 @@ public class Account {
         publishAccountWithdraw(iban, amount, getBalance());
     }
 
+    public String getIban() {
+        return iban;
+    }
+
     public void deposit(BigDecimal amount) {
         this.amount = this.amount.add(amount);
 

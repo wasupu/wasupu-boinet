@@ -43,11 +43,11 @@ public class MortgageTest {
         mortgage.amortize(amount);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
-            "eventType", "mortgageAmortization",
+            "eventType", "payMortgageInstallment",
             "mortgageIdentifier", MORTGAGE_IDENTIFIER,
             "iban", IBAN,
             "totalAmount", convertMoneyToJson(totalAmount),
-            "amortizedAmount", convertMoneyToJson(new BigDecimal(10)),
+            "installmentAmount", convertMoneyToJson(new BigDecimal(10)),
             "totalAmortizedAmount", convertMoneyToJson(new BigDecimal(10)),
             "date", CURRENT_DATE.toDate()));
     }

@@ -21,6 +21,10 @@ public class Mortgage {
         return iban;
     }
 
+    public String getIdentifier() {
+        return mortgageIdentifier;
+    }
+
     public BigDecimal getAmortizedAmount() {
         return amortizedAmount;
     }
@@ -41,11 +45,11 @@ public class Mortgage {
         amortizedAmount = amortizedAmount.add(amount);
 
         world.getEventPublisher().publish(Map.of(
-            "eventType", "mortgageAmortization",
+            "eventType", "payMortgageInstallment",
             "mortgageIdentifier", mortgageIdentifier,
             "iban", iban,
             "totalAmount", convertMoneyToJson(totalAmount),
-            "amortizedAmount", convertMoneyToJson(amount),
+            "installmentAmount", convertMoneyToJson(amount),
             "totalAmortizedAmount", convertMoneyToJson(amortizedAmount),
             "date", world.getCurrentDateTime().toDate()));
     }

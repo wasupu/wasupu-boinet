@@ -15,11 +15,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RepayMortgageTest {
+public class MortgateAmortizationTest {
 
     @Test
     public void it_should_pay_a_mortgage() {
-        var payment = new RepayMortgage(getWorld(),
+        var payment = new PayMortgage(getWorld(),
             getPerson(),
             new BigDecimal(60));
 
@@ -29,12 +29,12 @@ public class RepayMortgageTest {
 
         payment.tick();
 
-        verify(bank).repayMortgage(MORTGAGE_IDENTIFIER, new BigDecimal(60));
+        verify(bank).payMortgage(MORTGAGE_IDENTIFIER, new BigDecimal(60));
     }
 
     @Test
     public void it_should_cancel_the_mortgage_if_is_pay(){
-        var payment = new RepayMortgage(getWorld(),
+        var payment = new PayMortgage(getWorld(),
             getPerson(),
             new BigDecimal(60));
 
@@ -49,7 +49,7 @@ public class RepayMortgageTest {
 
     @Test
     public void it_should_unregister_the_behaviour(){
-        var payment = new RepayMortgage(getWorld(),
+        var payment = new PayMortgage(getWorld(),
             getPerson(),
             new BigDecimal(60));
 

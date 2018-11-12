@@ -6,12 +6,12 @@ import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
 
-public class RepayMortgage extends EconomicalSubjectBehaviour {
+public class PayMortgage extends EconomicalSubjectBehaviour {
 
-    public RepayMortgage(World world, Person person, BigDecimal amortization) {
+    public PayMortgage(World world, Person person, BigDecimal installmentAmount) {
         super(world, person);
 
-        this.amortization = amortization;
+        this.installmentAmount = installmentAmount;
     }
 
     public void tick() {
@@ -19,7 +19,7 @@ public class RepayMortgage extends EconomicalSubjectBehaviour {
         var person = (Person) getEconomicalSubject();
         var mortgageId = person.getMortgageIdentifier();
 
-        bank.repayMortgage(mortgageId, amortization);
+        bank.payMortgage(mortgageId, installmentAmount);
 
         if (bank.isMortgageAmortized(mortgageId)) {
             bank.cancelMortgage(mortgageId);
@@ -27,5 +27,5 @@ public class RepayMortgage extends EconomicalSubjectBehaviour {
         }
     }
 
-    private BigDecimal amortization;
+    private BigDecimal installmentAmount;
 }

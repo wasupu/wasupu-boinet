@@ -205,7 +205,7 @@ public class Hospital {
             new Monthly(world,
                 newPerson,
                 28,
-                new RepayMortgage(world,
+                new PayMortgage(world,
                     newPerson,
                     generateRandomPrice.apply(500, 800)))));
     }
