@@ -15,7 +15,7 @@ public class AccountEventPublisher {
 
     public void publishContractAccount(String userIdentifier, String newIban) {
         world.getEventPublisher().publish(Map.of(
-            "eventType", "contractAccount",
+            "eventType", "contractCurrentAccount",
             "iban", newIban,
             "user", userIdentifier,
             "date", world.getCurrentDateTime().toDate()));
@@ -32,7 +32,7 @@ public class AccountEventPublisher {
 
     public void publishWithdrawal(String iban, BigDecimal amount, BigDecimal balance) {
         world.getEventPublisher().publish(Map.of(
-            "eventType", "withdrawal",
+            "eventType", "withdraw",
             "iban", iban,
             "amount", convertMoneyToJson(amount),
             "balance", convertMoneyToJson(balance),

@@ -35,7 +35,7 @@ public class AccountTest {
     @Test
     public void it_should_withdraw_money_from_account() {
         account.deposit(new BigDecimal(10));
-        account.withdrawal(new BigDecimal(3));
+        account.withdraw(new BigDecimal(3));
         assertEquals("The balance of the account is not the expected",
             new BigDecimal(7),
             account.getBalance());
@@ -60,12 +60,12 @@ public class AccountTest {
     public void it_should_publish_an_event_when_withdraw_money() {
         var amount = new BigDecimal(10);
         account.deposit(new BigDecimal(100));
-        account.withdrawal(amount);
+        account.withdraw(amount);
 
         var expectedBalance = new BigDecimal(90);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
-            "eventType", "withdrawal",
+            "eventType", "withdraw",
             "iban", IBAN,
             "amount", convertMoneyToJson(amount),
             "balance", convertMoneyToJson(expectedBalance),

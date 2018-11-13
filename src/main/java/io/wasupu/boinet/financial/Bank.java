@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class Bank {
 
-    public Bank(World world) {
+    public Bank(World world, BigDecimal seedCapital) {
         this.world = world;
 
         this.receiptEventPublisher = new ReceiptEventPublisher(world);
@@ -22,9 +22,12 @@ public class Bank {
         this.mortgageEventPublisher = new MortgageEventPublisher(world);
         this.debitCardEventPublisher = new DebitCardEventPublisher(world);
         this.userEventPublisher = new UserEventPublisher(world);
+
+        this.treasuryAccount = new Account("bankTreasuryAccount", accountEventPublisher);
+        this.treasuryAccount.deposit(seedCapital);
     }
 
-    public String contractAccount(String userIdentifier) {
+    public String contractCurrentAccount(String userIdentifier) {
         var newIban = getNewIban();
 
         accounts.put(newIban, new Account(newIban, accountEventPublisher));
@@ -45,7 +48,7 @@ public class Bank {
 
         var toAccount = accounts.get(ibanTo);
 
-        fromAccount.withdrawal(amount);
+        fromAccount.withdraw(amount);
         toAccount.deposit(amount);
     }
 
@@ -108,6 +111,11 @@ public class Bank {
 
         mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, iban, world));
 
+        var customerAccount = accounts.get(iban);
+
+        treasuryAccount.withdraw(amount);
+        customerAccount.deposit(amount);
+
         mortgageEventPublisher.publishContractMortgage(userIdentifier, iban, mortgageId, amount);
 
         return mortgageId;
@@ -126,7 +134,7 @@ public class Bank {
             return;
         }
 
-        account.withdrawal(installmentAmount);
+        account.withdraw(installmentAmount);
         mortgage.amortize(installmentAmount);
     }
 
@@ -144,6 +152,10 @@ public class Bank {
         var id = "MORTGAGE-" + mortgageCounter;
         mortgageCounter++;
         return id;
+    }
+
+    public Account getTreasuryAccount() {
+        return treasuryAccount;
     }
 
     public void registerUser(EconomicalSubject subject) {
@@ -181,4 +193,6 @@ public class Bank {
     private DebitCardEventPublisher debitCardEventPublisher;
 
     private UserEventPublisher userEventPublisher;
+
+    private Account treasuryAccount;
 }

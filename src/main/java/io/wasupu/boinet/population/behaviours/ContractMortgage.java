@@ -2,6 +2,7 @@ package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
+import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 
 import java.math.BigDecimal;
@@ -16,7 +17,9 @@ public class ContractMortgage extends EconomicalSubjectBehaviour {
         var person = (Person) getEconomicalSubject();
         if (person.getAge() != 0) return;
 
-        person.setMortgageIdentifier(getWorld().getBank().contractMortgage(person.getIdentifier(), person.getIban(), amount));
+        var bank = getWorld().getBank();
+        var mortgageId = bank.contractMortgage(person.getIdentifier(), person.getIban(), amount);
+        person.setMortgageIdentifier(mortgageId);
     }
 
     private BigDecimal amount = new BigDecimal(240000);

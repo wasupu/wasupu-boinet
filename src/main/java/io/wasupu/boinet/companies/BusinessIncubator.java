@@ -1,7 +1,7 @@
 package io.wasupu.boinet.companies;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
+import io.wasupu.boinet.economicalSubjects.behaviours.ContractCurrentAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
@@ -37,7 +37,7 @@ public class BusinessIncubator {
         var company = new Company(createCompanyUniqueIdentifier(), world);
 
         company.addBehaviour(new RegisterInBank(world, company));
-        company.addBehaviour(new ContractAccount(world, company));
+        company.addBehaviour(new ContractCurrentAccount(world, company));
         company.addBehaviour(new InitialCapital(world, company, new BigDecimal(60000)));
 
         return company;

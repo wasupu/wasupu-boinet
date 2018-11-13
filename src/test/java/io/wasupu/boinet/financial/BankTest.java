@@ -35,16 +35,16 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class BankTest {
 
     @Test
-    public void it_should_contract_a_new_account() {
-        var iban = bank.contractAccount(USER_IDENTIFIER);
+    public void it_should_contract_a_new_current_account() {
+        var iban = bank.contractCurrentAccount(USER_IDENTIFIER);
 
         assertEquals("The iban must be 0", IBAN, iban);
-        assertTrue("The bank must have the expected firstAccount", bank.existAccount(IBAN));
+        assertTrue("The bank must have the expected firstCurrentAccount", bank.existAccount(IBAN));
     }
 
     @Test
     public void it_should_contract_debit_card_in_the_bank() {
-        bank.contractAccount(USER_IDENTIFIER);
+        bank.contractCurrentAccount(USER_IDENTIFIER);
 
         var pan = bank.contractDebitCard(USER_IDENTIFIER, IBAN);
 
@@ -54,61 +54,61 @@ public class BankTest {
 
     @Test
     public void it_should_deposit_money_in_the_bank() {
-        bank.contractAccount(USER_IDENTIFIER);
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal(10));
+        bank.contractCurrentAccount(USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal(10));
 
         bank.deposit(IBAN, new BigDecimal(10));
 
-        verify(firstAccount).deposit(new BigDecimal(10));
+        verify(firstCurrentAccount).deposit(new BigDecimal(10));
     }
 
     @Test
     public void it_should_transfer_money_between_to_accounts() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
 
         var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
 
-        verify(firstAccount).withdrawal(amount);
-        verify(secondAccount).deposit(amount);
+        verify(firstCurrentAccount).withdraw(amount);
+        verify(secondCurrentAccount).deposit(amount);
     }
 
     @Test
     public void it_should_not_red_numbers_when_transfer_money_between_to_accounts() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("5"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("5"));
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
 
         var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
 
-        verify(firstAccount, never()).withdrawal(amount);
-        verify(secondAccount, never()).deposit(amount);
+        verify(firstCurrentAccount, never()).withdraw(amount);
+        verify(secondCurrentAccount, never()).deposit(amount);
     }
 
     @Test
     public void it_should_accept_a_payment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
         var pan = bank.contractDebitCard(USER_IDENTIFIER, firstIban);
 
         var amount = new BigDecimal("10");
 
         bank.payWithCard(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
-        verify(secondAccount).deposit(amount);
+        verify(secondCurrentAccount).deposit(amount);
     }
 
     @Test
     public void it_should_publish_event_when_accept_payment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
         var pan = bank.contractDebitCard(USER_IDENTIFIER, firstIban);
 
         var amount = new BigDecimal("10");
@@ -129,25 +129,25 @@ public class BankTest {
 
     @Test
     public void it_should_decline_payment_when_no_funds() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("3"));
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
         var pan = bank.contractDebitCard(USER_IDENTIFIER, firstIban);
 
         var amount = new BigDecimal("10");
 
         bank.payWithCard(amount, pan, secondIban, COMPANY, DETAILS, coordinates);
 
-        verify(secondAccount, never()).deposit(any());
+        verify(secondCurrentAccount, never()).deposit(any());
     }
 
     @Test
     public void it_should_publish_event_when_decline_payment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("3"));
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
-        var secondIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var secondIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
         var pan = bank.contractDebitCard(USER_IDENTIFIER, firstIban);
 
         var amount = new BigDecimal("10");
@@ -168,71 +168,111 @@ public class BankTest {
 
     @Test
     public void it_should_contract_a_mortgage_in_the_bank() {
-        bank.contractAccount(USER_IDENTIFIER);
+        bank.contractCurrentAccount(USER_IDENTIFIER);
 
         var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
 
-        assertEquals("The mortgage identifier must be 0", MORTGAGE_IDENTIFIER, mortgageIdentifier);
+        assertEquals("The mortgage identifier must be the expected", MORTGAGE_IDENTIFIER, mortgageIdentifier);
+    }
+
+    @Test
+    public void it_should_transfer_bank_to_user_when_contracting_mortgage() {
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+
+        bank.contractMortgage(USER_IDENTIFIER, personIban, MORTGAGE_AMOUNT);
+
+        verify(firstCurrentAccount).deposit(MORTGAGE_AMOUNT);
+        verify(treasuryAccount).withdraw(MORTGAGE_AMOUNT);
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_contract_an_mortgage() {
+        bank.contractCurrentAccount(USER_IDENTIFIER);
+
+        bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "contractMortgage",
+            "mortgageAmount", convertMoneyToJson(MORTGAGE_AMOUNT),
+            "mortgageIdentifier", MORTGAGE_IDENTIFIER,
+            "iban", IBAN,
+            "user", USER_IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_cancel_an_mortgage() {
+        bank.contractCurrentAccount(USER_IDENTIFIER);
+        var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
+
+        bank.cancelMortgage(mortgageIdentifier);
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "cancelMortgage",
+            "mortgageIdentifier", MORTGAGE_IDENTIFIER,
+            "iban", IBAN,
+            "user", USER_IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
     }
 
     @Test
     public void it_should_pay_mortgage_installment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
         when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
         var installmentAmount = new BigDecimal("10");
 
         bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount).withdrawal(installmentAmount);
+        verify(firstCurrentAccount).withdraw(installmentAmount);
         verify(mortgage).amortize(installmentAmount);
     }
 
     @Test
     public void it_should_pay_remaining_amount_when_installment_amount_is_greater_than_the_rest_of_mortgage() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("3000"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("3000"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
         when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
         var amount = new BigDecimal("2000");
 
         bank.payMortgage(mortgageId, amount);
 
-        verify(firstAccount).withdrawal(new BigDecimal(1000));
+        verify(firstCurrentAccount).withdraw(new BigDecimal(1000));
         verify(mortgage).amortize(new BigDecimal(1000));
     }
 
     @Test
     public void it_should_not_pay_mortgage_installment_when_no_funds() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
         when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
         var installmentAmount = new BigDecimal("100");
 
         bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount, never()).withdrawal(installmentAmount);
+        verify(firstCurrentAccount, never()).withdraw(installmentAmount);
         verify(mortgage, never()).amortize(installmentAmount);
     }
 
     @Test
     public void it_should_publish_event_when_not_paying_mortgage_installment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
 
@@ -240,7 +280,7 @@ public class BankTest {
         when(mortgage.getAmortizedAmount()).thenReturn(amortizedAmount);
         when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
         var installmentAmount = new BigDecimal("100");
@@ -259,25 +299,25 @@ public class BankTest {
 
     @Test
     public void it_should_pay_mortgage_installment_when_enough_funds_for_last_installment() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("50"));
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal("950"));
         when(mortgage.getTotalAmount()).thenReturn(MORTGAGE_AMOUNT);
 
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
         var installmentAmount = new BigDecimal("100");
 
         bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount).withdrawal(new BigDecimal("50"));
+        verify(firstCurrentAccount).withdraw(new BigDecimal("50"));
         verify(mortgage).amortize(new BigDecimal("50"));
     }
 
     @Test
     public void it_should_return_true_a_mortgage_is_amortized() {
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
         when(mortgage.isAmortized()).thenReturn(true);
 
@@ -288,7 +328,7 @@ public class BankTest {
 
     @Test
     public void it_should_cancel_a_mortgage() {
-        var firstIban = bank.contractAccount(USER_IDENTIFIER);
+        var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
         bank.cancelMortgage(mortgageId);
@@ -298,9 +338,9 @@ public class BankTest {
 
     @Test
     public void it_should_accept_a_receipt() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var personIban = bank.contractAccount(USER_IDENTIFIER);
-        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
 
         when(person.getIban()).thenReturn(personIban);
         when(company.getIban()).thenReturn(companyIban);
@@ -310,15 +350,15 @@ public class BankTest {
 
         bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
 
-        verify(secondAccount).deposit(receiptAmount);
-        verify(firstAccount).withdrawal(receiptAmount);
+        verify(secondCurrentAccount).deposit(receiptAmount);
+        verify(firstCurrentAccount).withdraw(receiptAmount);
     }
 
     @Test
     public void it_should_publish_an_event_when_accept_a_receipt() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var personIban = bank.contractAccount(USER_IDENTIFIER);
-        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
 
         when(person.getIban()).thenReturn(personIban);
         when(company.getIban()).thenReturn(companyIban);
@@ -340,9 +380,9 @@ public class BankTest {
 
     @Test
     public void it_should_decline_a_receipt_when_no_funds() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var personIban = bank.contractAccount(USER_IDENTIFIER);
-        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
 
         when(person.getIban()).thenReturn(personIban);
         when(company.getIban()).thenReturn(companyIban);
@@ -352,15 +392,15 @@ public class BankTest {
 
         bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
 
-        verify(secondAccount, never()).deposit(receiptAmount);
-        verify(firstAccount, never()).withdrawal(receiptAmount);
+        verify(secondCurrentAccount, never()).deposit(receiptAmount);
+        verify(firstCurrentAccount, never()).withdraw(receiptAmount);
     }
 
     @Test
     public void it_should_publish_decline_receipt_event_when_no_funds() {
-        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
-        var personIban = bank.contractAccount(USER_IDENTIFIER);
-        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
 
         when(person.getIban()).thenReturn(personIban);
         when(company.getIban()).thenReturn(companyIban);
@@ -382,10 +422,10 @@ public class BankTest {
 
     @Test
     public void it_should_publish_an_event_when_contract_an_account() {
-        bank.contractAccount(USER_IDENTIFIER);
+        bank.contractCurrentAccount(USER_IDENTIFIER);
 
         verifyPublishedEvent(Map.of(
-            "eventType", "contractAccount",
+            "eventType", "contractCurrentAccount",
             "iban", IBAN,
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
@@ -399,32 +439,6 @@ public class BankTest {
             "eventType", "contractDebitCard",
             "iban", IBAN,
             "pan", pan,
-            "user", USER_IDENTIFIER,
-            "date", CURRENT_DATE.toDate()));
-    }
-
-    @Test
-    public void it_should_publish_an_event_when_contract_an_mortgage() {
-        bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
-
-        verifyPublishedEvent(Map.of(
-            "eventType", "contractMortgage",
-            "mortgageAmount", convertMoneyToJson(MORTGAGE_AMOUNT),
-            "mortgageIdentifier", MORTGAGE_IDENTIFIER,
-            "iban", IBAN,
-            "user", USER_IDENTIFIER,
-            "date", CURRENT_DATE.toDate()));
-    }
-
-    @Test
-    public void it_should_publish_an_event_when_cancel_an_mortgage() {
-        var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
-        bank.cancelMortgage(mortgageIdentifier);
-
-        verifyPublishedEvent(Map.of(
-            "eventType", "cancelMortgage",
-            "mortgageIdentifier", MORTGAGE_IDENTIFIER,
-            "iban", IBAN,
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
     }
@@ -444,10 +458,20 @@ public class BankTest {
             "date", CURRENT_DATE.toDate()));
     }
 
+    @Test
+    public void it_should_have_a_treasury_account() {
+        assertNotNull("Treasury treasuryAccount cannot be null", bank.getTreasuryAccount());
+    }
+
+    @Test
+    public void it_should_have_the_initial_amount_in_thesuary_account() {
+        verify(treasuryAccount).deposit(SEED_MONEY);
+    }
+
     @Before
     public void setupAccount() throws Exception {
-        whenNew(Account.class).withArguments(eq(IBAN), any(AccountEventPublisher.class)).thenReturn(firstAccount);
-        whenNew(Account.class).withArguments(eq(SECOND_IBAN), any(AccountEventPublisher.class)).thenReturn(secondAccount);
+        whenNew(Account.class).withArguments(eq(IBAN), any(AccountEventPublisher.class)).thenReturn(firstCurrentAccount);
+        whenNew(Account.class).withArguments(eq(SECOND_IBAN), any(AccountEventPublisher.class)).thenReturn(secondCurrentAccount);
     }
 
     @Before
@@ -458,8 +482,10 @@ public class BankTest {
     }
 
     @Before
-    public void setupBank() {
-        bank = new Bank(world);
+    public void setupBank() throws Exception {
+        whenNew(Account.class).withArguments(eq("bankTreasuryAccount"), any(AccountEventPublisher.class)).thenReturn(treasuryAccount);
+        when(treasuryAccount.getBalance()).thenReturn(SEED_MONEY);
+        bank = new Bank(world, new BigDecimal("10000"));
     }
 
     @Before
@@ -486,15 +512,17 @@ public class BankTest {
 
     private static final String COMPANY = "12";
 
+    private static final BigDecimal SEED_MONEY = new BigDecimal("10000");
+
     private Pair<Double, Double> coordinates = Pair.of(40.34, -3.4);
 
     private Bank bank;
 
     @Mock
-    private Account firstAccount;
+    private Account firstCurrentAccount;
 
     @Mock
-    private Account secondAccount;
+    private Account secondCurrentAccount;
 
     @Mock
     private Mortgage mortgage;
@@ -510,6 +538,9 @@ public class BankTest {
 
     @Mock
     private Company company;
+
+    @Mock
+    private Account treasuryAccount;
 
     @Captor
     private ArgumentCaptor<Map<String, Object>> eventCaptor;

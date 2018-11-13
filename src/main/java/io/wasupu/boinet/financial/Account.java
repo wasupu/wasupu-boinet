@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class Account {
 
-    public Account(String iban,  AccountEventPublisher accountEventPublisher) {
+    public Account(String iban, AccountEventPublisher accountEventPublisher) {
         this.iban = iban;
 
         this.accountEventPublisher = accountEventPublisher;
@@ -16,7 +16,7 @@ public class Account {
         return amount;
     }
 
-    public void withdrawal(BigDecimal amount) {
+    public void withdraw(BigDecimal amount) {
         this.amount = this.amount.subtract(amount);
 
         accountEventPublisher.publishWithdrawal(iban, amount, getBalance());

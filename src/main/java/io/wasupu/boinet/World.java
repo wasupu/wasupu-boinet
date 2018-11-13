@@ -12,6 +12,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static java.util.stream.IntStream.iterate;
@@ -23,6 +24,7 @@ public class World {
     public World(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
         this.currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
+        this.bank = new Bank(this, new BigDecimal("10000000"));
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -101,7 +103,7 @@ public class World {
 
     private Collection<Runnable> tickConsumers = List.of();
 
-    private Bank bank = new Bank(this);
+    private Bank bank;
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
 

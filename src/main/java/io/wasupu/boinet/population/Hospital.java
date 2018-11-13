@@ -3,7 +3,7 @@ package io.wasupu.boinet.population;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.ProductType;
 import io.wasupu.boinet.companies.ReceiptType;
-import io.wasupu.boinet.economicalSubjects.behaviours.ContractAccount;
+import io.wasupu.boinet.economicalSubjects.behaviours.ContractCurrentAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
@@ -28,7 +28,7 @@ public class Hospital {
         var newPerson = new Person(createPersonUniqueIdentifier(), world);
 
         newPerson.addBehaviour(new RegisterInBank(world, newPerson));
-        newPerson.addBehaviour(new ContractAccount(world, newPerson));
+        newPerson.addBehaviour(new ContractCurrentAccount(world, newPerson));
         newPerson.addBehaviour(new ContractDebitCard(world, newPerson));
         newPerson.addBehaviour(new InitialCapital(world, newPerson, new BigDecimal(3000)));
 
