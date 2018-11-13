@@ -69,20 +69,26 @@ public class Bank {
     }
 
     public void payWithCard(BigDecimal amount, String pan, String sellerIban, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        var buyerIban = cards.get(pan);
-        var fromAccount = accounts.get(buyerIban);
+        var fromAccount = accounts.get(cards.get(pan));
 
         if (fromAccount.getBalance().compareTo(amount) < 0) {
             debitCardEventPublisher.publishDeclineCardPayment(amount, pan, companyIdentifier, details, coordinates);
             return;
         }
 
-        transfer(buyerIban, sellerIban, amount);
+        transfer(cards.get(pan), sellerIban, amount);
         debitCardEventPublisher.publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
     }
 
     public void payReceipt(String receiptId, ReceiptType receiptType, BigDecimal receiptAmount, Person person, Company company) {
-        transfer(person.getIban(), company.getIban(), receiptAmount);
+        var fromAccount = accounts.get(person.getIban());
+
+        if (fromAccount.getBalance().compareTo(receiptAmount) < 0) {
+            return;
+        }
+
+        transfer(person.getIban(), company.getIban(),
+            receiptAmount);
 
         bankEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType);
     }

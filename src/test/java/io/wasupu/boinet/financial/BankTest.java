@@ -315,6 +315,24 @@ public class BankTest {
     }
 
     @Test
+    public void it_should_decline_a_receipt_when_no_funds() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+
+        when(person.getIban()).thenReturn(personIban);
+        when(company.getIban()).thenReturn(companyIban);
+        when(company.getIdentifier()).thenReturn(COMPANY);
+
+        var receiptAmount = new BigDecimal("60");
+
+        bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
+
+        verify(secondAccount, never()).deposit(receiptAmount);
+        verify(firstAccount, never()).withdrawal(receiptAmount);
+    }
+
+    @Test
     public void it_should_publish_an_event_when_accept_a_receipt() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         var personIban = bank.contractAccount(USER_IDENTIFIER);

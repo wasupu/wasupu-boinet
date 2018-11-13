@@ -84,6 +84,14 @@ public class Company extends EconomicalSubject {
         employees.forEach(this::payEmployee);
     }
 
+    private void payEmployee(Person employee, BigDecimal salary) {
+        if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
+            fire(employee);
+        }
+
+        getWorld().getBank().transfer(getIban(), employee.getIban(), salary);
+    }
+
     private void payBonus() {
         if (getAge() < 3) return;
         if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal("100000")) < 0) return;
@@ -95,18 +103,9 @@ public class Company extends EconomicalSubject {
         employees.keySet().forEach(employee -> payEmployee(employee, bonus));
     }
 
-    private void payEmployee(Person employee, BigDecimal salary) {
-        if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
-            fire(employee);
-        }
-
-        getWorld().getBank().transfer(getIban(), employee.getIban(), salary);
-    }
-
     private boolean isDayOfMonth(Integer dayOfMonth) {
         return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
     }
-
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
