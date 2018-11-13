@@ -167,7 +167,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_contract_a_mortgage_in_the_bank() {
+    public void it_should_contract_a_mortgage_in_the_bank() throws MortgageRejected {
         bank.contractCurrentAccount(USER_IDENTIFIER);
 
         var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
@@ -176,17 +176,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_transfer_bank_to_user_when_contracting_mortgage() {
-        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
-
-        bank.contractMortgage(USER_IDENTIFIER, personIban, MORTGAGE_AMOUNT);
-
-        verify(firstCurrentAccount).deposit(MORTGAGE_AMOUNT);
-        verify(treasuryAccount).withdraw(MORTGAGE_AMOUNT);
-    }
-
-    @Test
-    public void it_should_publish_an_event_when_contract_an_mortgage() {
+    public void it_should_publish_an_event_when_contract_an_mortgage() throws MortgageRejected {
         bank.contractCurrentAccount(USER_IDENTIFIER);
 
         bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
@@ -201,7 +191,42 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_an_event_when_cancel_an_mortgage() {
+    public void it_should_transfer_bank_to_user_when_contracting_mortgage() throws MortgageRejected {
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+
+        bank.contractMortgage(USER_IDENTIFIER, personIban, MORTGAGE_AMOUNT);
+
+        verify(firstCurrentAccount).deposit(MORTGAGE_AMOUNT);
+        verify(treasuryAccount).withdraw(MORTGAGE_AMOUNT);
+    }
+
+    @Test(expected = MortgageRejected.class)
+    public void it_should_reject_the_mortgage_contract_if_treasury_dont_have_enough_funds() throws MortgageRejected {
+
+        var bigMortgageAmount = new BigDecimal(10000000);
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+
+        bank.contractMortgage(USER_IDENTIFIER, personIban, bigMortgageAmount);
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_reject_the_mortgage_contract_if_treasury_dont_have_enough_funds() {
+        var bigMortgageAmount = new BigDecimal(10000000);
+        var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+
+        try{
+            bank.contractMortgage(USER_IDENTIFIER, personIban, bigMortgageAmount);
+        } catch(MortgageRejected e){}
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "rejectMortgage",
+            "mortgageAmount", convertMoneyToJson(bigMortgageAmount),
+            "user", USER_IDENTIFIER,
+            "date", CURRENT_DATE.toDate()));
+    }
+
+    @Test
+    public void it_should_publish_an_event_when_cancel_an_mortgage() throws MortgageRejected {
         bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
 
@@ -216,7 +241,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_pay_mortgage_installment() {
+    public void it_should_pay_mortgage_installment() throws MortgageRejected {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
@@ -235,7 +260,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_pay_remaining_amount_when_installment_amount_is_greater_than_the_rest_of_mortgage() {
+    public void it_should_pay_remaining_amount_when_installment_amount_is_greater_than_the_rest_of_mortgage() throws MortgageRejected {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("3000"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
@@ -253,7 +278,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_not_pay_mortgage_installment_when_no_funds() {
+    public void it_should_not_pay_mortgage_installment_when_no_funds() throws MortgageRejected {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
@@ -272,7 +297,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_event_when_not_paying_mortgage_installment() {
+    public void it_should_publish_event_when_not_paying_mortgage_installment() throws MortgageRejected {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
@@ -299,7 +324,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_pay_mortgage_installment_when_enough_funds_for_last_installment() {
+    public void it_should_pay_mortgage_installment_when_enough_funds_for_last_installment() throws MortgageRejected {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal("950"));
@@ -317,7 +342,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_return_true_a_mortgage_is_amortized() {
+    public void it_should_return_true_a_mortgage_is_amortized() throws MortgageRejected {
         var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
         when(mortgage.isAmortized()).thenReturn(true);
@@ -328,7 +353,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_cancel_a_mortgage() {
+    public void it_should_cancel_a_mortgage() throws MortgageRejected {
         var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 

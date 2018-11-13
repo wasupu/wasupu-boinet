@@ -106,13 +106,19 @@ public class Bank {
         receiptEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType, person.getIban());
     }
 
-    public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
+    public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) throws MortgageRejected {
+
+        if (treasuryAccount.getBalance().compareTo(amount) < 0) {
+            mortgageEventPublisher.publishRejectMortgage(userIdentifier, amount);
+
+            throw new MortgageRejected();
+        }
+
         var mortgageId = getNewMortgageId();
 
         mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, iban, world));
 
         var customerAccount = accounts.get(iban);
-
         treasuryAccount.withdraw(amount);
         customerAccount.deposit(amount);
 

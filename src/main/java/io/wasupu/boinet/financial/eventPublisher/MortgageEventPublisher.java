@@ -55,5 +55,13 @@ public class MortgageEventPublisher {
             "date", world.getCurrentDateTime().toDate()));
     }
 
+    public void publishRejectMortgage(String userIdentifier, BigDecimal amount) {
+        world.getEventPublisher().publish(Map.of(
+            "eventType", "rejectMortgage",
+            "mortgageAmount", convertMoneyToJson(amount),
+            "user", userIdentifier,
+            "date", world.getCurrentDateTime().toDate()));
+    }
+
     private World world;
 }

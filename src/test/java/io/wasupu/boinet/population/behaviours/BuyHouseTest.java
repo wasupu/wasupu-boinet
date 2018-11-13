@@ -3,6 +3,7 @@ package io.wasupu.boinet.population.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.financial.Bank;
+import io.wasupu.boinet.financial.MortgageRejected;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class BuyHouseTest {
 
     @Test
-    public void it_should_contract_a_mortgage_in_first_tick() {
+    public void it_should_contract_a_mortgage_in_first_tick() throws MortgageRejected {
         when(person.getAge()).thenReturn(0L);
         when(world.getBank()).thenReturn(bank);
 
@@ -33,7 +34,7 @@ public class BuyHouseTest {
     }
 
     @Test
-    public void it_should_buy_house_with_mortgage_amount() {
+    public void it_should_buy_house_with_mortgage_amount() throws MortgageRejected {
         when(person.getAge()).thenReturn(0L);
         when(world.getBank()).thenReturn(bank);
 

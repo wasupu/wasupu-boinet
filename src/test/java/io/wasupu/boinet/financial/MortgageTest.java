@@ -66,7 +66,6 @@ public class MortgageTest {
     public void it_should_be_be_amortized_when_original_and_amortized_capital_are_the_same() {
         var mortgage = new Mortgage(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, new BigDecimal(2300), IBAN, world);
 
-
         assertFalse("When create the mortgate is not amortized", mortgage.isAmortized());
     }
 

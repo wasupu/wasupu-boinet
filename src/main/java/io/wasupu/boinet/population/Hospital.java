@@ -202,15 +202,6 @@ public class Hospital {
 
     void withOwnedHouse(Person newPerson) {
         newPerson.addBehaviour(new BuyHouse(world, newPerson, world.findCompany()));
-
-        newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world, newPerson,
-            new BigDecimal("50"),
-            new Monthly(world,
-                newPerson,
-                28,
-                new PayMortgage(world,
-                    newPerson,
-                    generateRandomPrice.apply(500, 800)))));
     }
 
     void withPowerSupply(Person newPerson) {
