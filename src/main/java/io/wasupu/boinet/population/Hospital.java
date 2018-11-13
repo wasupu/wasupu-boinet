@@ -219,7 +219,6 @@ public class Hospital {
             new PayAReceipt(world,
                 newPerson,
                 world.findCompany(),
-                UUID.randomUUID().toString(),
                 ReceiptType.POWER_SUPPLY,
                 generateRandomPrice.apply(60, 120))));
     }
@@ -230,7 +229,6 @@ public class Hospital {
             new PayAReceipt(world,
                 newPerson,
                 world.findCompany(),
-                UUID.randomUUID().toString(),
                 ReceiptType.WATER_SUPPLY,
                 generateRandomPrice.apply(20, 40))));
     }

@@ -17,7 +17,7 @@ public class Bank {
     public Bank(World world) {
         this.world = world;
 
-        this.bankEventPublisher = new ReceiptEventPublisher(world);
+        this.receiptEventPublisher = new ReceiptEventPublisher(world);
         this.accountEventPublisher = new AccountEventPublisher(world);
         this.mortgageEventPublisher = new MortgageEventPublisher(world);
         this.debitCardEventPublisher = new DebitCardEventPublisher(world);
@@ -25,10 +25,9 @@ public class Bank {
     }
 
     public String contractAccount(String userIdentifier) {
-        var newIban = String.valueOf(iban);
+        var newIban = getNewIban();
 
         accounts.put(newIban, new Account(newIban, accountEventPublisher));
-        iban++;
 
         accountEventPublisher.publishContractAccount(userIdentifier, newIban);
 
@@ -58,14 +57,19 @@ public class Bank {
         return accounts.containsKey(iban);
     }
 
+    private String getNewIban() {
+        var id = "IBAN-" + ibanCounter;
+        ibanCounter++;
+        return id;
+    }
+
     public String contractDebitCard(String userIdentifier, String iban) {
-        var panAsString = String.valueOf(pan);
-        cards.put(panAsString, String.valueOf(iban));
-        pan++;
+        var pan = getNewPan();
+        cards.put(pan, String.valueOf(iban));
 
-        debitCardEventPublisher.publishContractDebitCard(userIdentifier, iban, panAsString);
+        debitCardEventPublisher.publishContractDebitCard(userIdentifier, iban, pan);
 
-        return panAsString;
+        return pan;
     }
 
     public void payWithCard(BigDecimal amount, String pan, String sellerIban, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
@@ -80,28 +84,33 @@ public class Bank {
         debitCardEventPublisher.publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
     }
 
+    private String getNewPan() {
+        var id = "PAN-" + panCounter;
+        panCounter++;
+        return id;
+    }
+
     public void payReceipt(String receiptId, ReceiptType receiptType, BigDecimal receiptAmount, Person person, Company company) {
         var fromAccount = accounts.get(person.getIban());
 
         if (fromAccount.getBalance().compareTo(receiptAmount) < 0) {
+            receiptEventPublisher.publishDeclineReceiptEvent(receiptId, receiptAmount, company.getIdentifier(), receiptType, person.getIban());
             return;
         }
 
-        transfer(person.getIban(), company.getIban(),
-            receiptAmount);
+        transfer(person.getIban(), company.getIban(), receiptAmount);
 
-        bankEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType);
+        receiptEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType, person.getIban());
     }
 
     public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
-        var mortgageIdentifierAsString = String.valueOf(mortgageIdentifier);
+        var mortgageId = getNewMortgageId();
 
-        mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, userIdentifier, amount, iban, world));
-        mortgageIdentifier++;
+        mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, iban, world));
 
-        mortgageEventPublisher.publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString, amount);
+        mortgageEventPublisher.publishContractMortgage(userIdentifier, iban, mortgageId, amount);
 
-        return mortgageIdentifierAsString;
+        return mortgageId;
     }
 
     public void payMortgage(String mortgageIdentifier, BigDecimal amount) {
@@ -131,6 +140,12 @@ public class Bank {
         mortgageEventPublisher.publishCancelMortgage(mortgage.getUserIdentifier(), mortgage.getIban(), mortgageIdentifier);
     }
 
+    private String getNewMortgageId() {
+        var id = "MORTGAGE-" + mortgageCounter;
+        mortgageCounter++;
+        return id;
+    }
+
     public void registerUser(EconomicalSubject subject) {
         userEventPublisher.publishRegisterUserEvent(subject);
     }
@@ -149,15 +164,15 @@ public class Bank {
 
     private Map<String, Mortgage> mortgages = new HashMap<>();
 
-    private int iban = 0;
+    private Integer ibanCounter = 0;
 
-    private int pan = 0;
+    private Integer panCounter = 0;
 
-    private int mortgageIdentifier = 0;
+    private Integer mortgageCounter = 0;
 
     private World world;
 
-    private ReceiptEventPublisher bankEventPublisher;
+    private ReceiptEventPublisher receiptEventPublisher;
 
     private AccountEventPublisher accountEventPublisher;
 

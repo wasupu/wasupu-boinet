@@ -48,8 +48,8 @@ public class BankTest {
 
         var pan = bank.contractDebitCard(USER_IDENTIFIER, IBAN);
 
-        assertEquals("The pan must be 0", PAN, pan);
-        assertEquals("The iban must be 0 for pan 0", "0", bank.getIbanByPan(PAN));
+        assertEquals("The pan must be the expected", PAN, pan);
+        assertEquals("The iban must be the expected", IBAN, bank.getIbanByPan(PAN));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class BankTest {
 
         verifyPublishedEvent(Map.of(
             "eventType", "acceptPayment",
-            "pan", IBAN,
+            "pan", pan,
             "amount", convertMoneyToJson(amount),
             "details", DETAILS,
             "geolocation", Map.of(
@@ -156,7 +156,7 @@ public class BankTest {
 
         verifyPublishedEvent(Map.of(
             "eventType", "declinePayment",
-            "pan", IBAN,
+            "pan", pan,
             "amount", convertMoneyToJson(amount),
             "details", DETAILS,
             "geolocation", Map.of(
@@ -315,6 +315,30 @@ public class BankTest {
     }
 
     @Test
+    public void it_should_publish_an_event_when_accept_a_receipt() {
+        when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
+        var personIban = bank.contractAccount(USER_IDENTIFIER);
+        var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
+
+        when(person.getIban()).thenReturn(personIban);
+        when(company.getIban()).thenReturn(companyIban);
+        when(company.getIdentifier()).thenReturn(COMPANY);
+
+        var receiptAmount = new BigDecimal("10");
+
+        bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
+
+        verifyPublishedEvent(Map.of(
+            "eventType", "acceptReceipt",
+            "personIban", personIban,
+            "receiptId", RECEIPT_ID,
+            "details", RECEIPT_DETAILS,
+            "amount", convertMoneyToJson(receiptAmount),
+            "company", COMPANY,
+            "date", CURRENT_DATE.toDate()));
+    }
+
+    @Test
     public void it_should_decline_a_receipt_when_no_funds() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         var personIban = bank.contractAccount(USER_IDENTIFIER);
@@ -333,7 +357,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_an_event_when_accept_a_receipt() {
+    public void it_should_publish_decline_receipt_event_when_no_funds() {
         when(firstAccount.getBalance()).thenReturn(new BigDecimal("30"));
         var personIban = bank.contractAccount(USER_IDENTIFIER);
         var companyIban = bank.contractAccount(OTHER_USER_IDENTIFIER);
@@ -342,12 +366,13 @@ public class BankTest {
         when(company.getIban()).thenReturn(companyIban);
         when(company.getIdentifier()).thenReturn(COMPANY);
 
-        var receiptAmount = new BigDecimal("10");
+        var receiptAmount = new BigDecimal("60");
 
         bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
 
         verifyPublishedEvent(Map.of(
-            "eventType", "acceptReceipt",
+            "eventType", "declineReceipt",
+            "personIban", personIban,
             "receiptId", RECEIPT_ID,
             "details", RECEIPT_DETAILS,
             "amount", convertMoneyToJson(receiptAmount),
@@ -368,12 +393,12 @@ public class BankTest {
 
     @Test
     public void it_should_publish_an_event_when_contract_a_debit_card() {
-        bank.contractDebitCard(USER_IDENTIFIER, IBAN);
+        var pan = bank.contractDebitCard(USER_IDENTIFIER, IBAN);
 
         verifyPublishedEvent(Map.of(
             "eventType", "contractDebitCard",
             "iban", IBAN,
-            "pan", PAN,
+            "pan", pan,
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
     }
@@ -427,7 +452,7 @@ public class BankTest {
 
     @Before
     public void setupMortgage() throws Exception {
-        whenNew(Mortgage.class).withArguments("0", USER_IDENTIFIER, MORTGAGE_AMOUNT, IBAN, world).thenReturn(mortgage);
+        whenNew(Mortgage.class).withArguments(MORTGAGE_IDENTIFIER, USER_IDENTIFIER, MORTGAGE_AMOUNT, IBAN, world).thenReturn(mortgage);
         when(mortgage.getUserIdentifier()).thenReturn(USER_IDENTIFIER);
         when(mortgage.getIban()).thenReturn(IBAN);
     }
@@ -451,13 +476,13 @@ public class BankTest {
             .contains(expectedEvent);
     }
 
-    private static final String IBAN = "0";
+    private static final String IBAN = "IBAN-0";
 
-    private static final String SECOND_IBAN = "1";
+    private static final String SECOND_IBAN = "IBAN-1";
 
-    private static final String PAN = "0";
+    private static final String PAN = "PAN-0";
 
-    private static final String MORTGAGE_IDENTIFIER = "0";
+    private static final String MORTGAGE_IDENTIFIER = "MORTGAGE-0";
 
     private static final String COMPANY = "12";
 

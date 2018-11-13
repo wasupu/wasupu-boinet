@@ -13,6 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +24,8 @@ public class PayAReceiptTest {
     @Test
     public void it_should_pay_a_receipt() {
         payment.tick();
-        verify(bank).payReceipt(RECEIPT_ID, RECEIPT_TYPE, RECEIPT_AMOUNT, person, company);
+        
+        verify(bank).payReceipt(anyString(), eq(RECEIPT_TYPE), eq(RECEIPT_AMOUNT), eq(person), eq(company));
     }
 
     @Before
@@ -35,7 +38,6 @@ public class PayAReceiptTest {
         payment = new PayAReceipt(world,
             person,
             company,
-            RECEIPT_ID,
             RECEIPT_TYPE,
             RECEIPT_AMOUNT);
     }
@@ -52,13 +54,7 @@ public class PayAReceiptTest {
     @Mock
     private Company company;
 
-    private static String RECEIPT_ID = "12121";
-
     private BigDecimal RECEIPT_AMOUNT = new BigDecimal("10");
-
-    private static String COMPANY_IBAN = "12313";
-
-    private static String PERSON_IBAN = "12313";
 
     private static ReceiptType RECEIPT_TYPE = ReceiptType.POWER_SUPPLY;
 
