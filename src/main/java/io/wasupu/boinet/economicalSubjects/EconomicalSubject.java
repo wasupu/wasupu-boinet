@@ -57,12 +57,22 @@ public abstract class EconomicalSubject {
 
     public abstract EconomicalSubjectType getType();
 
+    public abstract String getName();
+
     public static void setFaker(Faker newFaker) {
         faker = newFaker;
     }
 
     public String getIban() {
         return iban;
+    }
+
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public String getZipCode() {
+        return zipCode;
     }
 
     public Long getAge() {

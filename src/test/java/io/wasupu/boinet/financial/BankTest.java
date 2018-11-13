@@ -167,7 +167,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_contract_a_mortgage_in_the_bank() throws MortgageRejected {
+    public void it_should_contract_a_mortgage_in_the_bank() {
         bank.contractCurrentAccount(USER_IDENTIFIER);
 
         var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
@@ -176,7 +176,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_an_event_when_contract_an_mortgage() throws MortgageRejected {
+    public void it_should_publish_an_event_when_contract_an_mortgage() {
         bank.contractCurrentAccount(USER_IDENTIFIER);
 
         bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
@@ -191,7 +191,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_transfer_bank_to_user_when_contracting_mortgage() throws MortgageRejected {
+    public void it_should_transfer_bank_to_user_when_contracting_mortgage() {
         var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
 
         bank.contractMortgage(USER_IDENTIFIER, personIban, MORTGAGE_AMOUNT);
@@ -201,7 +201,7 @@ public class BankTest {
     }
 
     @Test(expected = MortgageRejected.class)
-    public void it_should_reject_the_mortgage_contract_if_treasury_dont_have_enough_funds() throws MortgageRejected {
+    public void it_should_reject_the_mortgage_contract_if_treasury_dont_have_enough_funds() {
 
         var bigMortgageAmount = new BigDecimal(10000000);
         var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
@@ -214,9 +214,10 @@ public class BankTest {
         var bigMortgageAmount = new BigDecimal(10000000);
         var personIban = bank.contractCurrentAccount(USER_IDENTIFIER);
 
-        try{
+        try {
             bank.contractMortgage(USER_IDENTIFIER, personIban, bigMortgageAmount);
-        } catch(MortgageRejected e){}
+        } catch (MortgageRejected e) {
+        }
 
         verifyPublishedEvent(Map.of(
             "eventType", "rejectMortgage",
@@ -226,7 +227,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_an_event_when_cancel_an_mortgage() throws MortgageRejected {
+    public void it_should_publish_an_event_when_cancel_an_mortgage() {
         bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageIdentifier = bank.contractMortgage(USER_IDENTIFIER, IBAN, MORTGAGE_AMOUNT);
 
@@ -241,7 +242,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_pay_mortgage_installment() throws MortgageRejected {
+    public void it_should_pay_mortgage_installment() {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
@@ -260,7 +261,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_pay_remaining_amount_when_installment_amount_is_greater_than_the_rest_of_mortgage() throws MortgageRejected {
+    public void it_should_pay_remaining_amount_when_installment_amount_is_greater_than_the_rest_of_mortgage() {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("3000"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal(0));
@@ -278,7 +279,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_not_pay_mortgage_installment_when_no_funds() throws MortgageRejected {
+    public void it_should_not_pay_mortgage_installment_when_no_funds() {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
@@ -297,7 +298,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_publish_event_when_not_paying_mortgage_installment() throws MortgageRejected {
+    public void it_should_publish_event_when_not_paying_mortgage_installment() {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getIdentifier()).thenReturn(MORTGAGE_IDENTIFIER);
@@ -324,7 +325,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_pay_mortgage_installment_when_enough_funds_for_last_installment() throws MortgageRejected {
+    public void it_should_pay_mortgage_installment_when_enough_funds_for_last_installment() {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("50"));
         when(mortgage.getIban()).thenReturn(IBAN);
         when(mortgage.getAmortizedAmount()).thenReturn(new BigDecimal("950"));
@@ -342,7 +343,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_return_true_a_mortgage_is_amortized() throws MortgageRejected {
+    public void it_should_return_true_a_mortgage_is_amortized() {
         var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
         when(mortgage.isAmortized()).thenReturn(true);
@@ -353,7 +354,7 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_cancel_a_mortgage() throws MortgageRejected {
+    public void it_should_cancel_a_mortgage() {
         var firstIban = bank.contractCurrentAccount(USER_IDENTIFIER);
         var mortgageId = bank.contractMortgage(USER_IDENTIFIER, firstIban, MORTGAGE_AMOUNT);
 
@@ -474,12 +475,18 @@ public class BankTest {
         var subject = mock(EconomicalSubject.class);
         when(subject.getIdentifier()).thenReturn(USER_IDENTIFIER);
         when(subject.getType()).thenReturn(PERSON);
+        when(subject.getFullAddress()).thenReturn(FULL_ADDRESS);
+        when(subject.getZipCode()).thenReturn(ZIP);
+        when(subject.getName()).thenReturn(NAME);
 
         bank.registerUser(subject);
 
         verifyPublishedEvent(Map.of(
             "eventType", "registerUser",
             "user", USER_IDENTIFIER,
+            "name", NAME,
+            "fullAddress", FULL_ADDRESS,
+            "zip", ZIP,
             "type", PERSON.toString(),
             "date", CURRENT_DATE.toDate()));
     }
@@ -572,11 +579,15 @@ public class BankTest {
     private ArgumentCaptor<Map<String, Object>> eventCaptor;
 
     private static final String DETAILS = "meal";
+    private static final String FULL_ADDRESS = "fullAddress";
+    private static final String ZIP = "zipCode";
 
     private static final String RECEIPT_DETAILS = "power_supply";
 
     private static final String USER_IDENTIFIER = "1234567";
     private static final String OTHER_USER_IDENTIFIER = "321343";
+
+    private static final String NAME = "name";
 
     private static final DateTime CURRENT_DATE = new DateTime(new GregorianCalendar(2017, 10, 10));
 

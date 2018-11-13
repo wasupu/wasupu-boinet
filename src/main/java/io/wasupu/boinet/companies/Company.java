@@ -21,6 +21,11 @@ public class Company extends EconomicalSubject {
         this.name = faker.company().name();
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public void tick() {
         paySalary();
 //        payBonus();

@@ -47,6 +47,11 @@ public class EconomicalSubjectTest {
             public EconomicalSubjectType getType() {
                 return null;
             }
+
+            @Override
+            public String getName() {
+                return "";
+            }
         };
     }
 

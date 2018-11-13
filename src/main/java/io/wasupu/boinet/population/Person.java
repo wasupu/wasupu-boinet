@@ -18,6 +18,11 @@ public class Person extends EconomicalSubject {
         this.cellPhone = faker.phoneNumber().cellPhone();
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public Boolean isUnemployed() {
         return !employed;
     }

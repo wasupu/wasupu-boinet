@@ -106,7 +106,7 @@ public class Bank {
         receiptEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType, person.getIban());
     }
 
-    public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) throws MortgageRejected {
+    public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
 
         if (treasuryAccount.getBalance().compareTo(amount) < 0) {
             mortgageEventPublisher.publishRejectMortgage(userIdentifier, amount);

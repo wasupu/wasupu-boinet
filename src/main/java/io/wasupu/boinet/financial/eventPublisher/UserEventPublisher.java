@@ -11,7 +11,7 @@ import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 
 public class UserEventPublisher {
 
-    public UserEventPublisher(World world){
+    public UserEventPublisher(World world) {
         this.world = world;
     }
 
@@ -21,6 +21,9 @@ public class UserEventPublisher {
             "eventType", "registerUser",
             "type", subject.getType().toString(),
             "user", subject.getIdentifier(),
+            "name", subject.getName(),
+            "fullAddress", subject.getFullAddress(),
+            "zip", subject.getZipCode(),
             "date", world.getCurrentDateTime().toDate()));
     }
 
