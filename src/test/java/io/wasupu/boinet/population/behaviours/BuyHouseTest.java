@@ -1,6 +1,7 @@
 package io.wasupu.boinet.population.behaviours;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.junit.Before;
@@ -15,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ContractMortgageTest {
+public class BuyHouseTest {
 
     @Test
     public void it_should_contract_a_mortgage_in_first_tick() {
@@ -24,26 +25,43 @@ public class ContractMortgageTest {
 
         when(person.getIban()).thenReturn(IBAN);
         when(person.getIdentifier()).thenReturn(IDENTIFIER);
-        when(bank.contractMortgage(IDENTIFIER, IBAN, amount)).thenReturn(MORTGAGE_IDENTIFIER);
+        when(bank.contractMortgage(IDENTIFIER, IBAN, AMOUNT)).thenReturn(MORTGAGE_IDENTIFIER);
 
-        contractMortgage.tick();
+        buyHouse.tick();
 
         verify(person).setMortgageIdentifier(MORTGAGE_IDENTIFIER);
+    }
+
+    @Test
+    public void it_should_buy_house_with_mortgage_amount() {
+        when(person.getAge()).thenReturn(0L);
+        when(world.getBank()).thenReturn(bank);
+
+        when(person.getIban()).thenReturn(IBAN);
+        when(person.getIdentifier()).thenReturn(IDENTIFIER);
+        when(bank.contractMortgage(IDENTIFIER, IBAN, AMOUNT)).thenReturn(MORTGAGE_IDENTIFIER);
+
+        buyHouse.tick();
+
+        verify(company).buyHouse(IBAN, AMOUNT);
     }
 
     @Test
     public void it_should_not_contract_again_a_mortgage_if_has_one() {
         when(person.getAge()).thenReturn(1L);
 
-        contractMortgage.tick();
+        buyHouse.tick();
 
         verify(person, never()).setMortgageIdentifier(any());
     }
 
     @Before
     public void setupContractDebitCard() {
-        contractMortgage = new ContractMortgage(world, person);
+        buyHouse = new BuyHouse(world, person, company);
     }
+
+    @Mock
+    private Company company;
 
     @Mock
     private Person person;
@@ -54,13 +72,14 @@ public class ContractMortgageTest {
     @Mock
     private Bank bank;
 
+    private BuyHouse buyHouse;
+
     private static final String MORTGAGE_IDENTIFIER = "12312312312";
 
     private static final String IBAN = "2";
 
     private static final String IDENTIFIER = "234214234";
 
-    private ContractMortgage contractMortgage;
+    private static final BigDecimal AMOUNT = new BigDecimal(240000);
 
-    private BigDecimal amount = new BigDecimal(240000);
 }

@@ -23,7 +23,7 @@ public class Company extends EconomicalSubject {
 
     public void tick() {
         paySalary();
-        payBonus();
+//        payBonus();
 
         super.tick();
     }
@@ -38,6 +38,10 @@ public class Company extends EconomicalSubject {
                 .coordinatesAround(
                     getCoordinates().getLeft(),
                     getCoordinates().getRight()));
+    }
+
+    public void buyHouse(String buyerIban, BigDecimal amount) {
+        getWorld().getBank().transfer(buyerIban, getIban(), amount);
     }
 
     BigDecimal getEmployeeSalary(Person person) {
@@ -110,5 +114,4 @@ public class Company extends EconomicalSubject {
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
     private String name;
-
 }

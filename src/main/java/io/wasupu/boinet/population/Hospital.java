@@ -46,7 +46,7 @@ public class Hospital {
         withElectronicProductPayment(newPerson);
 
         if (withProbability(90)) {
-            withMortgage(newPerson);
+            withOwnedHouse(newPerson);
         }
 
         withInternetConnection(newPerson);
@@ -200,8 +200,8 @@ public class Hospital {
                 25)));
     }
 
-    void withMortgage(Person newPerson) {
-        newPerson.addBehaviour(new ContractMortgage(world, newPerson));
+    void withOwnedHouse(Person newPerson) {
+        newPerson.addBehaviour(new BuyHouse(world, newPerson, world.findCompany()));
 
         newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world, newPerson,
             new BigDecimal("50"),

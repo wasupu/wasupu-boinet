@@ -7,8 +7,8 @@ import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
-import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -17,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 
 import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.COMPANY;
-import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.PERSON;
 import static java.util.stream.IntStream.range;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.*;
 public class CompanyTest {
 
     @Test
-    public void testEquals() {
+    public void test_equals() {
         new EqualsTester()
             .addEqualityGroup(new Company("company1", world), new Company("company1", world))
             .addEqualityGroup(new Company("company2", world), new Company("company2", world))
@@ -38,8 +37,7 @@ public class CompanyTest {
 
 
     @Test
-    public void shouldCanBuyAProductToTheCompany() {
-        company.tick();
+    public void it_should_canbuy_a_product_to_the_company() {
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
         verify(bank).payWithCard(PRICE,
@@ -51,7 +49,16 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldPayTheEmployeesOnEvery28th() {
+    public void it_should_transfer_house_price_from_person_to_company() {
+        var buyerIban = "IBAN-43";
+
+        company.buyHouse(buyerIban, PRICE);
+
+        verify(bank).transfer(buyerIban, IBAN, PRICE);
+    }
+
+    @Test
+    public void it_should_pay_the_employees_on_every_28th() {
         when(person.getIban()).thenReturn(OTHER_IBAN);
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(10000));
@@ -64,7 +71,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldNotPayTheEmployeesOtherThan29th() {
+    public void it_should_not_pay_the_employees_other_than_29th() {
         company.hire(person);
 
         range(1, 27)
@@ -78,7 +85,7 @@ public class CompanyTest {
 
 
     @Test
-    public void shouldReviseTheSalaryOfAnEmployee() {
+    public void it_should_revise_the_salary_of_an_employee() {
         company.tick();
         company.hire(person);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(16000));
@@ -90,7 +97,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldOnlyChangeTheSalaryCompanyBalanceIsPositive() {
+    public void it_should_only_change_the_salary_company_balance_is_positive() {
         company.tick();
         company.hire(person);
 
@@ -101,7 +108,8 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldPayBonusToEmployeesIfCompanyCan() {
+    @Ignore
+    public void it_should_pay_bonus_to_employees_if_company_can() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(100000));
         when(person.getIban()).thenReturn(OTHER_IBAN);
 
@@ -115,7 +123,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldNotPayBonusToEmployeesIfCompanyCan() {
+    public void it_should_not_pay_bonus_to_employees_if_company_can() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1000));
 
         company.tick();
@@ -128,7 +136,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void shouldFireEmployeesThatCompanyCanPay() {
+    public void it_should_fire_employees_that_company_can_pay() {
         when(person.getIban()).thenReturn(IBAN);
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1));
