@@ -4,6 +4,10 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
+import io.wasupu.boinet.financial.eventPublisher.AccountEventPublisher;
+import io.wasupu.boinet.financial.eventPublisher.BankEventPublisher;
+import io.wasupu.boinet.financial.eventPublisher.DebitCardEventPublisher;
+import io.wasupu.boinet.financial.eventPublisher.MortgageEventPublisher;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -11,21 +15,23 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.wasupu.boinet.financial.Money.*;
-
 public class Bank {
 
     public Bank(World world) {
         this.world = world;
+        this.bankEventPublisher = new BankEventPublisher(world);
+        this.accountEventPublisher = new AccountEventPublisher(world);
+        this.mortgageEventPublisher = new MortgageEventPublisher(world);
+        this.debitCardEventPublisher = new DebitCardEventPublisher(world);
     }
 
     public String contractAccount(String userIdentifier) {
         var newIban = String.valueOf(iban);
 
-        accounts.put(newIban, new Account(newIban, world));
+        accounts.put(newIban, new Account(newIban, accountEventPublisher));
         iban++;
 
-        publishContractAccountEvent(userIdentifier, newIban);
+        accountEventPublisher.publishContractAccount(userIdentifier, newIban);
 
         return newIban;
     }
@@ -41,7 +47,7 @@ public class Bank {
 
         var toAccount = accounts.get(ibanTo);
 
-        fromAccount.withdraw(amount);
+        fromAccount.withdrawal(amount);
         toAccount.deposit(amount);
     }
 
@@ -58,7 +64,7 @@ public class Bank {
         cards.put(panAsString, String.valueOf(iban));
         pan++;
 
-        publishContractDebitCard(userIdentifier, iban, panAsString);
+        debitCardEventPublisher.publishContractDebitCard(userIdentifier, iban, panAsString);
 
         return panAsString;
     }
@@ -68,28 +74,18 @@ public class Bank {
         var fromAccount = accounts.get(buyerIban);
 
         if (fromAccount.getBalance().compareTo(amount) < 0) {
-            publishDeclineCardPayment(amount, pan, companyIdentifier, details, coordinates);
+            debitCardEventPublisher.publishDeclineCardPayment(amount, pan, companyIdentifier, details, coordinates);
             return;
         }
 
         transfer(buyerIban, sellerIban, amount);
-        publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
+        debitCardEventPublisher.publishCardPayment(amount, pan, companyIdentifier, details, coordinates);
     }
 
     public void payReceipt(String receiptId, ReceiptType receiptType, BigDecimal receiptAmount, Person person, Company company) {
         transfer(person.getIban(), company.getIban(), receiptAmount);
 
-        publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(),receiptType);
-    }
-
-    private void publishReceiptPayment(String receiptId, BigDecimal amount, String companyIdentifier, ReceiptType receiptType) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "acceptReceipt",
-            "receiptId", receiptId,
-            "amount", convertMoneyToJson(amount),
-            "details", receiptType.toString().toLowerCase(),
-            "company", companyIdentifier,
-            "date", world.getCurrentDateTime().toDate()));
+        bankEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType);
     }
 
     public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
@@ -98,7 +94,7 @@ public class Bank {
         mortgages.put(mortgageIdentifierAsString, new Mortgage(mortgageIdentifierAsString, userIdentifier, amount, iban, world));
         mortgageIdentifier++;
 
-        publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString, amount);
+        mortgageEventPublisher.publishContractMortgage(userIdentifier, iban, mortgageIdentifierAsString, amount);
 
         return mortgageIdentifierAsString;
     }
@@ -112,12 +108,11 @@ public class Bank {
         var installmentAmount = pendingAmount.compareTo(amount) < 0 ? pendingAmount : amount;
 
         if (account.getBalance().compareTo(installmentAmount) < 0) {
-            publishDeclineMortgageInstallment(mortgage, installmentAmount);
-
+            mortgageEventPublisher.publishDeclineMortgageInstallment(mortgage, installmentAmount);
             return;
         }
 
-        account.withdraw(installmentAmount);
+        account.withdrawal(installmentAmount);
         mortgage.amortize(installmentAmount);
     }
 
@@ -128,96 +123,19 @@ public class Bank {
     public void cancelMortgage(String mortgageIdentifier) {
         var mortgage = mortgages.remove(mortgageIdentifier);
 
-        publishCancelMortgage(mortgage.getUserIdentifier(), mortgage.getIban(), mortgageIdentifier);
+        mortgageEventPublisher.publishCancelMortgage(mortgage.getUserIdentifier(), mortgage.getIban(), mortgageIdentifier);
+    }
+
+    public void registerUser(EconomicalSubject subject) {
+        bankEventPublisher.publishRegisterUserEvent(subject);
     }
 
     public Boolean existMortgage(String mortgageIdentifier) {
         return mortgages.containsKey(mortgageIdentifier);
     }
 
-    public void registerUser(EconomicalSubject subject) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "registerUser",
-            "type", subject.getType().toString(),
-            "user", subject.getIdentifier(),
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
     String getIbanByPan(String pan) {
         return cards.get(pan);
-    }
-
-    private void publishContractAccountEvent(String userIdentifier, String newIban) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "contractAccount",
-            "iban", newIban,
-            "user", userIdentifier,
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
-    private void publishContractDebitCard(String identifier, String iban, String panAsString) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "contractDebitCard",
-            "iban", iban,
-            "pan", panAsString,
-            "user", identifier,
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
-    private void publishContractMortgage(String identifier, String iban, String mortgageIdentifier, BigDecimal amount) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "contractMortgage",
-            "iban", iban,
-            "mortgageAmount", convertMoneyToJson(amount),
-            "mortgageIdentifier", mortgageIdentifier,
-            "user", identifier,
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
-    private void publishCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "acceptPayment",
-            "pan", pan,
-            "amount", convertMoneyToJson(amount),
-            "details", details,
-            "geolocation", Map.of(
-                "latitude", coordinates.getLeft(),
-                "longitude", coordinates.getRight()),
-            "company", companyIdentifier,
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
-    private void publishDeclineCardPayment(BigDecimal amount, String pan, String companyIdentifier, String details, Pair<Double, Double> coordinates) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "declinePayment",
-            "pan", pan,
-            "amount", convertMoneyToJson(amount),
-            "details", details,
-            "geolocation", Map.of(
-                "latitude", coordinates.getLeft(),
-                "longitude", coordinates.getRight()),
-            "company", companyIdentifier,
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
-    private void publishCancelMortgage(String userIdentifier, String iban, String mortgageIdentifier) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "cancelMortgage",
-            "iban", iban,
-            "mortgageIdentifier", mortgageIdentifier,
-            "user", userIdentifier,
-            "date", world.getCurrentDateTime().toDate()));
-    }
-
-    private void publishDeclineMortgageInstallment(Mortgage mortgage, BigDecimal installmentAmount) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "declineMortgageInstallment",
-            "mortgageIdentifier", mortgage.getIdentifier(),
-            "iban", mortgage.getIban(),
-            "totalAmount", convertMoneyToJson(mortgage.getTotalAmount()),
-            "installmentAmount", convertMoneyToJson(installmentAmount),
-            "totalAmortizedAmount", convertMoneyToJson(mortgage.getAmortizedAmount()),
-            "date", world.getCurrentDateTime().toDate()));
     }
 
     private Map<String, Account> accounts = new HashMap<>();
@@ -233,4 +151,12 @@ public class Bank {
     private int mortgageIdentifier = 0;
 
     private World world;
+
+    private BankEventPublisher bankEventPublisher;
+
+    private AccountEventPublisher accountEventPublisher;
+
+    private MortgageEventPublisher mortgageEventPublisher;
+
+    private DebitCardEventPublisher debitCardEventPublisher;
 }

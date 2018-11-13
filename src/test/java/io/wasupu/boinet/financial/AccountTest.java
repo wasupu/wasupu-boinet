@@ -2,6 +2,7 @@ package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
+import io.wasupu.boinet.financial.eventPublisher.AccountEventPublisher;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class AccountTest {
     @Test
     public void it_should_withdraw_money_from_account() {
         account.deposit(new BigDecimal(10));
-        account.withdraw(new BigDecimal(3));
+        account.withdrawal(new BigDecimal(3));
         assertEquals("The balance of the account is not the expected",
             new BigDecimal(7),
             account.getBalance());
@@ -59,12 +60,12 @@ public class AccountTest {
     public void it_should_publish_an_event_when_withdraw_money() {
         var amount = new BigDecimal(10);
         account.deposit(new BigDecimal(100));
-        account.withdraw(amount);
+        account.withdrawal(amount);
 
         var expectedBalance = new BigDecimal(90);
 
         verify(eventPublisher, atLeastOnce()).publish(Map.of(
-            "eventType", "withdraw",
+            "eventType", "withdrawal",
             "iban", IBAN,
             "amount", convertMoneyToJson(amount),
             "balance", convertMoneyToJson(expectedBalance),
@@ -73,7 +74,7 @@ public class AccountTest {
 
     @Before
     public void setupAccount() {
-        account = new Account(IBAN, world);
+        account = new Account(IBAN, new AccountEventPublisher(world));
         when(world.getCurrentDateTime()).thenReturn(CURRENT_DATE);
     }
 

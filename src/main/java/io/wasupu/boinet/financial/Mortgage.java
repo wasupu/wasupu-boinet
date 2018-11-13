@@ -1,11 +1,9 @@
 package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.financial.eventPublisher.MortgageEventPublisher;
 
 import java.math.BigDecimal;
-import java.util.Map;
-
-import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 
 public class Mortgage {
 
@@ -13,8 +11,9 @@ public class Mortgage {
         this.mortgageIdentifier = mortgageIdentifier;
         this.totalAmount = totalAmount;
         this.iban = iban;
-        this.world = world;
         this.userIdentifier = userIdentifier;
+        this.mortgageEventPublisher = new MortgageEventPublisher(world);
+
     }
 
     public String getIban() {
@@ -44,14 +43,7 @@ public class Mortgage {
     public void amortize(BigDecimal amount) {
         amortizedAmount = amortizedAmount.add(amount);
 
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "payMortgageInstallment",
-            "mortgageIdentifier", mortgageIdentifier,
-            "iban", iban,
-            "totalAmount", convertMoneyToJson(totalAmount),
-            "installmentAmount", convertMoneyToJson(amount),
-            "totalAmortizedAmount", convertMoneyToJson(amortizedAmount),
-            "date", world.getCurrentDateTime().toDate()));
+        mortgageEventPublisher.publishAmortization(amount, this);
     }
 
     private BigDecimal totalAmount;
@@ -62,7 +54,7 @@ public class Mortgage {
 
     private String iban;
 
-    private World world;
-
     private String userIdentifier;
+
+    private MortgageEventPublisher mortgageEventPublisher;
 }

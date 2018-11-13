@@ -5,6 +5,7 @@ import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
+import io.wasupu.boinet.financial.eventPublisher.AccountEventPublisher;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
@@ -71,7 +72,7 @@ public class BankTest {
         var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
 
-        verify(firstAccount).withdraw(amount);
+        verify(firstAccount).withdrawal(amount);
         verify(secondAccount).deposit(amount);
     }
 
@@ -85,7 +86,7 @@ public class BankTest {
         var amount = new BigDecimal(10);
         bank.transfer(firstIban, secondIban, amount);
 
-        verify(firstAccount, never()).withdraw(amount);
+        verify(firstAccount, never()).withdrawal(amount);
         verify(secondAccount, never()).deposit(amount);
     }
 
@@ -188,7 +189,7 @@ public class BankTest {
 
         bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount).withdraw(installmentAmount);
+        verify(firstAccount).withdrawal(installmentAmount);
         verify(mortgage).amortize(installmentAmount);
     }
 
@@ -206,7 +207,7 @@ public class BankTest {
 
         bank.payMortgage(mortgageId, amount);
 
-        verify(firstAccount).withdraw(new BigDecimal(1000));
+        verify(firstAccount).withdrawal(new BigDecimal(1000));
         verify(mortgage).amortize(new BigDecimal(1000));
     }
 
@@ -225,7 +226,7 @@ public class BankTest {
 
         bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount, never()).withdraw(installmentAmount);
+        verify(firstAccount, never()).withdrawal(installmentAmount);
         verify(mortgage, never()).amortize(installmentAmount);
     }
 
@@ -270,7 +271,7 @@ public class BankTest {
 
         bank.payMortgage(mortgageId, installmentAmount);
 
-        verify(firstAccount).withdraw(new BigDecimal("50"));
+        verify(firstAccount).withdrawal(new BigDecimal("50"));
         verify(mortgage).amortize(new BigDecimal("50"));
     }
 
@@ -310,7 +311,7 @@ public class BankTest {
         bank.payReceipt(RECEIPT_ID, ReceiptType.POWER_SUPPLY, receiptAmount, person, company);
 
         verify(secondAccount).deposit(receiptAmount);
-        verify(firstAccount).withdraw(receiptAmount);
+        verify(firstAccount).withdrawal(receiptAmount);
     }
 
     @Test
@@ -402,8 +403,8 @@ public class BankTest {
 
     @Before
     public void setupAccount() throws Exception {
-        whenNew(Account.class).withArguments(IBAN, world).thenReturn(firstAccount);
-        whenNew(Account.class).withArguments(SECOND_IBAN, world).thenReturn(secondAccount);
+        whenNew(Account.class).withArguments(eq(IBAN), any(AccountEventPublisher.class)).thenReturn(firstAccount);
+        whenNew(Account.class).withArguments(eq(SECOND_IBAN), any(AccountEventPublisher.class)).thenReturn(secondAccount);
     }
 
     @Before
