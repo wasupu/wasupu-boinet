@@ -230,6 +230,7 @@ public class BankTest {
         bank.payMortgage(mortgageId, installmentAmount);
 
         verify(firstCurrentAccount).withdraw(installmentAmount);
+        verify(treasuryAccount).deposit(installmentAmount);
         verify(mortgage).amortize(installmentAmount);
     }
 

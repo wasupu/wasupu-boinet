@@ -135,6 +135,7 @@ public class Bank {
         }
 
         account.withdraw(installmentAmount);
+        treasuryAccount.deposit(installmentAmount);
         mortgage.amortize(installmentAmount);
     }
 
