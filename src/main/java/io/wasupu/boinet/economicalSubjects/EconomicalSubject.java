@@ -21,8 +21,6 @@ public abstract class EconomicalSubject {
         this.zipCode = address.zipCode();
 
         coordinates = this.getWorld().getGPS().coordinates();
-        this.latitude = coordinates.getLeft().toString();
-        this.longitude = coordinates.getRight().toString();
 
         world.listenTicks(this::tick);
     }
@@ -118,13 +116,6 @@ public abstract class EconomicalSubject {
         return coordinates;
     }
 
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
 
     private String iban;
 
@@ -136,9 +127,6 @@ public abstract class EconomicalSubject {
 
     private World world;
 
-    private String latitude;
-
-    private String longitude;
 
     private String fullAddress;
 

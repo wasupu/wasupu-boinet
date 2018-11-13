@@ -15,7 +15,6 @@ public class Person extends EconomicalSubject {
         super(identifier, world);
 
         this.name = faker.name().fullName();
-        this.cellPhone = faker.phoneNumber().cellPhone();
     }
 
     @Override
@@ -67,8 +66,6 @@ public class Person extends EconomicalSubject {
     private Boolean employed = FALSE;
 
     private String name;
-
-    private final String cellPhone;
 
     private Company company;
 
