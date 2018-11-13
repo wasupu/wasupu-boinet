@@ -9,20 +9,10 @@ import java.util.Map;
 
 import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 
-public class BankEventPublisher {
+public class UserEventPublisher {
 
-    public BankEventPublisher(World world){
+    public UserEventPublisher(World world){
         this.world = world;
-    }
-
-    public void publishReceiptPayment(String receiptId, BigDecimal amount, String companyIdentifier, ReceiptType receiptType) {
-        world.getEventPublisher().publish(Map.of(
-            "eventType", "acceptReceipt",
-            "receiptId", receiptId,
-            "amount", convertMoneyToJson(amount),
-            "details", receiptType.toString().toLowerCase(),
-            "company", companyIdentifier,
-            "date", world.getCurrentDateTime().toDate()));
     }
 
 

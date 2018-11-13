@@ -4,10 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
-import io.wasupu.boinet.financial.eventPublisher.AccountEventPublisher;
-import io.wasupu.boinet.financial.eventPublisher.BankEventPublisher;
-import io.wasupu.boinet.financial.eventPublisher.DebitCardEventPublisher;
-import io.wasupu.boinet.financial.eventPublisher.MortgageEventPublisher;
+import io.wasupu.boinet.financial.eventPublisher.*;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,10 +16,12 @@ public class Bank {
 
     public Bank(World world) {
         this.world = world;
-        this.bankEventPublisher = new BankEventPublisher(world);
+
+        this.bankEventPublisher = new ReceiptEventPublisher(world);
         this.accountEventPublisher = new AccountEventPublisher(world);
         this.mortgageEventPublisher = new MortgageEventPublisher(world);
         this.debitCardEventPublisher = new DebitCardEventPublisher(world);
+        this.userEventPublisher = new UserEventPublisher(world);
     }
 
     public String contractAccount(String userIdentifier) {
@@ -127,7 +126,7 @@ public class Bank {
     }
 
     public void registerUser(EconomicalSubject subject) {
-        bankEventPublisher.publishRegisterUserEvent(subject);
+        userEventPublisher.publishRegisterUserEvent(subject);
     }
 
     public Boolean existMortgage(String mortgageIdentifier) {
@@ -152,11 +151,13 @@ public class Bank {
 
     private World world;
 
-    private BankEventPublisher bankEventPublisher;
+    private ReceiptEventPublisher bankEventPublisher;
 
     private AccountEventPublisher accountEventPublisher;
 
     private MortgageEventPublisher mortgageEventPublisher;
 
     private DebitCardEventPublisher debitCardEventPublisher;
+
+    private UserEventPublisher userEventPublisher;
 }
