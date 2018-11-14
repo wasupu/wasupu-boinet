@@ -1,6 +1,8 @@
 package io.wasupu.boinet;
 
+import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.eventPublisher.LogEventPublisher;
+import io.wasupu.boinet.eventPublisher.StreamByEventType;
 import io.wasupu.boinet.eventPublisher.StreamEventPublisher;
 
 import java.util.Arrays;
@@ -27,7 +29,7 @@ public class Main {
         var streamServiceNamespace = findArgument("--stream-service-namespace", args);
 
         var eventPublisher = (streamServiceApiKey.isPresent() && streamServiceNamespace.isPresent()) ?
-            new StreamEventPublisher(CARD_STREAM_ID, streamServiceApiKey.get(), streamServiceNamespace.get()) :
+            createEventTypePublisher(streamServiceApiKey.get(), streamServiceNamespace.get()) :
             new LogEventPublisher();
 
         var world = new World(eventPublisher);
@@ -41,6 +43,13 @@ public class Main {
             .map(argument -> argument.replaceFirst(argumentName + "=", ""))
             .filter(argumentValue -> !argumentValue.isEmpty())
             .findFirst();
+    }
+
+    private static EventPublisher createEventTypePublisher(String streamServiceApiKey, String streamServiceNamespace) {
+        var streamByEventType = new StreamByEventType();
+        streamByEventType.register("", new StreamEventPublisher(CARD_STREAM_ID, streamServiceApiKey, streamServiceNamespace));
+
+        return streamByEventType;
     }
 
     private static final String CARD_STREAM_ID = "cardMovementEventStream";
