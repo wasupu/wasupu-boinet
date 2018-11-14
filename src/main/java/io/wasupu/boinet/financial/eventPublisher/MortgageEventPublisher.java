@@ -14,7 +14,7 @@ public class MortgageEventPublisher {
         this.world = world;
     }
 
-    public void publishAmortization(BigDecimal amount, Mortgage mortgage) {
+    public void publisPayMortgageInstallment(BigDecimal amount, Mortgage mortgage) {
         world.getEventPublisher().publish(Map.of(
             "eventType", "payMortgageInstallment",
             "mortgageIdentifier", mortgage.getIdentifier(),

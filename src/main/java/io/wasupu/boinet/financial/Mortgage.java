@@ -43,7 +43,7 @@ public class Mortgage {
     public void amortize(BigDecimal amount) {
         amortizedAmount = amortizedAmount.add(amount);
 
-        mortgageEventPublisher.publishAmortization(amount, this);
+        mortgageEventPublisher.publisPayMortgageInstallment(amount, this);
     }
 
     private BigDecimal totalAmount;
