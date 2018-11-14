@@ -2,6 +2,7 @@ package io.wasupu.boinet.eventPublisher;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class StreamByEventType implements EventPublisher {
 
@@ -10,7 +11,9 @@ public class StreamByEventType implements EventPublisher {
     }
 
     public void publish(Map<String, Object> event) {
-        eventPublishers.get(event.get("eventType")).publish(event);
+
+        Optional.ofNullable(eventPublishers.get(event.get("eventType")))
+            .ifPresent(eventPublisher -> eventPublisher.publish(event));
     }
 
     private Map<String, EventPublisher> eventPublishers = new HashMap<>();

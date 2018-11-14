@@ -2,19 +2,23 @@ package io.wasupu.boinet.eventPublisher;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Thread.sleep;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class StreamEventPublisher implements EventPublisher {
@@ -23,6 +27,7 @@ public class StreamEventPublisher implements EventPublisher {
         this.streamServiceApiKey = streamServiceApiKey;
         this.streamServiceNamespace = streamServiceNamespace;
         this.streamId = streamId;
+        this.client = buildClient();
     }
 
     @Override
@@ -70,7 +75,7 @@ public class StreamEventPublisher implements EventPublisher {
     }
 
     private Invocation.Builder buildRequest() {
-        return buildClient()
+        return client
             .target(streamServiceNamespace)
             .path(String.format("/streams/%s:putRecordBatch", streamId))
             .request()
@@ -79,7 +84,37 @@ public class StreamEventPublisher implements EventPublisher {
     }
 
     private Client buildClient() {
-        return ClientBuilder.newClient();
+        TrustManager[] noopTrustManager = new TrustManager[]{
+            new X509TrustManager() {
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                @Override
+                public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                }
+            }
+        };
+
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getInstance("ssl");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            sc.init(null, noopTrustManager, null);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
+        return ClientBuilder.newBuilder().sslContext(sc).build();
     }
 
     private String streamServiceApiKey;
@@ -94,5 +129,7 @@ public class StreamEventPublisher implements EventPublisher {
     private static final Integer BATCH_SIZE = 50;
 
     private String streamId;
+
+    private Client client;
 
 }
