@@ -24,7 +24,7 @@ public class BuyHouse extends EconomicalSubjectBehaviour {
         try {
             contractAMortgage(person);
             company.buyHouse(person.getIban(), amount);
-        } catch (MortgageRejected mortgageRejected) {
+        } catch (MortgageRejected ignored) {
         }
     }
 

@@ -216,12 +216,13 @@ public class BankTest {
 
         try {
             bank.contractMortgage(USER_IDENTIFIER, personIban, bigMortgageAmount);
-        } catch (MortgageRejected e) {
+        } catch (MortgageRejected ignored) {
         }
 
         verifyPublishedEvent(Map.of(
             "eventType", "rejectMortgage",
             "mortgageAmount", convertMoneyToJson(bigMortgageAmount),
+            "iban", personIban,
             "user", USER_IDENTIFIER,
             "date", CURRENT_DATE.toDate()));
     }

@@ -24,7 +24,7 @@ public class World {
     public World(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
         this.currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
-        this.bank = new Bank(this, new BigDecimal(SEED_CAPITAL));
+        this.bank = new Bank(this, SEED_CAPITAL);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -117,7 +117,7 @@ public class World {
 
     private BusinessIncubator businessIncubator = new BusinessIncubator();
 
-    private static final String SEED_CAPITAL = "5000000";
+    private static final BigDecimal SEED_CAPITAL = new BigDecimal(5_000_000);
 
 }
 

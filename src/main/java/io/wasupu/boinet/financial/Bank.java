@@ -106,23 +106,23 @@ public class Bank {
         receiptEventPublisher.publishReceiptPayment(receiptId, receiptAmount, company.getIdentifier(), receiptType, person.getIban());
     }
 
-    public String contractMortgage(String userIdentifier, String iban, BigDecimal amount) {
+    public String contractMortgage(String userIdentifier, String personIban, BigDecimal amount) {
 
         if (treasuryAccount.getBalance().compareTo(amount) < 0) {
-            mortgageEventPublisher.publishRejectMortgage(userIdentifier, amount);
+            mortgageEventPublisher.publishRejectMortgage(userIdentifier, personIban, amount);
 
             throw new MortgageRejected();
         }
 
         var mortgageId = getNewMortgageId();
 
-        mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, iban, world));
+        mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, personIban, world));
 
-        var customerAccount = accounts.get(iban);
+        var customerAccount = accounts.get(personIban);
         treasuryAccount.withdraw(amount);
         customerAccount.deposit(amount);
 
-        mortgageEventPublisher.publishContractMortgage(userIdentifier, iban, mortgageId, amount);
+        mortgageEventPublisher.publishContractMortgage(userIdentifier, personIban, mortgageId, amount);
 
         return mortgageId;
     }

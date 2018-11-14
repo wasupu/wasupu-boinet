@@ -27,20 +27,7 @@ public class StreamEventPublisher implements EventPublisher {
 
     @Override
     public void publish(Map<String, Object> event) {
-        logRelevantEvents(event);
         publishInStreamService(event);
-    }
-
-    private void logRelevantEvents(Map<String, Object> event) {
-        if (event.get("eventType") == null) return;
-
-        try {
-            sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        logger.info(appendEntries(event), streamId);
     }
 
     private void publishInStreamService(Map<String, Object> event) {

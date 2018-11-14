@@ -30,7 +30,7 @@ import static io.wasupu.boinet.PollingResultVerifier.retry;
 public class StreamEventPublisherTest {
 
     @Test
-    public void shouldPublishABatchOfEvents()  {
+    public void it_should_publish_a_batch_of_events() {
         var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
@@ -47,7 +47,7 @@ public class StreamEventPublisherTest {
     }
 
     @Test
-    public void shouldPublishABatchWithTheRightEvents() {
+    public void it_should_publish_a_batch_with_the_right_events() {
         var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
@@ -64,7 +64,7 @@ public class StreamEventPublisherTest {
     }
 
     @Test
-    public void shouldPublishTwoBatchOfEvents()  {
+    public void it_should_publish_two_batch_of_events() {
         var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
@@ -81,7 +81,7 @@ public class StreamEventPublisherTest {
     }
 
     @Test
-    public void shouldPublishTheTwoRightBatchOfEvents() {
+    public void it_should_publish_the_two_right_batch_of_events() {
         var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
