@@ -59,7 +59,7 @@ function createEcsTaskDefinition() {
 
     awsCli ecs register-task-definition                                             \
         --family ${family}                                                          \
-        --execution-role-arn arn:aws:iam::809230366679:role/ecsTaskExecutionRole    \
+        --execution-role-arn arn:aws:iam::{{{accountId}}}:role/ecsTaskExecutionRole    \
         --cli-input-json file:///${taskDefinitionFile}
 
     sed -i.original "s~${awsDockerRegistry}~\{\{AWS_DOCKER_REGISTRY\}\}~" ${taskDefinitionFile}
@@ -82,5 +82,6 @@ function runEcsTask() {
         --cluster ${clusterName}                \
         --task-definition ${taskDefinitionName} \
         --count 1                               \
-        --launch-type FARGATE
+        --launch-type FARGATE                   \
+        --network-configuration "awsvpcConfiguration={subnets=[{{{subnets}}}],securityGroups=[{{{security-groups}}}],assignPublicIp=DISABLED}"
 }
