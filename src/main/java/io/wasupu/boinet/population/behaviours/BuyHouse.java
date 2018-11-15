@@ -32,6 +32,12 @@ public class BuyHouse extends EconomicalSubjectBehaviour {
         var bank = getWorld().getBank();
         var mortgageId = bank.contractMortgage(person.getIdentifier(), person.getIban(), amount);
 
+        payTheMortgageEveryMonth(person);
+
+        person.setMortgageIdentifier(mortgageId);
+    }
+
+    private void payTheMortgageEveryMonth(Person person) {
         person.addBehaviour(new WhenBalanceExceedsThreshold(getWorld(), person,
             new BigDecimal("50"),
             new Monthly(getWorld(),
@@ -40,7 +46,6 @@ public class BuyHouse extends EconomicalSubjectBehaviour {
                 new PayMortgage(getWorld(),
                     person,
                     generateRandomPrice.apply(500, 800)))));
-        person.setMortgageIdentifier(mortgageId);
     }
 
     private BigDecimal amount = new BigDecimal(240000);

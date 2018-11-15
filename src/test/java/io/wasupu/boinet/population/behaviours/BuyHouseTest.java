@@ -21,13 +21,6 @@ public class BuyHouseTest {
 
     @Test
     public void it_should_contract_a_mortgage_in_first_tick() throws MortgageRejected {
-        when(person.getAge()).thenReturn(0L);
-        when(world.getBank()).thenReturn(bank);
-
-        when(person.getIban()).thenReturn(IBAN);
-        when(person.getIdentifier()).thenReturn(IDENTIFIER);
-        when(bank.contractMortgage(IDENTIFIER, IBAN, AMOUNT)).thenReturn(MORTGAGE_IDENTIFIER);
-
         buyHouse.tick();
 
         verify(person).setMortgageIdentifier(MORTGAGE_IDENTIFIER);
@@ -35,13 +28,6 @@ public class BuyHouseTest {
 
     @Test
     public void it_should_buy_house_with_mortgage_amount() throws MortgageRejected {
-        when(person.getAge()).thenReturn(0L);
-        when(world.getBank()).thenReturn(bank);
-
-        when(person.getIban()).thenReturn(IBAN);
-        when(person.getIdentifier()).thenReturn(IDENTIFIER);
-        when(bank.contractMortgage(IDENTIFIER, IBAN, AMOUNT)).thenReturn(MORTGAGE_IDENTIFIER);
-
         buyHouse.tick();
 
         verify(company).buyHouse(IBAN, AMOUNT);
@@ -59,6 +45,19 @@ public class BuyHouseTest {
     @Before
     public void setupContractDebitCard() {
         buyHouse = new BuyHouse(world, person, company);
+    }
+
+    @Before
+    public void setupPerson(){
+        when(person.getAge()).thenReturn(0L);
+        when(person.getIban()).thenReturn(IBAN);
+        when(person.getIdentifier()).thenReturn(IDENTIFIER);
+    }
+
+    @Before
+    public void setupBank(){
+        when(world.getBank()).thenReturn(bank);
+        when(bank.contractMortgage(IDENTIFIER, IBAN, AMOUNT)).thenReturn(MORTGAGE_IDENTIFIER);
     }
 
     @Mock
