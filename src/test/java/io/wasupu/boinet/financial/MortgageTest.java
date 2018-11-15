@@ -13,13 +13,9 @@ import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
-import static io.wasupu.boinet.financial.Money.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MortgageTest {

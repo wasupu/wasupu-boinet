@@ -21,10 +21,10 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class World {
 
-    public World(EventPublisher eventPublisher) {
+    public World(EventPublisher eventPublisher, BigDecimal seedCapital) {
         this.eventPublisher = eventPublisher;
         this.currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
-        this.bank = new Bank(this, SEED_CAPITAL);
+        this.bank = new Bank(this, seedCapital);
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -117,7 +117,7 @@ public class World {
 
     private BusinessIncubator businessIncubator = new BusinessIncubator();
 
-    private static final BigDecimal SEED_CAPITAL = new BigDecimal(5_000_000);
+   
 
 }
 

@@ -2,11 +2,9 @@ package io.wasupu.boinet.eventPublisher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.google.common.collect.ImmutableMap;
 import com.xebialabs.restito.semantics.Call;
 import com.xebialabs.restito.semantics.Condition;
 import com.xebialabs.restito.server.StubServer;
-import io.wasupu.boinet.eventPublisher.StreamEventPublisher;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.After;
 import org.junit.Before;

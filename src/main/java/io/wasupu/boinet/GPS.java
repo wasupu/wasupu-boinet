@@ -1,7 +1,6 @@
 package io.wasupu.boinet;
 
 import com.spatial4j.core.context.SpatialContext;
-import com.spatial4j.core.shape.Point;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Random;

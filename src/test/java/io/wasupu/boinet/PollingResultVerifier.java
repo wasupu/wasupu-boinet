@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static java.lang.Thread.*;
+import static java.lang.Thread.sleep;
 
 public class PollingResultVerifier<T> {
 

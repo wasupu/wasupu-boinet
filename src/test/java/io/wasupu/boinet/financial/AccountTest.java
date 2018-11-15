@@ -16,9 +16,7 @@ import java.util.Map;
 
 import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountTest {

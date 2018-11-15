@@ -1,13 +1,9 @@
 package io.wasupu.boinet.financial.eventPublisher;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 
-import java.math.BigDecimal;
 import java.util.Map;
-
-import static io.wasupu.boinet.financial.Money.convertMoneyToJson;
 
 public class UserEventPublisher {
 

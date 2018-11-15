@@ -7,7 +7,6 @@ import com.google.common.testing.EqualsTester;
 import io.wasupu.boinet.GPS;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
-import io.wasupu.boinet.economicalSubjects.EconomicalSubjectType;
 import io.wasupu.boinet.financial.Bank;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;

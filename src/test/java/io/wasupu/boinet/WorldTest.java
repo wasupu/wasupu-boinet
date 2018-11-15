@@ -176,7 +176,7 @@ public class WorldTest {
             .thenReturn(firstPerson, secondPerson);
 
         whenNew(Bank.class).withAnyArguments().thenReturn(bank);
-        world = new World(eventPublisher);
+        world = new World(eventPublisher, SEED_CAPITAL);
     }
     @Mock(name = "firstPerson")
     private Person firstPerson;
@@ -205,5 +205,7 @@ public class WorldTest {
     private static final String IBAN = "";
 
     private static final String OTHER_IBAN = "";
+
+    private static final BigDecimal SEED_CAPITAL = new BigDecimal(5_000_000);
 
 }

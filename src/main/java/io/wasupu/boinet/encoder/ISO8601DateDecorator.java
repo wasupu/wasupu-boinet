@@ -1,7 +1,6 @@
 package io.wasupu.boinet.encoder;
 
 import com.fasterxml.jackson.databind.MappingJsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import net.logstash.logback.decorate.JsonFactoryDecorator;
 

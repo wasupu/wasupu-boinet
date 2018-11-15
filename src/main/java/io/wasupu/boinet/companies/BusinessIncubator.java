@@ -3,8 +3,8 @@ package io.wasupu.boinet.companies;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractCurrentAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
-import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
+import io.wasupu.boinet.financial.Bank;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
