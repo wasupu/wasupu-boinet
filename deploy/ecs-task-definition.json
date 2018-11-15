@@ -1,15 +1,15 @@
 {
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048",
     "containerDefinitions": [
         {
             "name": "boinet",
             "image": "{{AWS_DOCKER_REGISTRY}}/boinet:latest",
-            "cpu": 1024,
-            "memory": 1500,
             "essential": true,
-            "portMappings": [],
-            "environment": [],
-            "links": [],
-            "extraHosts": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -23,7 +23,8 @@
                 "--companies={{COMPANIES}}",
                 "--stream-service-api-key={{STREAM_SERVICE_API_KEY}}",
                 "--stream-service-namespace={{STREAM_SERVICE_NAMESPACE}}",
-                "--number-of-ticks={{NUMBER_OF_TICKS}}"]
+                "--number-of-ticks={{NUMBER_OF_TICKS}}"
+            ]
         }
     ]
 }
