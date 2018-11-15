@@ -21,6 +21,7 @@
             "command": [
                 "--population={{POPULATION}}",
                 "--companies={{COMPANIES}}",
+                "--seed-capital={{SEED_CAPITAL}}",
                 "--stream-service-api-key={{STREAM_SERVICE_API_KEY}}",
                 "--stream-service-namespace={{STREAM_SERVICE_NAMESPACE}}",
                 "--number-of-ticks={{NUMBER_OF_TICKS}}"
