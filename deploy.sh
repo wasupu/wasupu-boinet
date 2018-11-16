@@ -4,38 +4,37 @@ set -o pipefail
 set -o allexport
 [[ "${DEBUG}" == 'true' ]] && set -o xtrace
 
-if [[ $# -gt 7 || $# -lt 4 ]]; then
-    echo "Usage: ./deploy.sh <AWS_DOCKER_REGISTRY> <POPULATION> <COMPANIES> <SEED_CAPITAL> [<NUMBER_OF_TICKS>]"
-    echo "Usage: ./deploy.sh <AWS_DOCKER_REGISTRY> <POPULATION> <COMPANIES> <SEED_CAPITAL> [<STREAM_SERVICE_API_KEY> <STREAM_SERVICE_NAMESPACE>] [<NUMBER_OF_TICKS>]"
+if [[ $# -gt 4 || $# -lt 3 ]]; then
+    echo "Usage: ./deploy.sh <POPULATION> <COMPANIES> <SEED_CAPITAL> [<NUMBER_OF_TICKS>]"
     exit 1
 fi
-AWS_DOCKER_REGISTRY="$1"
-POPULATION="$2"
-COMPANIES="$3"
-SEED_CAPITAL="$4"
 
-if [[ $# -gt 5 ]]; then
-    STREAM_SERVICE_API_KEY="$5"
-    STREAM_SERVICE_NAMESPACE="$6"
+POPULATION="$1"
+COMPANIES="$2"
+SEED_CAPITAL="$3"
+if [[ $# -eq 4 ]]; then
+    NUMBER_OF_TICKS="$4"
 fi
 
-if [[ $# -eq 5 ]]; then
-    NUMBER_OF_TICKS="$5"
-elif [[ $# -eq 7 ]]; then
-    NUMBER_OF_TICKS="$7"
-fi
-
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source ${CURRENT_DIR}/deploy/aws-tools.sh
 loginDockerRegistry
+: ${AWS_DOCKER_REGISTRY:?"AWS_DOCKER_REGISTRY must be set"}
 mvn docker:push -Ddocker.registry=${AWS_DOCKER_REGISTRY}
 
-AWS_LOGS_GROUP="boinet-container-logs"
+readonly AWS_LOGS_GROUP="boinet-container-logs"
 createCloudwatchLogsGroup ${AWS_LOGS_GROUP}
 
-CLUSTER_NAME="boinet"
-TASK_DEFINITION_NAME="boinet-task"
-TASK_DEFINITION_FILE="${CURRENT_DIR}/deploy/ecs-task-definition.json"
-createEcsTaskDefinition ${TASK_DEFINITION_NAME} ${TASK_DEFINITION_FILE} ${AWS_DOCKER_REGISTRY} ${AWS_LOGS_GROUP} ${AWS_DEFAULT_REGION} ${POPULATION} ${COMPANIES} ${SEED_CAPITAL} ${STREAM_SERVICE_API_KEY} ${STREAM_SERVICE_NAMESPACE} ${NUMBER_OF_TICKS}
+readonly CLUSTER_NAME="boinet"
+readonly TASK_DEFINITION_NAME="boinet-task"
+readonly TASK_DEFINITION_FILE="${CURRENT_DIR}/deploy/ecs-task-definition.json"
+registerTaskDefinition ${TASK_DEFINITION_NAME}                         \
+                       ${TASK_DEFINITION_FILE}                         \
+                       ${AWS_LOGS_GROUP}                               \
+                       ${POPULATION}                                   \
+                       ${COMPANIES}                                    \
+                       ${SEED_CAPITAL}                                 \
+                       ${NUMBER_OF_TICKS}
+
 runEcsTask ${CLUSTER_NAME} ${TASK_DEFINITION_NAME}

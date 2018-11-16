@@ -7,6 +7,16 @@
 * Maven
 * Docker
 
+## Environment variables required for deployment:
+
+* AWS_DEFAULT_REGION
+* AWS_DOCKER_REGISTRY
+* STREAM_SERVICE_TRUSTSTORE_PASSPHRASE
+* STREAM_SERVICE_KEYSTORE_PASSPHRASE
+* ECS_TASK_EXECUTION_ROLE_ARN
+* ECS_TASK_SUBNETS
+* ECS_TASK_SECURITY_GROUPS
+
 ## How to
 
 * To build the project:
