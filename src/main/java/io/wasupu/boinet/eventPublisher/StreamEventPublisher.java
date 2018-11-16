@@ -2,31 +2,30 @@ package io.wasupu.boinet.eventPublisher;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.collect.ImmutableList;
+import org.glassfish.jersey.SslConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.io.ByteStreams.toByteArray;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class StreamEventPublisher implements EventPublisher {
 
-    public StreamEventPublisher(String streamId, String streamServiceApiKey, String streamServiceNamespace) {
-        this.streamServiceApiKey = streamServiceApiKey;
+    public StreamEventPublisher(String streamId, String streamServiceNamespace, String serverKeyStorePassphrase, String clientKeyStorePassphrase) {
         this.streamServiceNamespace = streamServiceNamespace;
         this.streamId = streamId;
+        this.serverKeyStorePassphrase = serverKeyStorePassphrase;
+        this.clientKeyStorePassphrase = clientKeyStorePassphrase;
         this.client = buildClient();
     }
 
@@ -39,6 +38,12 @@ public class StreamEventPublisher implements EventPublisher {
         bufferEvent(formatEvent(event));
 
         if (eventsBuffer.size() >= BATCH_SIZE) {
+            try {
+                MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             buildRequest()
                 .async()
                 .post(Entity.entity(Map.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
@@ -79,45 +84,26 @@ public class StreamEventPublisher implements EventPublisher {
             .target(streamServiceNamespace)
             .path(String.format("/streams/%s:putRecordBatch", streamId))
             .request()
-            .header("API-KEY", streamServiceApiKey)
             .accept(MediaType.APPLICATION_JSON);
     }
 
     private Client buildClient() {
-        TrustManager[] noopTrustManager = new TrustManager[]{
-            new X509TrustManager() {
-
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                @Override
-                public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-                }
-
-                @Override
-                public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-                }
-            }
-        };
-
-        SSLContext sc = null;
         try {
-            sc = SSLContext.getInstance("ssl");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        try {
-            sc.init(null, noopTrustManager, null);
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
+            var sslContext = SslConfigurator.newInstance()
+                .trustStoreBytes(toByteArray(getClass().getClassLoader().getResource("truststore.p12").openStream()))
+                .trustStorePassword(serverKeyStorePassphrase)
+                .keyStoreBytes(toByteArray(getClass().getClassLoader().getResource("keystore.p12").openStream()))
+                .keyPassword(clientKeyStorePassphrase).createSSLContext();
 
-        return ClientBuilder.newBuilder().sslContext(sc).build();
+            return ClientBuilder.newBuilder()
+                .sslContext(sslContext)
+                .build();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    private String streamServiceApiKey;
+
     private String streamServiceNamespace;
 
     private static Logger logger = LoggerFactory.getLogger(StreamEventPublisher.class);
@@ -132,4 +118,7 @@ public class StreamEventPublisher implements EventPublisher {
 
     private Client client;
 
+    private String serverKeyStorePassphrase;
+
+    private String clientKeyStorePassphrase;
 }

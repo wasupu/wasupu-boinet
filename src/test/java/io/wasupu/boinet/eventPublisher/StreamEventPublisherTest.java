@@ -29,7 +29,7 @@ public class StreamEventPublisherTest {
 
     @Test
     public void it_should_publish_a_batch_of_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -39,14 +39,13 @@ public class StreamEventPublisherTest {
         retry(() -> verifyHttp(server))
             .subscribe(verifyHttp -> verifyHttp.once(
                 post(EXPECTED_PATH),
-                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
                 withNumberOfRecords(BATCH_SIZE)))
             .run();
     }
 
     @Test
     public void it_should_publish_a_batch_with_the_right_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -56,14 +55,13 @@ public class StreamEventPublisherTest {
         retry(() -> verifyHttp(server))
             .subscribe(verifyHttp -> verifyHttp.once(
                 post(EXPECTED_PATH),
-                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
                 withRecords(eventsBatch)))
             .run();
     }
 
     @Test
     public void it_should_publish_two_batch_of_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -73,14 +71,13 @@ public class StreamEventPublisherTest {
         retry(() -> verifyHttp(server))
             .subscribe(verifyHttp -> verifyHttp.times(2,
                 post(EXPECTED_PATH),
-                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
                 withNumberOfRecords(BATCH_SIZE)))
             .run();
     }
 
     @Test
     public void it_should_publish_the_two_right_batch_of_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_API_KEY, STREAM_SERVICE_NAMESPACE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -90,11 +87,9 @@ public class StreamEventPublisherTest {
         retry(() -> verifyHttp(server))
             .subscribe(verifyHttp -> verifyHttp.once(
                 post(EXPECTED_PATH),
-                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
                 withRecords(eventsBatch.stream().limit(BATCH_SIZE).collect(Collectors.toList()))))
             .subscribe(verifyHttp -> verifyHttp.once(
                 post(EXPECTED_PATH),
-                withHeader("API-KEY", STREAM_SERVICE_API_KEY),
                 withRecords(eventsBatch.stream().skip(BATCH_SIZE).collect(Collectors.toList()))))
             .run();
     }
@@ -144,8 +139,7 @@ public class StreamEventPublisherTest {
 
         whenHttp(server)
             .match(
-                post(EXPECTED_PATH),
-                withHeader("API-KEY", STREAM_SERVICE_API_KEY))
+                post(EXPECTED_PATH))
             .then(status(HttpStatus.CREATED_201));
     }
 
@@ -158,7 +152,8 @@ public class StreamEventPublisherTest {
 
     private static final Integer PORT = 31023;
     private static final String STREAM_ID = "certainEventStream";
-    private static final String STREAM_SERVICE_API_KEY = "apiapi";
+    private static final String SERVER_KEY_STORE_PASSPHRASE = "test";
+    private static final String CLIENT_KEY_STORE_PASSPHRASE = "test";
     private static final String STREAM_SERVICE_NAMESPACE_PATH = "/test/namespace";
     private static final String STREAM_SERVICE_NAMESPACE = String.format("http://127.0.0.1:%s%s", PORT, STREAM_SERVICE_NAMESPACE_PATH);
     private static final String EXPECTED_PATH = String.format("%s/streams/%s:putRecordBatch", STREAM_SERVICE_NAMESPACE_PATH, STREAM_ID);
