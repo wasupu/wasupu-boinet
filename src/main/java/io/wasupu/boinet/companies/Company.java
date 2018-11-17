@@ -28,7 +28,6 @@ public class Company extends EconomicalSubject {
 
     public void tick() {
         paySalary();
-//        payBonus();
 
         super.tick();
     }
@@ -49,13 +48,31 @@ public class Company extends EconomicalSubject {
         getWorld().getBank().transfer(buyerIban, getIban(), amount);
     }
 
-    BigDecimal getEmployeeSalary(Person person) {
+    public void requestSalaryRevision(Person person) {
+        if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal(6000)) < 0) return;
+
+        var salary = employees.get(person);
+
+        var newSalary = salary.add(salary.multiply(new BigDecimal(0.2))).setScale(2, RoundingMode.CEILING);
+
+        employees.put(person, newSalary);
+    }
+
+    public BigDecimal getEmployeeSalary(Person person) {
         return employees.get(person);
     }
 
     public void hire(Person person) {
         employees.put(person, generateSalary());
         person.youAreHired(this);
+    }
+
+    public void payEmployee(Person employee, BigDecimal salary) {
+        if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
+            fire(employee);
+        }
+
+        getWorld().getBank().transfer(getIban(), employee.getIban(), salary);
     }
 
     public int getNumberOfEmployees() {
@@ -67,20 +84,13 @@ public class Company extends EconomicalSubject {
         person.youAreFired();
     }
 
-    public void requestSalaryRevision(Person person) {
-        if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal(6000)) < 0) return;
-
-        var salary = employees.get(person);
-
-        var newSalary = salary.add(salary.multiply(new BigDecimal(0.2)))
-            .setScale(2, RoundingMode.CEILING);
-
-        employees.put(person, newSalary);
-    }
-
     @Override
     public EconomicalSubjectType getType() {
         return COMPANY;
+    }
+
+    public Map<Person, BigDecimal> getEmployees() {
+        return Map.copyOf(employees);
     }
 
     private BigDecimal generateSalary() {
@@ -91,25 +101,6 @@ public class Company extends EconomicalSubject {
         if (!isDayOfMonth(27)) return;
 
         employees.forEach(this::payEmployee);
-    }
-
-    private void payEmployee(Person employee, BigDecimal salary) {
-        if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
-            fire(employee);
-        }
-
-        getWorld().getBank().transfer(getIban(), employee.getIban(), salary);
-    }
-
-    private void payBonus() {
-        if (getAge() < 3) return;
-        if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal("100000")) < 0) return;
-
-        var bonus = getWorld().getBank().getBalance(getIban())
-            .subtract(new BigDecimal("60000"))
-            .divide(new BigDecimal(employees.size()), RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR);
-
-        employees.keySet().forEach(employee -> payEmployee(employee, bonus));
     }
 
     private boolean isDayOfMonth(Integer dayOfMonth) {

@@ -106,20 +106,6 @@ public class CompanyTest {
         assertEquals("The employee not has change its salary", salary, company.getEmployeeSalary(person));
     }
 
-    @Test
-    @Ignore
-    public void it_should_pay_bonus_to_employees_if_company_can() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(100000));
-        when(person.getIban()).thenReturn(OTHER_IBAN);
-
-        company.tick();
-        company.hire(person);
-        company.tick();
-        company.tick();
-        company.tick();
-
-        verify(bank).transfer(IBAN, OTHER_IBAN, new BigDecimal("40000.00"));
-    }
 
     @Test
     public void it_should_not_pay_bonus_to_employees_if_company_can() {
