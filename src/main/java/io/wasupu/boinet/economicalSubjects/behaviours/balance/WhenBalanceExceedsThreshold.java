@@ -1,18 +1,20 @@
 package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
 
 import java.math.BigDecimal;
 
 public class WhenBalanceExceedsThreshold extends EconomicalSubjectBehaviour {
 
     public WhenBalanceExceedsThreshold(World world,
-                                       Person person,
+                                       EconomicalSubject economicalSubject,
                                        BigDecimal threshold,
-                                       EconomicalSubjectBehaviour economicalSubjectBehaviour) {
-        super(world, person);
+                                       Behaviour economicalSubjectBehaviour) {
+        super(world, economicalSubject);
         this.threshold = threshold;
         this.economicalSubjectBehaviour = economicalSubjectBehaviour;
     }
@@ -31,6 +33,6 @@ public class WhenBalanceExceedsThreshold extends EconomicalSubjectBehaviour {
 
     private BigDecimal threshold;
 
-    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
+    private Behaviour economicalSubjectBehaviour;
 
 }

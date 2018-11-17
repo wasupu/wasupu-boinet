@@ -2,10 +2,11 @@ package io.wasupu.boinet.economicalSubjects.behaviours;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
+import io.wasupu.boinet.subjects.Behaviour;
 
 import java.util.UUID;
 
-public abstract class EconomicalSubjectBehaviour {
+public abstract class EconomicalSubjectBehaviour implements Behaviour {
 
     public EconomicalSubjectBehaviour(World world, EconomicalSubject economicalSubject) {
         this.world = world;
@@ -15,8 +16,6 @@ public abstract class EconomicalSubjectBehaviour {
     public String getIdentifier(){
         return identifier;
     }
-
-    public abstract void tick();
 
     public World getWorld() {
         return world;

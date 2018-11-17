@@ -35,7 +35,6 @@ public class CompanyTest {
             .testEquals();
     }
 
-
     @Test
     public void it_should_canbuy_a_product_to_the_company() {
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
@@ -150,7 +149,7 @@ public class CompanyTest {
 
     @Test
     public void it_should_return_company_subject_type() {
-        assertEquals("Returned subject type must be COMPANY", COMPANY, company.getType());
+        assertEquals("Returned subjects type must be COMPANY", COMPANY, company.getType());
     }
 
     @Before

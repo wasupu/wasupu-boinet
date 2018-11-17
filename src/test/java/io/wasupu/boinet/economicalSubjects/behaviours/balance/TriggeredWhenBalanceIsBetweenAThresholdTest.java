@@ -2,14 +2,12 @@ package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
-import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.financial.Bank;
-import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -22,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class TriggeredWhenBalanceIsBetweenAThresholdTest {
 
     @Test
-    public void shouldNotGoToTheCountrysideIfNotWeekendsWhenIHaveMoreThan6000Euro() {
+    public void it_should_not_execute_if_I_have_more_than_6000_euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
@@ -31,25 +29,25 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     }
 
     @Test
-    public void shouldStartGoingToTheCountrysideOnWeekendsWhenIHaveMoreThan6000Euro() {
+    public void it_should_execute_on_weekends_when_I_have_more_than_6000_euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(personBehaviour, atLeastOnce()).tick();
+        verify(behaviour, atLeastOnce()).tick();
     }
 
     @Test
-    public void shouldNotGoToTheCountrysideOnWeekendsWhenIHave3000Euro() {
+    public void it_should_not_execute_on_weekends_when_I_have_3000_euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1000"));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(personBehaviour, never()).tick();
+        verify(behaviour, never()).tick();
     }
 
     @Test
-    public void shouldKeepGoingToTheCountrysideOnWeekendsWhenIHave3000Euro() {
+    public void it_should_keep_execute_on_weekends_when_I_have_3000_euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("6001"));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
@@ -58,21 +56,21 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(personBehaviour, times(2)).tick();
+        verify(behaviour, times(2)).tick();
     }
 
     @Test
-    public void shouldStopGoingToTheCountrysideOnWeekendsWhenIHaveLessOf1000Euro() {
+    public void it_should_stop_execute_on_weekends_when_I_have_less_of_1000_euro() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("999.99"));
 
         triggeredWhenBalanceBetweenAThreshold.tick();
 
-        verify(personBehaviour, never()).tick();
+        verify(behaviour, never()).tick();
     }
 
     @Before
     public void setupBank() {
-        when(person.getIban()).thenReturn(IBAN);
+        when(economicalSubject.getIban()).thenReturn(IBAN);
         when(world.getBank()).thenReturn(bank);
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
@@ -80,14 +78,14 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     @Before
     public void setupGoToCountryside() {
         triggeredWhenBalanceBetweenAThreshold = new TriggeredWhenBalanceBetweenAThreshold(world,
-            person,
+            economicalSubject,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            personBehaviour);
+            behaviour);
     }
 
     @Mock
-    private Person person;
+    private EconomicalSubject economicalSubject;
 
     @Mock
     private World world;
@@ -98,15 +96,10 @@ public class TriggeredWhenBalanceIsBetweenAThresholdTest {
     @Mock
     private Company company;
 
-    private static final String PAN = "12312312312";
-
     private static final String IBAN = "2";
-
-    @Captor
-    private ArgumentCaptor<BigDecimal> pricesCaptor;
 
     private TriggeredWhenBalanceBetweenAThreshold triggeredWhenBalanceBetweenAThreshold;
 
     @Mock
-    private EconomicalSubjectBehaviour personBehaviour;
+    private Behaviour behaviour;
 }

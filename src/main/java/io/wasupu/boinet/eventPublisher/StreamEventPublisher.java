@@ -103,7 +103,6 @@ public class StreamEventPublisher implements EventPublisher {
         }
     }
 
-
     private String streamServiceNamespace;
 
     private static Logger logger = LoggerFactory.getLogger(StreamEventPublisher.class);

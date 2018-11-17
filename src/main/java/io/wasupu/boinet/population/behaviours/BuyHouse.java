@@ -4,7 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Monthly;
+import io.wasupu.boinet.subjects.behaviours.Monthly;
 import io.wasupu.boinet.financial.MortgageRejected;
 import io.wasupu.boinet.population.Person;
 
@@ -41,7 +41,6 @@ public class BuyHouse extends EconomicalSubjectBehaviour {
         person.addBehaviour(new WhenBalanceExceedsThreshold(getWorld(), person,
             new BigDecimal("50"),
             new Monthly(getWorld(),
-                person,
                 28,
                 new PayMortgage(getWorld(),
                     person,

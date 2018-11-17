@@ -1,8 +1,10 @@
 package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,20 +12,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBehaviour {
 
     public TriggeredWhenBalanceBetweenAThreshold(World world,
-                                                 Person person,
+                                                 EconomicalSubject economicalSubject,
                                                  BigDecimal lowerThreshold,
                                                  BigDecimal upperThreshold,
-                                                 EconomicalSubjectBehaviour economicalSubjectBehaviour) {
-        super(world, person);
+                                                 Behaviour behaviour) {
+        super(world, economicalSubject);
 
-        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
+        this.behaviour = behaviour;
         this.lowerThreshold = lowerThreshold;
         this.upperThreshold = upperThreshold;
     }
 
     @Override
     public String getIdentifier() {
-        return economicalSubjectBehaviour.getIdentifier();
+        return behaviour.getIdentifier();
     }
 
     public void tick() {
@@ -35,7 +37,7 @@ public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBeha
         if (!iWasGoingToCountryside.get() && !iHaveMoreThan(upperThreshold)) return;
 
         iWasGoingToCountryside.set(true);
-        economicalSubjectBehaviour.tick();
+        behaviour.tick();
     }
 
     private boolean iHaveLessThan(BigDecimal expectedThreshold) {
@@ -53,7 +55,7 @@ public class TriggeredWhenBalanceBetweenAThreshold extends EconomicalSubjectBeha
     private AtomicBoolean iWasGoingToCountryside = new AtomicBoolean(false);
 
 
-    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
+    private Behaviour behaviour;
 
     private BigDecimal lowerThreshold;
     private BigDecimal upperThreshold;

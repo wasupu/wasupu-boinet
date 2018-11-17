@@ -4,6 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
+import io.wasupu.boinet.subjects.Subject;
 import io.wasupu.boinet.financial.eventPublisher.*;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,10 +13,10 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Bank {
+public class Bank extends Subject {
 
     public Bank(World world, BigDecimal seedCapital) {
-        this.world = world;
+        super("Bank", world);
 
         this.receiptEventPublisher = new ReceiptEventPublisher(world);
         this.accountEventPublisher = new AccountEventPublisher(world);
@@ -116,7 +117,7 @@ public class Bank {
 
         var mortgageId = getNewMortgageId();
 
-        mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, personIban, world));
+        mortgages.put(mortgageId, new Mortgage(mortgageId, userIdentifier, amount, personIban, getWorld()));
 
         var customerAccount = accounts.get(personIban);
         treasuryAccount.withdraw(amount);
@@ -188,8 +189,6 @@ public class Bank {
     private Integer panCounter = 0;
 
     private Integer mortgageCounter = 0;
-
-    private World world;
 
     private ReceiptEventPublisher receiptEventPublisher;
 

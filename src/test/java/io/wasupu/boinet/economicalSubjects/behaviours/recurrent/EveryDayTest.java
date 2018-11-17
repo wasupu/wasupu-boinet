@@ -2,8 +2,8 @@ package io.wasupu.boinet.economicalSubjects.behaviours.recurrent;
 
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
-import io.wasupu.boinet.population.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,28 +16,28 @@ import static org.mockito.Mockito.*;
 public class EveryDayTest {
 
     @Test
-    public void shouldEatEveryTickAfterTwoTicks() {
-        when(person.getAge()).thenReturn(2L);
+    public void it_should_eat_every_tick_after_two_ticks() {
+        when(economicalSubject.getAge()).thenReturn(2L);
 
-        eatEveryDay.tick();
-        eatEveryDay.tick();
-        eatEveryDay.tick();
+        everyDay.tick();
+        everyDay.tick();
+        everyDay.tick();
 
-        verify(personBehaviour, times(3)).tick();
+        verify(economicalSubjectBehaviour, times(3)).tick();
     }
 
     @Before
     public void setUpEveryDayRecurrentPayment() {
-        eatEveryDay = new EveryDay(world, person, personBehaviour);
+        everyDay = new EveryDay(world, economicalSubject, economicalSubjectBehaviour);
     }
 
-    private EveryDay eatEveryDay;
+    private EveryDay everyDay;
 
     @Mock
-    private EconomicalSubjectBehaviour personBehaviour;
+    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
 
     @Mock
-    private Person person;
+    private EconomicalSubject economicalSubject;
 
     @Mock
     private World world;

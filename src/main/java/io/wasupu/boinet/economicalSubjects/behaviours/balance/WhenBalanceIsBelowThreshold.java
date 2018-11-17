@@ -1,35 +1,37 @@
 package io.wasupu.boinet.economicalSubjects.behaviours.balance;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
 
 import java.math.BigDecimal;
 
 public class WhenBalanceIsBelowThreshold extends EconomicalSubjectBehaviour {
     public WhenBalanceIsBelowThreshold(World world,
-                                       Person person,
+                                       EconomicalSubject economicalSubject,
                                        BigDecimal threshold,
-                                       EconomicalSubjectBehaviour economicalSubjectBehaviour) {
-        super(world, person);
+                                       Behaviour economicalSubjectBehaviour) {
+        super(world, economicalSubject);
         this.threshold = threshold;
-        this.economicalSubjectBehaviour = economicalSubjectBehaviour;
+        this.behaviour = economicalSubjectBehaviour;
     }
 
     @Override
     public void tick() {
         if (threshold.compareTo(getWorld().getBank().getBalance(getEconomicalSubject().getIban())) > 0) return;
 
-        economicalSubjectBehaviour.tick();
+        behaviour.tick();
     }
 
     @Override
     public String getIdentifier() {
-        return economicalSubjectBehaviour.getIdentifier();
+        return behaviour.getIdentifier();
     }
 
     private BigDecimal threshold;
 
-    private EconomicalSubjectBehaviour economicalSubjectBehaviour;
+    private Behaviour behaviour;
 
 }

@@ -1,8 +1,8 @@
-package io.wasupu.boinet.economicalSubjects.behaviours.recurrent;
+package io.wasupu.boinet.subjects.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
-import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
+import io.wasupu.boinet.subjects.behaviours.Weekly;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,37 +16,33 @@ import static org.mockito.Mockito.*;
 public class WeeklyTest {
 
     @Test
-    public void shouldPayOnDayInWeek() {
+    public void it_should_execute_on_day_in_the_week() {
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(6));
 
         weekendRecurrentPayment.tick();
 
-        verify(personBehaviour).tick();
+        verify(behaviour).tick();
     }
 
     @Test
-    public void shouldNotPayOnDifferentDayThan6() {
+    public void it_should_not_execute_on_different_day_than_6() {
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfWeek(5));
         weekendRecurrentPayment.tick();
 
-        verify(personBehaviour, never()).tick();
+        verify(behaviour, never()).tick();
     }
 
     @Before
     public void setupMonthlyRecurrentPayment() {
         weekendRecurrentPayment = new Weekly(world,
-            person,
             6,
-            personBehaviour);
+            behaviour);
     }
 
     private Weekly weekendRecurrentPayment;
 
     @Mock
-    private EconomicalSubjectBehaviour personBehaviour;
-
-    @Mock
-    private Person person;
+    private Behaviour behaviour;
 
     @Mock
     private World world;

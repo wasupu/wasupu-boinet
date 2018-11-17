@@ -1,8 +1,8 @@
-package io.wasupu.boinet.economicalSubjects.behaviours.recurrent;
+package io.wasupu.boinet.subjects.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
-import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
+import io.wasupu.boinet.subjects.behaviours.Yearly;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,29 +16,28 @@ import static org.mockito.Mockito.*;
 public class YearlyTest {
 
     @Test
-    public void shouldTriggerInConcreteDayOfYear() {
+    public void it_should_trigger_in_concrete_day_of_year() {
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfYear(60));
 
         yearlyBehaviour.tick();
 
-        verify(personBehaviour).tick();
+        verify(behaviour).tick();
     }
 
     @Test
-    public void shouldNotTriggerInConcreteDayOfYear() {
+    public void it_should_not_trigger_in_concrete_day_of_year() {
         when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfYear(5));
 
         yearlyBehaviour.tick();
 
-        verify(personBehaviour,never()).tick();
+        verify(behaviour,never()).tick();
     }
 
     @Before
     public void setupMonthlyRecurrentPayment() {
         yearlyBehaviour = new Yearly(world,
-            person,
             60,
-            personBehaviour);
+            behaviour);
     }
 
     private Yearly yearlyBehaviour;
@@ -47,8 +46,5 @@ public class YearlyTest {
     private World world;
 
     @Mock
-    private Person person;
-
-    @Mock
-    private EconomicalSubjectBehaviour personBehaviour;
+    private Behaviour behaviour;
 }

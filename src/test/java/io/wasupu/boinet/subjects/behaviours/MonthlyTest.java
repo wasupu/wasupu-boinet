@@ -1,8 +1,9 @@
-package io.wasupu.boinet.economicalSubjects.behaviours.recurrent;
+package io.wasupu.boinet.subjects.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
-import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
+import io.wasupu.boinet.subjects.Subject;
+import io.wasupu.boinet.subjects.behaviours.Monthly;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,40 +17,39 @@ import static org.mockito.Mockito.*;
 public class MonthlyTest {
 
     @Test
-    public void shouldPayOnDay25th() {
+    public void it_should_pay_on_day_25th() {
         when(world.getCurrentDateTime()).thenReturn(fixedDateTime.withDayOfMonth(25));
 
         monthlyRecurrentPayment.tick();
 
-        verify(personBehaviour, atLeastOnce()).tick();
+        verify(subjectBehaviour, atLeastOnce()).tick();
     }
 
     @Test
-    public void shouldNotPayOnDifferentDayThan25th() {
+    public void it_should_not_pay_on_different_day_than_25th() {
         when(world.getCurrentDateTime()).thenReturn(fixedDateTime.withDayOfMonth(3));
 
         monthlyRecurrentPayment.tick();
 
-        verify(personBehaviour, never()).tick();
+        verify(subjectBehaviour, never()).tick();
     }
 
     @Before
     public void setupMonthlyRecurrentPayment() {
         monthlyRecurrentPayment = new Monthly(world,
-            person,
             25,
-            personBehaviour);
+            subjectBehaviour);
     }
 
     @Mock
-    private EconomicalSubjectBehaviour personBehaviour;
+    private Behaviour subjectBehaviour;
 
     private Monthly monthlyRecurrentPayment;
 
     private DateTime fixedDateTime = new DateTime(2017, 1, 1, 1, 1);
 
     @Mock
-    private Person person;
+    private Subject subject;
 
     @Mock
     private World world;

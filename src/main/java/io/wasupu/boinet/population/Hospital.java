@@ -9,9 +9,9 @@ import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDay;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Monthly;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Weekly;
-import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.Yearly;
+import io.wasupu.boinet.subjects.behaviours.Monthly;
+import io.wasupu.boinet.subjects.behaviours.Weekly;
+import io.wasupu.boinet.subjects.behaviours.Yearly;
 import io.wasupu.boinet.population.behaviours.*;
 
 import java.math.BigDecimal;
@@ -71,7 +71,6 @@ public class Hospital {
                 newPerson,
                 new BigDecimal("8000"),
                 new Monthly(world,
-                    newPerson,
                     get10to25MonthDay(),
                     new PayWithCard(world,
                         newPerson,
@@ -84,7 +83,7 @@ public class Hospital {
         newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("10000"),
-            new Yearly(world, newPerson,
+            new Yearly(world,
                 207,//If you have money in 26 of july
                 new PayWithCard(world,
                     newPerson,
@@ -97,7 +96,7 @@ public class Hospital {
         newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("20000"),
-            new Monthly(world, newPerson,
+            new Monthly(world,
                 get10to25MonthDay(),
                 new PayWithCard(world,
                     newPerson,
@@ -110,7 +109,7 @@ public class Hospital {
         newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world,
             newPerson,
             new BigDecimal("40000"),
-            new Yearly(world, newPerson,
+            new Yearly(world,
                 1 + new Random().nextInt(360),
                 new PayWithCard(world,
                     newPerson,
@@ -124,7 +123,7 @@ public class Hospital {
     }
 
     private void withPublicTransport(Person newPerson) {
-        newPerson.addBehaviour(new Monthly(world, newPerson,
+        newPerson.addBehaviour(new Monthly(world,
             get2to10MonthDay(),
             new PayWithCard(world,
                 newPerson,
@@ -137,7 +136,6 @@ public class Hospital {
         newPerson.addBehaviour(new WhenBalanceExceedsThreshold(world, newPerson,
             new BigDecimal("300"),
             new Weekly(world,
-                newPerson,
                 1 + new Random().nextInt(6),
                 new PayWithCard(world,
                     newPerson,
@@ -192,7 +190,7 @@ public class Hospital {
             getProbability(0.00001, 0.001)));
     }
 
-    void withEating(Person newPerson) {
+    private void withEating(Person newPerson) {
         newPerson.addBehaviour(new EveryDay(world, newPerson,
             new PayWithCard(world, newPerson,
                 ProductType.MEAL,
@@ -200,12 +198,12 @@ public class Hospital {
                 25)));
     }
 
-    void withOwnedHouse(Person newPerson) {
+    private void withOwnedHouse(Person newPerson) {
         newPerson.addBehaviour(new BuyHouse(world, newPerson, world.findCompany()));
     }
 
-    void withPowerSupply(Person newPerson) {
-        newPerson.addBehaviour(new Monthly(world, newPerson,
+    private void withPowerSupply(Person newPerson) {
+        newPerson.addBehaviour(new Monthly(world,
             get2to10MonthDay(),
             new PayAReceipt(world,
                 newPerson,
@@ -214,8 +212,8 @@ public class Hospital {
                 generateRandomPrice.apply(60, 120))));
     }
 
-    void withWaterSupply(Person newPerson) {
-        newPerson.addBehaviour(new Monthly(world, newPerson,
+    private void withWaterSupply(Person newPerson) {
+        newPerson.addBehaviour(new Monthly(world,
             get2to10MonthDay(),
             new PayAReceipt(world,
                 newPerson,
@@ -224,24 +222,22 @@ public class Hospital {
                 generateRandomPrice.apply(20, 40))));
     }
 
-    void withCountryside(Person newPerson) {
+    private void withCountryside(Person newPerson) {
         newPerson.addBehaviour(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
             new BigDecimal("1000"),
             new BigDecimal("6000"),
-            new Weekly(world,
-                newPerson,
-                6,
+            new Weekly(world, 6,
                 new PayWithCard(world,
                     newPerson, ProductType.ENTERTAINMENT,
                     100,
                     500))));
     }
 
-    void withCableTV(Person newPerson) {
+    private void withCableTV(Person newPerson) {
         newPerson.addBehaviour(new TriggeredWhenBalanceBetweenAThreshold(world, newPerson,
             new BigDecimal("1000"),
             new BigDecimal("2000"),
-            new Monthly(world, newPerson,
+            new Monthly(world,
                 get10to25MonthDay(),
                 new PayWithCard(world,
                     newPerson,
@@ -250,11 +246,11 @@ public class Hospital {
                     world.findCompany()))));
     }
 
-    void withInternetConnection(Person newPerson) {
+    private void withInternetConnection(Person newPerson) {
         newPerson.addBehaviour(
             new WhenBalanceExceedsThreshold(world, newPerson,
                 new BigDecimal("1000"),
-                new Monthly(world, newPerson,
+                new Monthly(world,
                     get10to25MonthDay(),
                     new PayWithCard(world,
                         newPerson,
@@ -263,7 +259,7 @@ public class Hospital {
                         world.findCompany()))));
     }
 
-    void withSalaryRevision(Person newPerson) {
+    private void withSalaryRevision(Person newPerson) {
         newPerson.addBehaviour(new RequestSalaryRevisionYearly(world,
             newPerson,
             random.nextInt(365)));

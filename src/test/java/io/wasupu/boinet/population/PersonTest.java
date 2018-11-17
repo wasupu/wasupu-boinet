@@ -60,7 +60,7 @@ public class PersonTest {
 
     @Test
     public void it_should_return_person_subject_type() {
-        assertEquals("Returned subject type must be PERSON", PERSON, person.getType());
+        assertEquals("Returned subjects type must be PERSON", PERSON, person.getType());
     }
 
     @Before
