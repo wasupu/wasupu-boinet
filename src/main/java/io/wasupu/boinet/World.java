@@ -106,11 +106,11 @@ public class World {
         return GPS;
     }
 
-    Collection<Person> getPopulation() {
+    public Collection<Person> getPopulation() {
         return population;
     }
 
-    Collection<Company> getCompanies() {
+    public Collection<Company> getCompanies() {
         return companies;
     }
 

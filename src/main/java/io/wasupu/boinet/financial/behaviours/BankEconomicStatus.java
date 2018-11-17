@@ -4,6 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.subjects.Behaviour;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,12 +17,29 @@ public class BankEconomicStatus implements Behaviour {
 
     @Override
     public void tick() {
-
         var treasuryAccountBalance = bank.getTreasuryAccount().getBalance();
 
         world.getEventPublisher().publish(Map.of(
             "eventType", "bankBalance",
-            "treasuryAccount", treasuryAccountBalance));
+            "treasuryAccount", treasuryAccountBalance,
+            "peopleBalance", getPeopleBalance(),
+            "companiesBalance", getCompaniesBalance()));
+    }
+
+    private BigDecimal getPeopleBalance() {
+        return world
+            .getPopulation()
+            .stream()
+            .map(person -> bank.getBalance(person.getIban()))
+            .reduce(new BigDecimal(0), BigDecimal::add);
+    }
+
+    private BigDecimal getCompaniesBalance() {
+        return world
+            .getCompanies()
+            .stream()
+            .map(company -> bank.getBalance(company.getIban()))
+            .reduce(new BigDecimal(0), BigDecimal::add);
     }
 
     @Override
