@@ -9,10 +9,10 @@ import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.TriggeredWhenBalanceBetweenAThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
 import io.wasupu.boinet.economicalSubjects.behaviours.recurrent.EveryDay;
+import io.wasupu.boinet.population.behaviours.*;
 import io.wasupu.boinet.subjects.behaviours.Monthly;
 import io.wasupu.boinet.subjects.behaviours.Weekly;
 import io.wasupu.boinet.subjects.behaviours.Yearly;
-import io.wasupu.boinet.population.behaviours.*;
 
 import java.math.BigDecimal;
 import java.util.Random;

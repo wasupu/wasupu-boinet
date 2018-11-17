@@ -4,9 +4,9 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.companies.ReceiptType;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
-import io.wasupu.boinet.subjects.Subject;
 import io.wasupu.boinet.financial.eventPublisher.*;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Subject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;

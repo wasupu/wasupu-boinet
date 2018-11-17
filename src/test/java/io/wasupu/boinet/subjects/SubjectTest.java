@@ -2,8 +2,6 @@ package io.wasupu.boinet.subjects;
 
 import io.wasupu.boinet.GPS;
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.subjects.Behaviour;
-import io.wasupu.boinet.subjects.Subject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;

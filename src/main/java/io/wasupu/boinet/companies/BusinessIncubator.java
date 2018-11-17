@@ -1,10 +1,12 @@
 package io.wasupu.boinet.companies;
 
 import io.wasupu.boinet.World;
+import io.wasupu.boinet.companies.behaviours.PaySalaries;
 import io.wasupu.boinet.economicalSubjects.behaviours.ContractCurrentAccount;
 import io.wasupu.boinet.economicalSubjects.behaviours.InitialCapital;
 import io.wasupu.boinet.economicalSubjects.behaviours.RegisterInBank;
 import io.wasupu.boinet.financial.Bank;
+import io.wasupu.boinet.subjects.behaviours.Monthly;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -39,6 +41,10 @@ public class BusinessIncubator {
         company.addBehaviour(new RegisterInBank(world, company));
         company.addBehaviour(new ContractCurrentAccount(world, company));
         company.addBehaviour(new InitialCapital(world, company, new BigDecimal(60000)));
+
+        company.addBehaviour(new Monthly(world,
+            27,
+            new PaySalaries(world, company)));
 
         return company;
     }

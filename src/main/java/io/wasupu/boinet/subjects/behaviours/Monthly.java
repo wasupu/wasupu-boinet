@@ -1,9 +1,7 @@
 package io.wasupu.boinet.subjects.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.subjects.Behaviour;
-import io.wasupu.boinet.subjects.Subject;
 
 public class Monthly implements Behaviour {
 

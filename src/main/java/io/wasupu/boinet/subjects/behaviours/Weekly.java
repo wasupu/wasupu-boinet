@@ -1,8 +1,6 @@
 package io.wasupu.boinet.subjects.behaviours;
 
 import io.wasupu.boinet.World;
-import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
-import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.subjects.Behaviour;
 
 public class Weekly implements Behaviour {

@@ -22,7 +22,6 @@ import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.builder.verify.VerifyHttp.verifyHttp;
 import static com.xebialabs.restito.semantics.Action.status;
 import static com.xebialabs.restito.semantics.Condition.post;
-import static com.xebialabs.restito.semantics.Condition.withHeader;
 import static io.wasupu.boinet.PollingResultVerifier.retry;
 
 public class StreamEventPublisherTest {

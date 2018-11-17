@@ -3,7 +3,6 @@ package io.wasupu.boinet.subjects.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.subjects.Behaviour;
 import io.wasupu.boinet.subjects.Subject;
-import io.wasupu.boinet.subjects.behaviours.Monthly;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;

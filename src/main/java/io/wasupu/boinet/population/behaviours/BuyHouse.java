@@ -4,9 +4,9 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.economicalSubjects.behaviours.EconomicalSubjectBehaviour;
 import io.wasupu.boinet.economicalSubjects.behaviours.balance.WhenBalanceExceedsThreshold;
-import io.wasupu.boinet.subjects.behaviours.Monthly;
 import io.wasupu.boinet.financial.MortgageRejected;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.behaviours.Monthly;
 
 import java.math.BigDecimal;
 

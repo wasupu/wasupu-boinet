@@ -26,12 +26,6 @@ public class Company extends EconomicalSubject {
         return name;
     }
 
-    public void tick() {
-        paySalary();
-
-        super.tick();
-    }
-
     public void buyProduct(String pan, ProductType productType, BigDecimal price) {
         getWorld().getBank().payWithCard(price,
             pan,
@@ -52,9 +46,7 @@ public class Company extends EconomicalSubject {
         if (getWorld().getBank().getBalance(getIban()).compareTo(new BigDecimal(6000)) < 0) return;
 
         var salary = employees.get(person);
-
         var newSalary = salary.add(salary.multiply(new BigDecimal(0.2))).setScale(2, RoundingMode.CEILING);
-
         employees.put(person, newSalary);
     }
 
@@ -95,16 +87,6 @@ public class Company extends EconomicalSubject {
 
     private BigDecimal generateSalary() {
         return new GenerateRandomPrice().apply(1200, 2300);
-    }
-
-    private void paySalary() {
-        if (!isDayOfMonth(27)) return;
-
-        employees.forEach(this::payEmployee);
-    }
-
-    private boolean isDayOfMonth(Integer dayOfMonth) {
-        return dayOfMonth.equals(getWorld().getCurrentDateTime().getDayOfMonth());
     }
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();

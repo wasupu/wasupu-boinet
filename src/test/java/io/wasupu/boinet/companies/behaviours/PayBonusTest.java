@@ -13,8 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PayBonusTest {
@@ -27,6 +27,16 @@ public class PayBonusTest {
         payBonus.tick();
 
         verify(company).payEmployee(person, new BigDecimal("40001.00"));
+    }
+
+    @Test
+    public void it_should_not_pay_bonus_to_employees_if_company_can() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("100001"));
+
+        payBonus.tick();
+
+        verify(bank, never()).transfer(any(), any(), any());
     }
 
     @Before

@@ -8,7 +8,6 @@ import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -36,7 +35,7 @@ public class CompanyTest {
     }
 
     @Test
-    public void it_should_canbuy_a_product_to_the_company() {
+    public void it_should_can_buy_a_product_to_the_company() {
         company.buyProduct(PAN, ProductType.MEAL, PRICE);
 
         verify(bank).payWithCard(PRICE,
@@ -54,19 +53,6 @@ public class CompanyTest {
         company.buyHouse(buyerIban, PRICE);
 
         verify(bank).transfer(buyerIban, IBAN, PRICE);
-    }
-
-    @Test
-    public void it_should_pay_the_employees_on_every_28th() {
-        when(person.getIban()).thenReturn(OTHER_IBAN);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(10000));
-
-
-        company.hire(person);
-        company.tick();
-
-        verify(bank).transfer(IBAN, OTHER_IBAN, company.getEmployeeSalary(person));
     }
 
     @Test
@@ -106,29 +92,14 @@ public class CompanyTest {
         assertEquals("The employee not has change its salary", salary, company.getEmployeeSalary(person));
     }
 
-
-    @Test
-    public void it_should_not_pay_bonus_to_employees_if_company_can() {
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1000));
-
-        company.tick();
-        company.hire(person);
-        company.tick();
-        company.tick();
-        company.tick();
-
-        verify(bank, never()).transfer(any(), any(), any());
-    }
-
     @Test
     public void it_should_fire_employees_that_company_can_pay() {
         when(person.getIban()).thenReturn(IBAN);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(27));
-        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(1));
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1"));
         company.setIban(IBAN);
 
         company.hire(person);
-        company.tick();
+        company.payEmployee(person,new BigDecimal("1000000"));
 
         verify(person).youAreFired();
     }
