@@ -5,8 +5,10 @@ import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.financial.Bank;
+import io.wasupu.boinet.financial.behaviours.BankEconomicStatus;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.behaviours.Monthly;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -24,7 +26,22 @@ public class World {
     public World(EventPublisher eventPublisher, BigDecimal seedCapital) {
         this.eventPublisher = eventPublisher;
         this.currentDate = new DateTime(2017, 10, 5, 0, 0, 0, DateTimeZone.UTC);
-        this.bank = new Bank(this, seedCapital);
+        this.bank = createBank(seedCapital);
+    }
+
+    private Bank createBank(BigDecimal seedCapital) {
+        var bank = new Bank(this, seedCapital);
+
+        bank.addBehaviour(withEconomicStatus(bank));
+        listenTicks(bank::tick);
+
+        return bank;
+    }
+
+    private Monthly withEconomicStatus(Bank bank) {
+        return new Monthly(this,
+            27,
+            new BankEconomicStatus(this, bank));
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {
@@ -116,7 +133,6 @@ public class World {
     private GPS GPS = new GPS();
 
     private BusinessIncubator businessIncubator = new BusinessIncubator();
-
 
 
 }

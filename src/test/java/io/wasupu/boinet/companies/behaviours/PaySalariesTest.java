@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 public class PaySalariesTest {
 
     @Test
-    public void it_should_pay_bonus_to_employees_if_company_can() {
+    public void it_should_pay_salaries_to_employees_if_company_can() {
         paySalaries.tick();
 
         verify(company).payEmployee(person, new BigDecimal("100"));

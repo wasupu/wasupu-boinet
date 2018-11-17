@@ -47,6 +47,7 @@ public class Company extends EconomicalSubject {
 
         var salary = employees.get(person);
         var newSalary = salary.add(salary.multiply(new BigDecimal(0.2))).setScale(2, RoundingMode.CEILING);
+
         employees.put(person, newSalary);
     }
 
