@@ -62,9 +62,10 @@ public class Company extends EconomicalSubject {
     public void payEmployee(Person employee, BigDecimal salary) {
         if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
             fire(employee);
+            return;
         }
 
-        getWorld().getBank().transfer(getIban(), employee.getIban(), salary);
+        getWorld().getBank().paySalary(getIban(), employee.getIban(), salary);
     }
 
     public int getNumberOfEmployees() {

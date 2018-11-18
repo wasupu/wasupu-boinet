@@ -6,7 +6,6 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,12 +15,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 
 import static io.wasupu.boinet.economicalSubjects.EconomicalSubjectType.COMPANY;
-import static java.util.stream.IntStream.range;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompanyTest {
@@ -55,19 +52,6 @@ public class CompanyTest {
         verify(bank).transfer(buyerIban, IBAN, PRICE);
     }
 
-    @Test
-    public void it_should_not_pay_the_employees_other_than_29th() {
-        company.hire(person);
-
-        range(1, 27)
-            .forEach(day -> {
-                when(world.getCurrentDateTime()).thenReturn(new DateTime().withDayOfMonth(day));
-                company.tick();
-            });
-
-        verify(bank, never()).transfer(eq(IBAN), eq(OTHER_IBAN), any());
-    }
-
 
     @Test
     public void it_should_revise_the_salary_of_an_employee() {
@@ -93,15 +77,28 @@ public class CompanyTest {
     }
 
     @Test
-    public void it_should_fire_employees_that_company_can_pay() {
-        when(person.getIban()).thenReturn(IBAN);
+    public void it_should_fire_employees_that_company_cant_pay() {
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("1"));
         company.setIban(IBAN);
 
         company.hire(person);
-        company.payEmployee(person,new BigDecimal("1000000"));
+        company.payEmployee(person, new BigDecimal("1000000"));
 
         verify(person).youAreFired();
+    }
+
+    @Test
+    public void it_should_pay_employees_it_have_funds() {
+        when(person.getIban()).thenReturn(EMPLOYEE_IBAN);
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal("100000"));
+        company.setIban(IBAN);
+
+        company.hire(person);
+
+        var salary = new BigDecimal("1000");
+        company.payEmployee(person, salary);
+
+        verify(bank).paySalary(IBAN, EMPLOYEE_IBAN , salary);
     }
 
     @Test
@@ -119,7 +116,6 @@ public class CompanyTest {
     @Before
     public void setupCompanyAccount() {
         when(world.getBank()).thenReturn(bank);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime(CURRENT_DATE));
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(12));
     }
 
@@ -144,12 +140,9 @@ public class CompanyTest {
 
     private static final String IBAN = "2";
 
-    private static final String OTHER_IBAN = "6";
+    private static final String EMPLOYEE_IBAN = "2";
 
     private static final String PAN = "12312312312";
-
-    private static final DateTime CURRENT_DATE = new DateTime(2017, 1, 1, 0, 0);
-
 
     private static final BigDecimal PRICE = new BigDecimal(10);
 

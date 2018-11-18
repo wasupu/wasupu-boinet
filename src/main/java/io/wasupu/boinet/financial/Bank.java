@@ -53,6 +53,10 @@ public class Bank extends Subject {
         toAccount.deposit(amount);
     }
 
+    public void paySalary(String ibanFrom, String ibanTo, BigDecimal salary) {
+        transfer(ibanFrom, ibanTo, salary);
+    }
+
     public BigDecimal getBalance(String iban) {
         return accounts.get(iban).getBalance();
     }

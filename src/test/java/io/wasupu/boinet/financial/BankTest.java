@@ -77,6 +77,20 @@ public class BankTest {
     }
 
     @Test
+    public void it_should_pay_salary() {
+        when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("30"));
+
+        var fromIban = bank.contractCurrentAccount(USER_IDENTIFIER);
+        var toIban = bank.contractCurrentAccount(OTHER_USER_IDENTIFIER);
+
+        var salary = new BigDecimal(10);
+        bank.paySalary(fromIban, toIban, salary);
+
+        verify(firstCurrentAccount).withdraw(salary);
+        verify(secondCurrentAccount).deposit(salary);
+    }
+
+    @Test
     public void it_should_not_red_numbers_when_transfer_money_between_to_accounts() {
         when(firstCurrentAccount.getBalance()).thenReturn(new BigDecimal("5"));
 
