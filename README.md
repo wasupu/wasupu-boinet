@@ -31,6 +31,7 @@ mvn clean package
 docker run -t --rm boinet \
     --population=<POPULATION> \
     --companies=<COMPANIES> \
+    --seed-capital=<SEED-CAPITAL> \
     [--number-of-ticks=<NUMBER_OF_TICKS>] \
     [--stream-service-api-key=<STREAM_SERVICE_API_KEY> \
     --stream-service-namespace=<STREAM_SERVICE_NAMESPACE>]
@@ -39,13 +40,9 @@ docker run -t --rm boinet \
 * To deploy the service:
 
 ```shell-script
-./deploy.sh <AWS_ACCESS_KEY> \
-    <AWS_SECRET_KEY> \
-    <AWS_DEFAULT_REGION> \
-    <AWS_DOCKER_REGISTRY> \
+./deploy.sh 
     <POPULATION> \
     <COMPANIES> \
-    [<STREAM_SERVICE_API_KEY> \
-    <STREAM_SERVICE_NAMESPACE>] \
+    [<STREAM_SERVICE_NAMESPACE>] \
     [<NUMBER_OF_TICKS>]
 ```

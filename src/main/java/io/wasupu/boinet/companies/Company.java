@@ -4,7 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubjectType;
 import io.wasupu.boinet.population.Person;
-import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,7 +17,6 @@ public class Company extends EconomicalSubject {
 
     public Company(String identifier, World world) {
         super(identifier, world);
-
         this.name = faker.company().name();
     }
 
@@ -87,10 +86,14 @@ public class Company extends EconomicalSubject {
     }
 
     private BigDecimal generateSalary() {
-        return new GenerateRandomPrice().apply(1200, 2300);
+        return new BigDecimal(normalDistribution.sample()).setScale(2, RoundingMode.CEILING);
     }
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
     private String name;
+
+    private double baseSalary = 2300;
+
+    private NormalDistribution normalDistribution = new NormalDistribution(baseSalary, 500);
 }

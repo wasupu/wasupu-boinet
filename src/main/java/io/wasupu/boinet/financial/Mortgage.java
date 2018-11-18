@@ -42,7 +42,6 @@ public class Mortgage {
 
     public void amortize(BigDecimal amount) {
         amortizedAmount = amortizedAmount.add(amount);
-
         mortgageEventPublisher.publisPayMortgageInstallment(amount, this);
     }
 
