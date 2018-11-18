@@ -30,3 +30,5 @@ find-gamusinos.sh
 *.tar.gz
 *.backup
 src/main/resources/*.p12
+
+configure-boinet.sh

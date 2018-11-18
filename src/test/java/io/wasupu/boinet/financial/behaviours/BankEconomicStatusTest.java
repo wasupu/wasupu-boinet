@@ -55,18 +55,78 @@ public class BankEconomicStatusTest {
     }
 
     @Test
+    public void it_should_publish_the_the_max_people_balance() {
+        when(person.getIban()).thenReturn(IBAN);
+        when(otherPerson.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(23));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal(12));
+
+        when(world.getPopulation()).thenReturn(List.of(person, otherPerson));
+
+        Map<String, Object> value = executeBehaviour();
+
+        assertEquals("Must have max the people balance", new BigDecimal(23), value.get("maxPeopleBalance"));
+    }
+
+    @Test
+    public void it_should_publish_the_the_min_people_balance() {
+        when(person.getIban()).thenReturn(IBAN);
+        when(otherPerson.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(23));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal(12));
+
+        when(world.getPopulation()).thenReturn(List.of(person, otherPerson));
+
+        Map<String, Object> value = executeBehaviour();
+
+        assertEquals("Must have min the people balance", new BigDecimal(12), value.get("minPeopleBalance"));
+    }
+
+    @Test
     public void it_should_publish_the_companies_balance() {
-        when(comnpany.getIban()).thenReturn(IBAN);
+        when(company.getIban()).thenReturn(IBAN);
         when(otherCompany.getIban()).thenReturn(OTHER_IBAN);
 
         when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(22));
         when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal(32));
 
-        when(world.getCompanies()).thenReturn(List.of(comnpany, otherCompany));
+        when(world.getCompanies()).thenReturn(List.of(company, otherCompany));
 
         Map<String, Object> value = executeBehaviour();
 
         assertEquals("Must have the company balance", new BigDecimal(54), value.get("companiesBalance"));
+    }
+
+    @Test
+    public void it_should_publish_the_the_max_company_balance() {
+        when(company.getIban()).thenReturn(IBAN);
+        when(otherCompany.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(22));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal(32));
+
+        when(world.getCompanies()).thenReturn(List.of(company, otherCompany));
+
+        Map<String, Object> value = executeBehaviour();
+
+        assertEquals("Must have max the company balance", new BigDecimal(32), value.get("maxCompaniesBalance"));
+    }
+
+    @Test
+    public void it_should_publish_the_the_min_company_balance() {
+        when(company.getIban()).thenReturn(IBAN);
+        when(otherCompany.getIban()).thenReturn(OTHER_IBAN);
+
+        when(bank.getBalance(IBAN)).thenReturn(new BigDecimal(22));
+        when(bank.getBalance(OTHER_IBAN)).thenReturn(new BigDecimal(32));
+
+        when(world.getCompanies()).thenReturn(List.of(company, otherCompany));
+
+        Map<String, Object> value = executeBehaviour();
+
+        assertEquals("Must have min the company balance", new BigDecimal(22), value.get("minCompaniesBalance"));
     }
 
 
@@ -119,7 +179,7 @@ public class BankEconomicStatusTest {
     private Person otherPerson;
 
     @Mock
-    private Company comnpany;
+    private Company company;
 
     @Mock
     private Company otherCompany;

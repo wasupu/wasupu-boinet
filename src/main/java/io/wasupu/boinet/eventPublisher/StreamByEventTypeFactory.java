@@ -4,7 +4,7 @@ public class StreamByEventTypeFactory {
 
     public static EventPublisher createEventTypePublisher(String streamServiceNamespace, String serverKeyStorePassphrase, String clientKeyStorePassphrase) {
 
-        var streamByEventType = new StreamByEventType();
+        var streamByEventType = new PublisherByEventType();
         streamByEventType.register("registerUser", new StreamEventPublisher("userRegistrations", streamServiceNamespace, serverKeyStorePassphrase, clientKeyStorePassphrase));
         streamByEventType.register("contractCurrentAccount", new StreamEventPublisher("currentAccountContracts", streamServiceNamespace, serverKeyStorePassphrase, clientKeyStorePassphrase));
 

@@ -10,13 +10,13 @@ import java.util.Map;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StreamByEventTypeTest {
+public class PublisherByEventTypeTest {
 
     @Test
     public void it_should_publish_in_correct_stream_by_event_type() {
         var event = Map.<String, Object>of("eventType", FIRST_EVENT_TYPE);
 
-        var streamByEventTypeEventPublisher = new StreamByEventType();
+        var streamByEventTypeEventPublisher = new PublisherByEventType();
         streamByEventTypeEventPublisher.register(FIRST_EVENT_TYPE, eventPublisher);
 
         streamByEventTypeEventPublisher.publish(event);

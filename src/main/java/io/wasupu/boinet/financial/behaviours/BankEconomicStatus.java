@@ -23,7 +23,29 @@ public class BankEconomicStatus implements Behaviour {
             "eventType", "bankBalance",
             "treasuryAccount", treasuryAccountBalance,
             "peopleBalance", getPeopleBalance(),
-            "companiesBalance", getCompaniesBalance()));
+            "companiesBalance", getCompaniesBalance(),
+            "maxPeopleBalance", getMaxPeopleBalance(),
+            "minPeopleBalance", getMinPeopleBalance(),
+            "maxCompaniesBalance", getMaxCompaniesBalance(),
+            "minCompaniesBalance", getMinCompaniesBalance()));
+    }
+
+    private BigDecimal getMaxPeopleBalance() {
+        return world
+            .getPopulation()
+            .stream()
+            .map(person -> bank.getBalance(person.getIban()))
+            .max(BigDecimal::compareTo)
+            .orElse(new BigDecimal("0"));
+    }
+
+    private BigDecimal getMinPeopleBalance() {
+        return world
+            .getPopulation()
+            .stream()
+            .map(person -> bank.getBalance(person.getIban()))
+            .min(BigDecimal::compareTo)
+            .orElse(new BigDecimal("0"));
     }
 
     private BigDecimal getPeopleBalance() {
@@ -41,6 +63,25 @@ public class BankEconomicStatus implements Behaviour {
             .map(company -> bank.getBalance(company.getIban()))
             .reduce(new BigDecimal(0), BigDecimal::add);
     }
+
+    private BigDecimal getMaxCompaniesBalance() {
+        return world
+            .getCompanies()
+            .stream()
+            .map(company -> bank.getBalance(company.getIban()))
+            .max(BigDecimal::compareTo)
+            .orElse(new BigDecimal("0"));
+    }
+
+    private BigDecimal getMinCompaniesBalance() {
+        return world
+            .getCompanies()
+            .stream()
+            .map(company -> bank.getBalance(company.getIban()))
+            .min(BigDecimal::compareTo)
+            .orElse(new BigDecimal("0"));
+    }
+
 
     @Override
     public String getIdentifier() {

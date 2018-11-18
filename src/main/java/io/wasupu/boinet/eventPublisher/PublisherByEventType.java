@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class StreamByEventType implements EventPublisher {
+public class PublisherByEventType implements EventPublisher {
 
     public void register(String eventType, EventPublisher eventPublisher) {
         eventPublishers.put(eventType, eventPublisher);
