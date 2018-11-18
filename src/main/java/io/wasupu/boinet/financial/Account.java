@@ -13,11 +13,11 @@ public class Account {
     }
 
     public BigDecimal getBalance() {
-        return amount;
+        return balance;
     }
 
     public void withdraw(BigDecimal amount) {
-        this.amount = this.amount.subtract(amount);
+        this.balance = this.balance.subtract(amount);
 
         accountEventPublisher.publishWithdrawal(iban, amount, getBalance());
     }
@@ -27,12 +27,12 @@ public class Account {
     }
 
     public void deposit(BigDecimal amount) {
-        this.amount = this.amount.add(amount);
+        this.balance = this.balance.add(amount);
 
         accountEventPublisher.publishDeposit(iban, amount, getBalance());
     }
 
-    private BigDecimal amount = new BigDecimal(0);
+    private BigDecimal balance = new BigDecimal(0);
 
     private String iban;
 
