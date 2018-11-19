@@ -3,7 +3,6 @@ package io.wasupu.boinet.companies.behaviours;
 import io.wasupu.boinet.World;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.population.Person;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +12,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static java.util.stream.IntStream.range;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

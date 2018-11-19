@@ -2,7 +2,6 @@ package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.financial.eventPublisher.AccountEventPublisher;
 
-import java.awt.*;
 import java.math.BigDecimal;
 
 public class Account {
