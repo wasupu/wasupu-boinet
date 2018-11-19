@@ -2,6 +2,7 @@ package io.wasupu.boinet.financial;
 
 import io.wasupu.boinet.financial.eventPublisher.AccountEventPublisher;
 
+import java.awt.*;
 import java.math.BigDecimal;
 
 public class Account {
@@ -26,15 +27,28 @@ public class Account {
         return iban;
     }
 
+    public BigDecimal getDifferenceBetweenIncomeAndExpenses() {
+        return differenceBetweenIncomeAndExpenses;
+    }
+
     public void deposit(BigDecimal amount) {
         this.balance = this.balance.add(amount);
 
         accountEventPublisher.publishDeposit(iban, amount, getBalance());
     }
 
+    public void calculateDifferenceBetweenIncomeAndExpenses() {
+        differenceBetweenIncomeAndExpenses = balance.subtract(lastBalance);
+        lastBalance = balance;
+    }
+
     private BigDecimal balance = new BigDecimal(0);
+
+    private BigDecimal lastBalance = new BigDecimal(0);
 
     private String iban;
 
     private AccountEventPublisher accountEventPublisher;
+
+    private BigDecimal differenceBetweenIncomeAndExpenses = new BigDecimal(0);
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class Bank extends Subject {
 
+
     public Bank(World world, BigDecimal seedCapital) {
         super("Bank", world);
 
@@ -176,6 +177,15 @@ public class Bank extends Subject {
 
     public Boolean existMortgage(String mortgageIdentifier) {
         return mortgages.containsKey(mortgageIdentifier);
+    }
+
+    public BigDecimal getLastMonthDifferenceBetweenIncomeAndExpenses(String iban) {
+        var account = accounts.get(iban);
+        return account.getDifferenceBetweenIncomeAndExpenses();
+    }
+
+    public void calculateDifferenceBetweenIncomeAndExpenses() {
+        accounts.forEach((iban, account) -> account.calculateDifferenceBetweenIncomeAndExpenses());
     }
 
     String getIbanByPan(String pan) {

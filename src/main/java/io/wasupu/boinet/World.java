@@ -6,8 +6,10 @@ import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.financial.behaviours.BankEconomicStatus;
+import io.wasupu.boinet.financial.behaviours.CalculateDifferenceBetweenIncomeAndExpenses;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
+import io.wasupu.boinet.subjects.Behaviour;
 import io.wasupu.boinet.subjects.behaviours.Monthly;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -33,15 +35,24 @@ public class World {
         var bank = new Bank(this, seedCapital);
 
         bank.addBehaviour(withEconomicStatus(bank));
+        bank.addBehaviour(withCalculateDifferenceBetweenAccounts(bank));
+
         listenTicks(bank::tick);
 
         return bank;
     }
 
-    private Monthly withEconomicStatus(Bank bank) {
+    private Behaviour withEconomicStatus(Bank bank) {
         return new Monthly(this,
             27,
             new BankEconomicStatus(this, bank));
+
+    }
+
+    private Behaviour withCalculateDifferenceBetweenAccounts(Bank bank){
+        return new Monthly(this,
+            1,
+            new CalculateDifferenceBetweenIncomeAndExpenses(bank));
     }
 
     public void init(Integer numberOfPeople, Integer numberOfCompanies) {

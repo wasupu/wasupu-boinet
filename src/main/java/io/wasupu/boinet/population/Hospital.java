@@ -260,9 +260,8 @@ public class Hospital {
     }
 
     private void withSalaryRevision(Person newPerson) {
-        newPerson.addBehaviour(new RequestSalaryRevisionYearly(world,
-            newPerson,
-            random.nextInt(365)));
+        newPerson.addBehaviour(new Monthly(world, 2,
+            new RequestSalaryRevision(world, newPerson)));
     }
 
     private int get2to10MonthDay() {

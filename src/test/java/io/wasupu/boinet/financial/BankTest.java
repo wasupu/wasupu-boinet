@@ -512,8 +512,16 @@ public class BankTest {
     }
 
     @Test
-    public void it_should_have_the_initial_amount_in_thesuary_account() {
+    public void it_should_have_the_initial_amount_in_treasury_account() {
         verify(treasuryAccount).deposit(SEED_MONEY);
+    }
+
+    @Test
+    public void it_should_calculate_the_difference_in_every_account() {
+        bank.contractCurrentAccount(USER_IDENTIFIER);
+        bank.calculateDifferenceBetweenIncomeAndExpenses();
+
+        verify(firstCurrentAccount).calculateDifferenceBetweenIncomeAndExpenses();
     }
 
     @Before

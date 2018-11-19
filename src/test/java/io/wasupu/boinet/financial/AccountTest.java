@@ -70,6 +70,48 @@ public class AccountTest {
             "date", CURRENT_DATE.toDate()));
     }
 
+    @Test
+    public void it_should_calculate_the_difference_between_income_and_expenses_before_first_movements() {
+        account.deposit(new BigDecimal("3000"));
+
+        account.calculateDifferenceBetweenIncomeAndExpenses();
+
+        var difference = account.getDifferenceBetweenIncomeAndExpenses();
+
+        assertEquals("The difference between income and expenses must be 3000", new BigDecimal("3000"), difference);
+    }
+
+    @Test
+    public void it_should_return_zero_when_two_consecutive_calls() {
+        account.deposit(new BigDecimal("3000"));
+
+        account.calculateDifferenceBetweenIncomeAndExpenses();
+        account.calculateDifferenceBetweenIncomeAndExpenses();
+
+        var difference = account.getDifferenceBetweenIncomeAndExpenses();
+
+        assertEquals("The difference between income and expenses must be 0", new BigDecimal("0"), difference);
+    }
+
+    @Test
+    public void it_should_return_the_difference_with_multiple_movements() {
+        account.deposit(new BigDecimal("3000"));
+
+        account.calculateDifferenceBetweenIncomeAndExpenses();
+
+        account.withdraw(new BigDecimal("200"));
+        account.withdraw(new BigDecimal("100"));
+        account.withdraw(new BigDecimal("300"));
+        account.deposit(new BigDecimal("500"));
+
+        account.calculateDifferenceBetweenIncomeAndExpenses();
+
+        var difference = account.getDifferenceBetweenIncomeAndExpenses();
+
+        assertEquals("The difference between income and expenses must be 0", new BigDecimal("-100"), difference);
+    }
+
+
     @Before
     public void setupAccount() {
         account = new Account(IBAN, new AccountEventPublisher(world));

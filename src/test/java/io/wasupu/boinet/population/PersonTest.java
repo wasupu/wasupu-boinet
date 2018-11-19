@@ -59,6 +59,22 @@ public class PersonTest {
     }
 
     @Test
+    public void it_should_have_enough_money_if_current_income_expenses_difference_is_greater_than_0() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.getLastMonthDifferenceBetweenIncomeAndExpenses(IBAN)).thenReturn(new BigDecimal("10"));
+
+        assertTrue("Should have enough money", person.hasEnoughMoney());
+    }
+
+    @Test
+    public void it_should_have_enough_money_if_current_income_expenses_difference_is_less_than_0() {
+        when(world.getBank()).thenReturn(bank);
+        when(bank.getLastMonthDifferenceBetweenIncomeAndExpenses(IBAN)).thenReturn(new BigDecimal("0"));
+
+        assertFalse("Should don't have enough money", person.hasEnoughMoney());
+    }
+
+    @Test
     public void it_should_return_person_subject_type() {
         assertEquals("Returned subjects type must be PERSON", PERSON, person.getType());
     }

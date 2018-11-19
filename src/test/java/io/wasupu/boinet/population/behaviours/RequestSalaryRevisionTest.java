@@ -13,14 +13,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RequestSalaryRevisionYearlyTest {
+public class RequestSalaryRevisionTest {
 
     @Test
-    public void it_should_request_salary_revision_every_year() {
-        when(world.getCurrentDateTime()).thenReturn(new DateTime(2017,1,6,0,0));
+    public void it_should_request_salary_revision_if_not_have_enough_money() {
         when(person.getEmployer()).thenReturn(company);
         when(person.getAge()).thenReturn(2l);
         when(person.isUnemployed()).thenReturn(false);
+        when(person.hasEnoughMoney()).thenReturn(false);
 
         requestSalaryIncrease.tick();
 
@@ -28,10 +28,10 @@ public class RequestSalaryRevisionYearlyTest {
     }
 
     @Test
-    public void should_not_request_salary_revision_the_rest_of_days() {
+    public void should_not_request_salary_revision_if_have_enough_money() {
         when(person.getAge()).thenReturn(2l);
-        when(world.getCurrentDateTime()).thenReturn(new DateTime(2017,1,9,0,0));
         when(person.isUnemployed()).thenReturn(false);
+        when(person.hasEnoughMoney()).thenReturn(true);
 
         requestSalaryIncrease.tick();
 
@@ -39,7 +39,7 @@ public class RequestSalaryRevisionYearlyTest {
     }
 
     @Test
-    public void it_should_not_request_salary_revision_if_it_unemployed(){
+    public void it_should_not_request_salary_revision_if_it_unemployed() {
         when(person.getAge()).thenReturn(2l);
         when(person.isUnemployed()).thenReturn(true);
 
@@ -50,10 +50,10 @@ public class RequestSalaryRevisionYearlyTest {
 
     @Before
     public void requestSalaryIncrease() {
-        requestSalaryIncrease = new RequestSalaryRevisionYearly(world, person,6);
+        requestSalaryIncrease = new RequestSalaryRevision(world, person);
     }
 
-    private RequestSalaryRevisionYearly requestSalaryIncrease;
+    private RequestSalaryRevision requestSalaryIncrease;
 
     @Mock
     private Company company;
