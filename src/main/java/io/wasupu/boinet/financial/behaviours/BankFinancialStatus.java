@@ -8,9 +8,9 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
-public class BankEconomicStatus implements Behaviour {
+public class BankFinancialStatus implements Behaviour {
 
-    public BankEconomicStatus(World world, Bank bank) {
+    public BankFinancialStatus(World world, Bank bank) {
         this.world = world;
         this.bank = bank;
     }

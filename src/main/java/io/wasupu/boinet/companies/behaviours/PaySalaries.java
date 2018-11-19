@@ -13,7 +13,7 @@ public class PaySalaries extends EconomicalSubjectBehaviour {
 
     @Override
     public void tick() {
-        company.getEmployees().forEach((person, salary) -> company.payEmployee(person, salary));
+        company.getEmployees().forEach(company::payEmployee);
     }
 
     private Company company;

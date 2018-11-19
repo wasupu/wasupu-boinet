@@ -45,9 +45,12 @@ public class Hospital {
         withNewCar(newPerson);
         withElectronicProductPayment(newPerson);
 
-        if (withProbability(90)) {
+        if (withProbability(66)) {
             withOwnedHouse(newPerson);
+        } else{
+            withHouseRental(newPerson);
         }
+
 
         withInternetConnection(newPerson);
 
@@ -200,6 +203,16 @@ public class Hospital {
 
     private void withOwnedHouse(Person newPerson) {
         newPerson.addBehaviour(new BuyHouse(world, newPerson, world.findCompany()));
+    }
+
+    private void withHouseRental(Person newPerson) {
+        newPerson.addBehaviour(new Monthly(world,
+            get2to10MonthDay(),
+            new PayAReceipt(world,
+                newPerson,
+                world.findCompany(),
+                ReceiptType.HOUSE_RENTAL,
+                generateRandomPrice.apply(300, 500))));
     }
 
     private void withPowerSupply(Person newPerson) {

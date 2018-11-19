@@ -43,10 +43,6 @@ public class Person extends EconomicalSubject {
             .getLastMonthDifferenceBetweenIncomeAndExpenses(getIban()).compareTo(new BigDecimal("0")) > 0;
     }
 
-    public BigDecimal getDifferenceBetweenIncomeAndExpenses(){
-        return getWorld().getBank().getLastMonthDifferenceBetweenIncomeAndExpenses(getIban());
-    }
-
     @Override
     public EconomicalSubjectType getType() {
         return PERSON;

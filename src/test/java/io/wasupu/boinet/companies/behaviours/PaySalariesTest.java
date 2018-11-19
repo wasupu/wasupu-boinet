@@ -30,7 +30,6 @@ public class PaySalariesTest {
         verify(company).payEmployee(person, new BigDecimal("100"));
     }
 
-
     @Before
     public void setupBehaviour() {
         paySalaries = new PaySalaries(world, company);

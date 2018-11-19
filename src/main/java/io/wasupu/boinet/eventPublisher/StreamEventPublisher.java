@@ -10,10 +10,7 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.io.ByteStreams.toByteArray;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -21,43 +18,69 @@ import static net.logstash.logback.marker.Markers.appendEntries;
 
 public class StreamEventPublisher implements EventPublisher {
 
-    public StreamEventPublisher(String streamId, String streamServiceNamespace, String serverKeyStorePassphrase, String clientKeyStorePassphrase) {
+    public StreamEventPublisher(String streamId, String streamServiceNamespace, String serverKeyStorePassphrase, String clientKeyStorePassphrase, Integer cadenceMilliseconds, Integer batchSize) {
         this.streamServiceNamespace = streamServiceNamespace;
         this.streamId = streamId;
         this.serverKeyStorePassphrase = serverKeyStorePassphrase;
         this.clientKeyStorePassphrase = clientKeyStorePassphrase;
+        this.cadenceMilliseconds = cadenceMilliseconds;
+        this.batchSize = batchSize;
         this.client = buildClient();
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                publishToStreamService();
+            }
+        }, 60000L, 10000L);
     }
 
     @Override
     public void publish(Map<String, Object> event) {
-        publishInStreamService(event);
+        bufferAndPublishInStreamService(event);
     }
 
-    private void publishInStreamService(Map<String, Object> event) {
+    private void bufferAndPublishInStreamService(Map<String, Object> event) {
         bufferEvent(formatEvent(event));
 
-        if (eventsBuffer.size() >= BATCH_SIZE) {
-            try {
-                MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (eventsBuffer.size() >= batchSize) {
+            publishToStreamService();
+        }
+    }
 
-            buildRequest()
-                .async()
-                .post(Entity.entity(Map.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
-                    @Override
-                    public void completed(Response response) {
-                        logger.info(appendEntries(Map.of("status", response.getStatus())), "eventPublisher");
-                    }
 
-                    @Override
-                    public void failed(Throwable throwable) {
-                        logger.error(appendEntries(Map.of("message", "post(). error posting to stream service. Cause: " + throwable.getCause())), "eventPublisher");
-                    }
-                });
-            clearEventsBuffer();
+    private synchronized void publishToStreamService() {
+        if (eventsBuffer.isEmpty()) return;
+
+        throttle();
+
+        buildRequest()
+            .async()
+            .post(Entity.entity(Map.of("records", eventsBuffer), MediaType.APPLICATION_JSON_TYPE), new InvocationCallback<Response>() {
+                @Override
+                public void completed(Response response) {
+                    logger.info(appendEntries(Map.of(
+                        "eventType", "publishEventsSuccess",
+                        "stream", streamId,
+                        "status", response.getStatus())), "eventPublisher");
+                }
+
+                @Override
+                public void failed(Throwable throwable) {
+                    logger.error(appendEntries(Map.of(
+                        "eventType", "publishEventsError",
+                        "message", "post(). error posting to stream service. Cause: " + throwable.getCause(),
+                        "stream", streamId)), "eventPublisher");
+                }
+            });
+        clearEventsBuffer();
+    }
+
+    private void throttle() {
+        try {
+            MILLISECONDS.sleep(cadenceMilliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -103,6 +126,7 @@ public class StreamEventPublisher implements EventPublisher {
         }
     }
 
+
     private String streamServiceNamespace;
 
     private static Logger logger = LoggerFactory.getLogger(StreamEventPublisher.class);
@@ -111,8 +135,6 @@ public class StreamEventPublisher implements EventPublisher {
 
     private static final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
 
-    private static final Integer BATCH_SIZE = 50;
-
     private String streamId;
 
     private Client client;
@@ -120,4 +142,8 @@ public class StreamEventPublisher implements EventPublisher {
     private String serverKeyStorePassphrase;
 
     private String clientKeyStorePassphrase;
+
+    private Integer cadenceMilliseconds;
+
+    private Integer batchSize;
 }

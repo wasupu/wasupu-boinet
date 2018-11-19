@@ -4,7 +4,7 @@ import io.wasupu.boinet.World;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubject;
 import io.wasupu.boinet.economicalSubjects.EconomicalSubjectType;
 import io.wasupu.boinet.population.Person;
-import org.apache.commons.math3.distribution.NormalDistribution;
+import io.wasupu.boinet.population.behaviours.GenerateRandomPrice;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -59,13 +59,13 @@ public class Company extends EconomicalSubject {
         person.youAreHired(this);
     }
 
-    public void payEmployee(Person employee, BigDecimal salary) {
-        if (getWorld().getBank().getBalance(getIban()).compareTo(salary) < 0) {
+    public void payEmployee(Person employee, BigDecimal amount) {
+        if (getWorld().getBank().getBalance(getIban()).compareTo(amount) < 0) {
             fire(employee);
             return;
         }
 
-        getWorld().getBank().paySalary(getIban(), employee.getIban(), salary);
+        getWorld().getBank().paySalary(getIban(), employee.getIban(), amount);
     }
 
     public int getNumberOfEmployees() {
@@ -87,14 +87,14 @@ public class Company extends EconomicalSubject {
     }
 
     private BigDecimal generateSalary() {
-        return new BigDecimal(normalDistribution.sample()).setScale(2, RoundingMode.CEILING);
+        return randomDistribution.apply(1800, 2800);
     }
 
     private Map<Person, BigDecimal> employees = new ConcurrentHashMap<>();
 
     private String name;
 
-    private double baseSalary = 2300;
+    private GenerateRandomPrice randomDistribution = new GenerateRandomPrice();
 
-    private NormalDistribution normalDistribution = new NormalDistribution(baseSalary, 500);
+    static final BigDecimal MINIMUM_SALARY = new BigDecimal("600");
 }

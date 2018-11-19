@@ -4,7 +4,7 @@
 
     <groupId>io.wasupu</groupId>
     <artifactId>boinet</artifactId>
-    <version>0.11.4-SNAPSHOT</version>
+    <version>0.11.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>boinet</name>
 
@@ -80,11 +80,6 @@
             <groupId>com.spatial4j</groupId>
             <artifactId>spatial4j</artifactId>
             <version>0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
         </dependency>
 
         <dependency>

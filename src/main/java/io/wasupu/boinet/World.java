@@ -5,12 +5,13 @@ import io.wasupu.boinet.companies.BusinessIncubator;
 import io.wasupu.boinet.companies.Company;
 import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.financial.Bank;
-import io.wasupu.boinet.financial.behaviours.BankEconomicStatus;
+import io.wasupu.boinet.financial.behaviours.BankFinancialStatus;
 import io.wasupu.boinet.financial.behaviours.CalculateDifferenceBetweenIncomeAndExpenses;
 import io.wasupu.boinet.population.Hospital;
 import io.wasupu.boinet.population.Person;
 import io.wasupu.boinet.subjects.Behaviour;
 import io.wasupu.boinet.subjects.behaviours.Monthly;
+import io.wasupu.boinet.subjects.behaviours.Weekly;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class World {
     private Bank createBank(BigDecimal seedCapital) {
         var bank = new Bank(this, seedCapital);
 
-        bank.addBehaviour(withEconomicStatus(bank));
+        bank.addBehaviour(withFinancialStatus(bank));
         bank.addBehaviour(withCalculateDifferenceBetweenAccounts(bank));
 
         listenTicks(bank::tick);
@@ -42,14 +43,14 @@ public class World {
         return bank;
     }
 
-    private Behaviour withEconomicStatus(Bank bank) {
-        return new Monthly(this,
-            27,
-            new BankEconomicStatus(this, bank));
+    private Behaviour withFinancialStatus(Bank bank) {
+        return new Weekly(this,
+            1,
+            new BankFinancialStatus(this, bank));
 
     }
 
-    private Behaviour withCalculateDifferenceBetweenAccounts(Bank bank){
+    private Behaviour withCalculateDifferenceBetweenAccounts(Bank bank) {
         return new Monthly(this,
             1,
             new CalculateDifferenceBetweenIncomeAndExpenses(bank));

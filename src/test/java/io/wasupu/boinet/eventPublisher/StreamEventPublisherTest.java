@@ -28,7 +28,7 @@ public class StreamEventPublisherTest {
 
     @Test
     public void it_should_publish_a_batch_of_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE, 1, BATCH_SIZE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class StreamEventPublisherTest {
 
     @Test
     public void it_should_publish_a_batch_with_the_right_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE, 1, BATCH_SIZE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class StreamEventPublisherTest {
 
     @Test
     public void it_should_publish_two_batch_of_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE, 1, BATCH_SIZE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());
@@ -76,7 +76,7 @@ public class StreamEventPublisherTest {
 
     @Test
     public void it_should_publish_the_two_right_batch_of_events() {
-        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE);
+        var eventPublisher = new StreamEventPublisher(STREAM_ID, STREAM_SERVICE_NAMESPACE, SERVER_KEY_STORE_PASSPHRASE, CLIENT_KEY_STORE_PASSPHRASE, 1, BATCH_SIZE);
         var eventsBatch = IntStream.range(0, BATCH_SIZE * 2)
             .mapToObj(this::buildTestEvent)
             .collect(Collectors.toList());

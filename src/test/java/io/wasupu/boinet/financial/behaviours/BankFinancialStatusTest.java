@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BankEconomicStatusTest {
+public class BankFinancialStatusTest {
 
     @Test
     public void it_should_publish_the_bank_balance_with_event_type_balance() {
@@ -131,7 +131,7 @@ public class BankEconomicStatusTest {
 
 
     private Map<String, Object> executeBehaviour() {
-        bankEconomicStatus.tick();
+        bankFinancialStatus.tick();
 
         verify(eventPublisher).publish(captor.capture());
 
@@ -140,7 +140,7 @@ public class BankEconomicStatusTest {
 
     @Before
     public void setupBankEconomicStatus() {
-        bankEconomicStatus = new BankEconomicStatus(world, bank);
+        bankFinancialStatus = new BankFinancialStatus(world, bank);
 
         when(world.getEventPublisher()).thenReturn(eventPublisher);
     }
@@ -153,7 +153,7 @@ public class BankEconomicStatusTest {
         when(treasuryAccount.getBalance()).thenReturn(TREASURY_BALANCE);
     }
 
-    private BankEconomicStatus bankEconomicStatus;
+    private BankFinancialStatus bankFinancialStatus;
 
     @Mock
     private EventPublisher eventPublisher;

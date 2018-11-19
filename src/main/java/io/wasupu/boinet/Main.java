@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.wasupu.boinet.eventPublisher.StreamByEventTypeFactory.createEventTypePublisher;
+import static io.wasupu.boinet.eventPublisher.PublishByEventTypeFactory.createEventTypePublisher;
+
 
 public class Main {
 
