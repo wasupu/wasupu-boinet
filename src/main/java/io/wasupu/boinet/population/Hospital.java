@@ -51,7 +51,6 @@ public class Hospital {
             withHouseRental(newPerson);
         }
 
-
         withInternetConnection(newPerson);
 
         if (withProbability(80)) {
