@@ -6,6 +6,7 @@ import io.wasupu.boinet.eventPublisher.EventPublisher;
 import io.wasupu.boinet.financial.Account;
 import io.wasupu.boinet.financial.Bank;
 import io.wasupu.boinet.population.Person;
+import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +18,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,14 +34,14 @@ public class BankFinancialStatusTest {
 
     @Test
     public void it_should_publish_the_bank_balance_with_event_type_balance() {
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have the balance event type", "bankBalance", value.get("eventType"));
     }
 
     @Test
     public void it_should_publish_the_bank_balance_the_treasury_account_balance() {
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have the balance of the treasury", TREASURY_BALANCE, value.get("treasuryAccount"));
     }
@@ -49,7 +56,7 @@ public class BankFinancialStatusTest {
 
         when(world.getPopulation()).thenReturn(List.of(person, otherPerson));
 
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have the people balance", new BigDecimal(35), value.get("peopleBalance"));
     }
@@ -64,7 +71,7 @@ public class BankFinancialStatusTest {
 
         when(world.getPopulation()).thenReturn(List.of(person, otherPerson));
 
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have max the people balance", new BigDecimal(23), value.get("maxPeopleBalance"));
     }
@@ -79,7 +86,7 @@ public class BankFinancialStatusTest {
 
         when(world.getPopulation()).thenReturn(List.of(person, otherPerson));
 
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have min the people balance", new BigDecimal(12), value.get("minPeopleBalance"));
     }
@@ -94,7 +101,7 @@ public class BankFinancialStatusTest {
 
         when(world.getCompanies()).thenReturn(List.of(company, otherCompany));
 
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have the company balance", new BigDecimal(54), value.get("companiesBalance"));
     }
@@ -124,9 +131,67 @@ public class BankFinancialStatusTest {
 
         when(world.getCompanies()).thenReturn(List.of(company, otherCompany));
 
-        Map<String, Object> value = executeBehaviour();
+        var value = executeBehaviour();
 
         assertEquals("Must have min the company balance", new BigDecimal(22), value.get("minCompaniesBalance"));
+    }
+
+    @Test
+    public void it_should_publish_the_the_95th_percentile_max_company_balance() {
+        var companies = IntStream.range(1, 101)
+            .mapToObj(this::createCompanyWithBalance)
+            .collect(Collectors.toList());
+
+        when(world.getCompanies()).thenReturn(companies);
+
+        var value = executeBehaviour();
+
+        assertThat(value)
+            .as("95th percentile must be published")
+            .containsKey("95thPercentileCompaniesBalance")
+            .hasEntrySatisfying("95thPercentileCompaniesBalance", balance ->
+                assertThat((BigDecimal) balance)
+                    .as("95th percentile must be less than 96")
+                    .isLessThan(new BigDecimal("96")));
+    }
+
+    @Test
+    public void it_should_publish_the_the_95th_percentile_max_people_balance() {
+        var population = IntStream.range(1, 101)
+            .mapToObj(this::createPersonWithBalance)
+            .collect(Collectors.toList());
+
+        when(world.getPopulation()).thenReturn(population);
+
+        var event = executeBehaviour();
+
+        assertThat(event)
+            .as("95th percentile must be published")
+            .containsKey("95thPercentilePopulationBalance")
+            .hasEntrySatisfying("95thPercentilePopulationBalance", balance ->
+                assertThat((BigDecimal) balance)
+                    .as("95th percentile must be less than 96")
+                    .isLessThan(new BigDecimal("96")));
+    }
+
+    private Person createPersonWithBalance(Integer balance) {
+        var iban = "IBAN-" + balance;
+        var person = mock(Person.class, iban);
+
+        when(person.getIban()).thenReturn(iban);
+        when(bank.getBalance(iban)).thenReturn(new BigDecimal(balance));
+
+        return person;
+    }
+
+    private Company createCompanyWithBalance(Integer balance) {
+        var iban = "IBAN-" + balance;
+        var company = mock(Company.class, iban);
+
+        when(company.getIban()).thenReturn(iban);
+        when(bank.getBalance(iban)).thenReturn(new BigDecimal(balance));
+
+        return company;
     }
 
 
@@ -146,7 +211,7 @@ public class BankFinancialStatusTest {
     }
 
     @Before
-    public void setupBank(){
+    public void setupBank() {
         when(bank.getTreasuryAccount()).thenReturn(treasuryAccount);
         when(bank.getTreasuryAccount()).thenReturn(treasuryAccount);
 

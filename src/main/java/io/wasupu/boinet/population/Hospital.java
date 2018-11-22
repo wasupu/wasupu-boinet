@@ -44,10 +44,11 @@ public class Hospital {
         withLuxuryProductPayment(newPerson);
         withNewCar(newPerson);
         withElectronicProductPayment(newPerson);
+        withGym(newPerson);
 
         if (withProbability(66)) {
             withOwnedHouse(newPerson);
-        } else{
+        } else {
             withHouseRental(newPerson);
         }
 
@@ -268,6 +269,19 @@ public class Hospital {
                         newPerson,
                         ProductType.INTERNET,
                         generateRandomPrice.apply(40, 100),
+                        world.findCompany()))));
+    }
+
+    private void withGym(Person newPerson) {
+        newPerson.addBehaviour(
+            new WhenBalanceExceedsThreshold(world, newPerson,
+                new BigDecimal("2000"),
+                new Monthly(world,
+                    get2to10MonthDay(),
+                    new PayWithCard(world,
+                        newPerson,
+                        ProductType.GYM,
+                        generateRandomPrice.apply(50, 70),
                         world.findCompany()))));
     }
 

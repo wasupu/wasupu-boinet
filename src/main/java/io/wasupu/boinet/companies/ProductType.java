@@ -12,4 +12,5 @@ public enum ProductType {
     LUXURY,
     NEW_CAR,
     ELECTRONIC_DEVICE,
+    GYM;
 }
