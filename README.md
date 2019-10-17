@@ -1,6 +1,6 @@
-# wasupu boinet [![Build Status](https://travis-ci.org/rai22474/wasupu-boinet.svg?branch=master)](https://travis-ci.org/rai22474/wasupu-boinet)
+# wasupu boinet [![Build Status](https://travis-ci.org/wasupu/wasupu-boinet.svg?branch=master)](https://travis-ci.org/wasupu/wasupu-boinet)
 
-![Image of the boinet](https://raw.githubusercontent.com/rai22474/wasupu-boinet/master/boinet-pic.png)
+![Image of the boinet](https://raw.githubusercontent.com/wasupu/wasupu-boinet/master/boinet-pic.png)
 
 ## Requirements:
 
@@ -40,7 +40,7 @@ docker run -t --rm boinet \
 * To deploy the service:
 
 ```shell-script
-./deploy.sh 
+./deploy.sh
     <POPULATION> \
     <COMPANIES> \
     [<STREAM_SERVICE_NAMESPACE>] \
